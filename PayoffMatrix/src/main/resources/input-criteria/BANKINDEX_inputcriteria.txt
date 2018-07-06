@@ -1,0 +1,23 @@
+underlying.volatility.standardDeviationMultiple=1.099
+
+# contract.duration can be "week", when you are trading the BankIndex. 
+contract.duration=week
+
+# contract.series Default is near, possible values are "near", "mid", "far"
+contract.series=mid
+
+#Any existing positions that needs to be considered in the payoff, with the premium prices at which they were purchased or sold.
+#Format CE/PE,Strike,BUY/SELL,Lots,Premium Paid,Traded Date(DDMMYYYY), NEAR/MID/FAR
+#Format CE,26500,short,1,98.45,04062018,near
+existingposition1=PE,25700,short,2,54.67,03072018,mid
+existingposition2=
+existingposition3=
+existingposition4=
+existingposition5=
+
+#max positions to be held(including existing positions)
+#Currently, this value can be "no of existing positions + 3" for 512 MB Java memory
+max.option.positions=3
+
+#The lot size (e.g. 40 for the Bank Index)
+lotsize=40
