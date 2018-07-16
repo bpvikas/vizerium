@@ -74,8 +74,7 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 				URL url = new URL(historicalDataUrlString);
 				BufferedInputStream is = new BufferedInputStream(url.openStream());
 
-				FileOutputStream localRawDataFileStream = new FileOutputStream(FileUtils.directoryPath + "underlying-raw-data/" + "cm" + outputFileDateFormat.format(date)
-						+ "bhav.csv.zip");
+				FileOutputStream localRawDataFileStream = new FileOutputStream(FileUtils.directoryPath + "underlying-raw-data/" + "cm" + outputFileDateFormat.format(date) + ".zip");
 
 				int i = -1;
 				while ((i = is.read()) != -1) {

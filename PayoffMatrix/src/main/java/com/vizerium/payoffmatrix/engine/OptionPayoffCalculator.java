@@ -91,13 +91,17 @@ public class OptionPayoffCalculator {
 
 		for (Option optionChainEntry : optionChain) {
 			if (optionChainEntry.getOpenInterest() >= criteria.getMinOpenInterest() && optionChainEntry.getCurrentPremium() <= criteria.getMaxOptionPremium()) {
-				Option longOption = optionChainEntry.clone();
-				longOption.setTradeAction(TradeAction.LONG);
-				filteredOptionChain.add(longOption);
+				for (int numberOfLots = 1; numberOfLots <= criteria.getMaxOptionNumberOfLots(); numberOfLots++) {
+					Option longOption = optionChainEntry.clone();
+					longOption.setTradeAction(TradeAction.LONG);
+					longOption.setNumberOfLots(numberOfLots);
+					filteredOptionChain.add(longOption);
 
-				Option shortOption = optionChainEntry.clone();
-				shortOption.setTradeAction(TradeAction.SHORT);
-				filteredOptionChain.add(shortOption);
+					Option shortOption = optionChainEntry.clone();
+					shortOption.setTradeAction(TradeAction.SHORT);
+					shortOption.setNumberOfLots(numberOfLots);
+					filteredOptionChain.add(shortOption);
+				}
 			}
 		}
 

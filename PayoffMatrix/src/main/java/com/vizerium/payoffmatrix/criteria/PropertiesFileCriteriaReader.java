@@ -104,6 +104,7 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 			criteria.setInvestibleAmount(Float.parseFloat(criteriaProperties.getProperty("investing.amount")));
 
 			criteria.setMaxOptionOpenPositions(Integer.parseInt(criteriaProperties.getProperty("max.option.positions")));
+			criteria.setMaxOptionNumberOfLots(Integer.parseInt(criteriaProperties.getProperty("max.option.lots")));
 
 			criteria.setLotSize(Integer.parseInt(criteriaProperties.getProperty("lotsize")));
 

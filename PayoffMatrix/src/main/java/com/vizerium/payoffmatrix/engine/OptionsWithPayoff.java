@@ -61,18 +61,6 @@ public class OptionsWithPayoff {
 		return payoffMatrix.getProfitProbability();
 	}
 
-	public float getBearCaseMaxPositivePayoff() {
-		return payoffMatrix.getBearCaseMaxPositivePayoff().getPayoff();
-	}
-
-	public float getBearCaseMinNegativePayoff() {
-		return payoffMatrix.getBearCaseMinNegativePayoff().getPayoff();
-	}
-
-	public float getBearCaseProfitProbability() {
-		return payoffMatrix.getBearCaseProfitProbability();
-	}
-
 	public float getPayoffAverage() {
 		return payoffMatrix.getPayoffAverage();
 	}

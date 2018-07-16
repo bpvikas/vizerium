@@ -18,9 +18,6 @@ package com.vizerium.payoffmatrix.io;
 
 import java.util.Arrays;
 
-import com.vizerium.payoffmatrix.comparator.BearCaseHighestProfitProbabilityPayoffMatrixComparator;
-import com.vizerium.payoffmatrix.comparator.BearCaseMaximumProfitPayoffMatrixComparator;
-import com.vizerium.payoffmatrix.comparator.BearCaseMinimumLossPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.HighestProfitProbabilityPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.MaximumProfitPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.MinimumLossPayoffMatrixComparator;
@@ -39,12 +36,6 @@ public class Output {
 	private OptionsWithPayoff[] maxPositivePayoffs;
 
 	private OptionsWithPayoff[] minNegativePayoffs;
-
-	private OptionsWithPayoff[] bearCaseHighestProfitProbabilityPayoffs;
-
-	private OptionsWithPayoff[] bearCaseMaxPositivePayoffs;
-
-	private OptionsWithPayoff[] bearCaseMinNegativePayoffs;
 
 	public Output() {
 
@@ -81,29 +72,17 @@ public class Output {
 		maxPositivePayoffs = new OptionsWithPayoff[analysisPayoffsLengths];
 		minNegativePayoffs = new OptionsWithPayoff[analysisPayoffsLengths];
 
-		bearCaseHighestProfitProbabilityPayoffs = new OptionsWithPayoff[analysisPayoffsLengths];
-		bearCaseMaxPositivePayoffs = new OptionsWithPayoff[analysisPayoffsLengths];
-		bearCaseMinNegativePayoffs = new OptionsWithPayoff[analysisPayoffsLengths];
-
 		Arrays.sort(optionsWithPayoffs, new HighestProfitProbabilityPayoffMatrixComparator());
 		System.arraycopy(optionsWithPayoffs, 0, highestProfitProbabilityPayoffs, 0, highestProfitProbabilityPayoffs.length);
 		Arrays.sort(optionsWithPayoffs, new MaximumProfitPayoffMatrixComparator());
 		System.arraycopy(optionsWithPayoffs, 0, maxPositivePayoffs, 0, maxPositivePayoffs.length);
 		Arrays.sort(optionsWithPayoffs, new MinimumLossPayoffMatrixComparator());
 		System.arraycopy(optionsWithPayoffs, 0, minNegativePayoffs, 0, minNegativePayoffs.length);
-
-		Arrays.sort(optionsWithPayoffs, new BearCaseHighestProfitProbabilityPayoffMatrixComparator());
-		System.arraycopy(optionsWithPayoffs, 0, bearCaseHighestProfitProbabilityPayoffs, 0, bearCaseHighestProfitProbabilityPayoffs.length);
-		Arrays.sort(optionsWithPayoffs, new BearCaseMaximumProfitPayoffMatrixComparator());
-		System.arraycopy(optionsWithPayoffs, 0, bearCaseMaxPositivePayoffs, 0, bearCaseMaxPositivePayoffs.length);
-		Arrays.sort(optionsWithPayoffs, new BearCaseMinimumLossPayoffMatrixComparator());
-		System.arraycopy(optionsWithPayoffs, 0, bearCaseMinNegativePayoffs, 0, bearCaseMinNegativePayoffs.length);
 	}
 
 	@Override
 	public String toString() {
-		return "Output " + System.lineSeparator() + printExistingPositionPayoff() + printHighestProfitProbabilityPayoffs() + printMaxPositivePayoffs() + printMinNegativePayoffs()
-				+ printBearCaseHighestProfitProbabilityPayoffs() + printBearCaseMaxPositivePayoffs() + printBearCaseMinNegativePayoffs();
+		return "Output " + System.lineSeparator() + printExistingPositionPayoff() + printHighestProfitProbabilityPayoffs() + printMaxPositivePayoffs() + printMinNegativePayoffs();
 	}
 
 	private String printExistingPositionPayoff() {
@@ -120,18 +99,6 @@ public class Output {
 
 	private String printMinNegativePayoffs() {
 		return printPayoffs("minNegativePayoffs", minNegativePayoffs);
-	}
-
-	private String printBearCaseHighestProfitProbabilityPayoffs() {
-		return printPayoffs("bearCaseHighestProfitProbabilityPayoffs", bearCaseHighestProfitProbabilityPayoffs);
-	}
-
-	private String printBearCaseMaxPositivePayoffs() {
-		return printPayoffs("bearCaseMaxPositivePayoffs", bearCaseMaxPositivePayoffs);
-	}
-
-	private String printBearCaseMinNegativePayoffs() {
-		return printPayoffs("bearCaseMinNegativePayoffs", bearCaseMinNegativePayoffs);
 	}
 
 	private String printPayoffs(String payoffName, OptionsWithPayoff[] payoffs) {

@@ -10,9 +10,6 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.vizerium.payoffmatrix.volatility.CsvHistoricalDataVolatilityCalculator;
-import com.vizerium.payoffmatrix.volatility.DateRange;
-
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CsvHistoricalDataVolatilityCalculator_BankIndex1Week_Test extends CsvHistoricalDataVolatilityCalculatorTest {
 
@@ -32,6 +29,266 @@ public class CsvHistoricalDataVolatilityCalculator_BankIndex1Week_Test extends C
 	@Test
 	public void testCalculateVolatility() {
 		unit.calculateVolatility(null);
+	}
+
+	@Test
+	public void test201601ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 1);
+	}
+
+	@Test
+	public void test201602ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 2);
+	}
+
+	@Test
+	public void test201603ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 3);
+	}
+
+	@Test
+	public void test201604ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 4);
+	}
+
+	@Test
+	public void test201605ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 5);
+	}
+
+	@Test
+	public void test201606ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 6);
+	}
+
+	@Test
+	public void test201607ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 7);
+	}
+
+	@Test
+	public void test201608ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 8);
+	}
+
+	@Test
+	public void test201609ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 9);
+	}
+
+	@Test
+	public void test201610ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 10);
+	}
+
+	@Test
+	public void test201611ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 11);
+	}
+
+	@Test
+	public void test201612ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 12);
+	}
+
+	@Test
+	public void test201613ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 13);
+	}
+
+	@Test
+	public void test201614ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 14);
+	}
+
+	@Test
+	public void test201615ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 15);
+	}
+
+	@Test
+	public void test201616ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 16);
+	}
+
+	@Test
+	public void test201617ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 17);
+	}
+
+	@Test
+	public void test201618ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 18);
+	}
+
+	@Test
+	public void test201619ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 19);
+	}
+
+	@Test
+	public void test201620ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 20);
+	}
+
+	@Test
+	public void test201621ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 21);
+	}
+
+	@Test
+	public void test201622ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 22);
+	}
+
+	@Test
+	public void test201623ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 23);
+	}
+
+	@Test
+	public void test201624ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 24);
+	}
+
+	@Test
+	public void test201625ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 25);
+	}
+
+	@Test
+	public void test201626ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 26);
+	}
+
+	@Test
+	public void test201627ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 27);
+	}
+
+	@Test
+	public void test201628ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 28);
+	}
+
+	@Test
+	public void test201629ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 29);
+	}
+
+	@Test
+	public void test201630ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 30);
+	}
+
+	@Test
+	public void test201631ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 31);
+	}
+
+	@Test
+	public void test201632ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 32);
+	}
+
+	@Test
+	public void test201633ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 33);
+	}
+
+	@Test
+	public void test201634ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 34);
+	}
+
+	@Test
+	public void test201635ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 35);
+	}
+
+	@Test
+	public void test201636ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 36);
+	}
+
+	@Test
+	public void test201637ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 37);
+	}
+
+	@Test
+	public void test201638ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 38);
+	}
+
+	@Test
+	public void test201639ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 39);
+	}
+
+	@Test
+	public void test201640ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 40);
+	}
+
+	@Test
+	public void test201641ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 41);
+	}
+
+	@Test
+	public void test201642ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 42);
+	}
+
+	@Test
+	public void test201643ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 43);
+	}
+
+	@Test
+	public void test201644ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 44);
+	}
+
+	@Test
+	public void test201645ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 45);
+	}
+
+	@Test
+	public void test201646ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 46);
+	}
+
+	@Test
+	public void test201647ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 47);
+	}
+
+	@Test
+	public void test201648ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 48);
+	}
+
+	@Test
+	public void test201649ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 49);
+	}
+
+	@Test
+	public void test201650ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 50);
+	}
+
+	@Test
+	public void test201651ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 51);
+	}
+
+	@Test
+	public void test201652ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2016, 52);
 	}
 
 	@Test
@@ -432,6 +689,16 @@ public class CsvHistoricalDataVolatilityCalculator_BankIndex1Week_Test extends C
 	@Test
 	public void test201828ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
 		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2018, 28);
+	}
+
+	@Test
+	public void test201829ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2018, 29);
+	}
+
+	@Test
+	public void testPrintOverlapSumsAndViolations() {
+		printOverlapSumsAndViolations();
 	}
 
 	private void testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(int year, int week) {
