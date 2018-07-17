@@ -16,18 +16,12 @@
 
 package com.vizerium.payoffmatrix.dao;
 
-import com.vizerium.payoffmatrix.criteria.Criteria;
-import com.vizerium.payoffmatrix.option.Option;
+import com.vizerium.payoffmatrix.volatility.DateRange;
 
-public class OptionDBDataStore implements OptionDataStore {
-
-	@Override
-	public Option[] readOptionChainData(Criteria criteria) {
-		throw new UnsupportedOperationException("Option Chain data cannot be read from the DB as yet.");
-	}
+public class HistoricalDBDataStore implements HistoricalDataStore {
 
 	@Override
-	public void saveOptionChainData(Criteria criteria, Option[] optionChain) {
-		throw new UnsupportedOperationException("Option Chain data cannot be written to the DB as yet.");
+	public float[] readHistoricalData(DateRange dateRange) {
+		throw new UnsupportedOperationException("Historical data cannot be read from the DB as yet.");
 	}
 }
