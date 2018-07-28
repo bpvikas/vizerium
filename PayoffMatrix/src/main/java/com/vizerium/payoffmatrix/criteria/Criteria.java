@@ -201,7 +201,7 @@ public class Criteria {
 
 	@Override
 	public String toString() {
-		return "Criteria [underlyingName=" + underlyingName + ", volatility=" + volatility + ", maxLoss=" + maxLoss + ", tradingBias=" + tradingBias + ", contractMonth="
+		return "Criteria [underlyingName=" + underlyingName + ", volatility=" + volatility + ", maxLoss=" + maxLoss + ", tradingBias=" + tradingBias + ", contractSeries="
 				+ contractSeries + ", expiryDate=" + expiryDate + ", existingPositions=" + Arrays.toString(existingPositions) + ", remoteDatasource=" + remoteDatasource
 				+ ", localDatasource=" + localDatasource + ", minOpenInterest=" + minOpenInterest + ", maxOptionPremium=" + maxOptionPremium + ", sellOrderMargin="
 				+ sellOrderMargin + ", investibleAmount=" + investibleAmount + ", maxOptionOpenPositions=" + maxOptionOpenPositions + ", maxOptionNumberOfLots="
