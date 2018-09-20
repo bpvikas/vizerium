@@ -16,6 +16,7 @@
 
 package com.vizerium.payoffmatrix.dao;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 import com.vizerium.payoffmatrix.volatility.BollingerBand;
@@ -24,6 +25,10 @@ import com.vizerium.payoffmatrix.volatility.DateRange;
 public interface HistoricalDataStore {
 
 	public float[] readHistoricalData(DateRange dateRange);
+
+	public void writeHistoricalData(LocalDate date, String open, String high, String low, String close, String volume);
+
+	public String getUnderlyingName();
 
 	public default float calculateSMA(float[] closingPrices, int numberOfDays) {
 		float sma = 0.0f;

@@ -16,12 +16,34 @@
 
 package com.vizerium.payoffmatrix.dao;
 
+import java.time.LocalDate;
+
 import com.vizerium.payoffmatrix.volatility.DateRange;
 
 public class HistoricalDBDataStore implements HistoricalDataStore {
 
+	private String underlyingName;
+
+	public HistoricalDBDataStore() {
+
+	}
+
+	public HistoricalDBDataStore(String underlyingName) {
+		this.underlyingName = underlyingName;
+	}
+
 	@Override
 	public float[] readHistoricalData(DateRange dateRange) {
 		throw new UnsupportedOperationException("Historical data cannot be read from the DB as yet.");
+	}
+
+	@Override
+	public void writeHistoricalData(LocalDate date, String open, String high, String low, String close, String volume) {
+		throw new UnsupportedOperationException("Historical data cannot be updated into the DB as yet.");
+	}
+
+	@Override
+	public String getUnderlyingName() {
+		return underlyingName;
 	}
 }
