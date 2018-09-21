@@ -41,6 +41,20 @@ public class TEIBHistoricalDataUpdaterTest {
 	@Test
 	public void testIndividualHistoricalDataUpdate() {
 		HistoricalDataStore csvDataStore = new HistoricalCsvDataStore(new StringBuilder(testComponents[0]).reverse().toString());
-		updateHistoricalData(LocalDate.of(2018, 8, 14), csvDataStore);
+		updateHistoricalData(LocalDate.of(2018, 8, 20), csvDataStore);
+		updateHistoricalData(LocalDate.of(2018, 8, 21), csvDataStore);
+//		updateHistoricalData(LocalDate.of(2018, 8, 22), csvDataStore);
+		updateHistoricalData(LocalDate.of(2018, 8, 23), csvDataStore);
+		updateHistoricalData(LocalDate.of(2018, 8, 24), csvDataStore);
+		updateHistoricalData(LocalDate.of(2018, 8, 27), csvDataStore);
+		updateHistoricalData(LocalDate.of(2018, 8, 28), csvDataStore);
+	}
+
+	@Test
+	public void testAllTeibComponentsHistoricalDataUpdate() {
+		for (String component : teibComponents) {
+			HistoricalDataStore csvDataStore = new HistoricalCsvDataStore(new StringBuilder(component).reverse().toString());
+			updateHistoricalData(csvDataStore);
+		}
 	}
 }

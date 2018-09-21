@@ -74,6 +74,12 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 					continue;
 				}
 
+				File localRawDataFile = new File(FileUtils.directoryPath + "underlying-raw-data/" + "cm" + localFileDateFormat.format(date) + ".zip");
+				if (localRawDataFile.exists()) {
+					System.out.println("Raw data file already exists.");
+					continue;
+				}
+
 				DateTimeFormatter monthOnly = DateTimeFormatter.ofPattern("MMM");
 				DateTimeFormatter fullDate = DateTimeFormatter.ofPattern("ddMMMyyyy");
 
@@ -85,7 +91,7 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 				URL url = new URL(historicalDataUrlString);
 				BufferedInputStream is = new BufferedInputStream(url.openStream());
 
-				FileOutputStream localRawDataFileStream = new FileOutputStream(FileUtils.directoryPath + "underlying-raw-data/" + "cm" + localFileDateFormat.format(date) + ".zip");
+				FileOutputStream localRawDataFileStream = new FileOutputStream(localRawDataFile);
 
 				int i = -1;
 				while ((i = is.read()) != -1) {
@@ -149,8 +155,9 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 				if (scripNames == null || scripNames.length == 0
 						|| (scripNames != null && scripNames.length > 0 && Arrays.stream(scripNames).anyMatch(scripDayDataDetails[0]::equals))) {
 
-					DayPriceData dayPriceData = new DayPriceData(date, scripDayDataDetails[0], scripDayDataDetails[1], scripDayDataDetails[2], scripDayDataDetails[3],
-							scripDayDataDetails[4], scripDayDataDetails[5], scripDayDataDetails[6], scripDayDataDetails[7], scripDayDataDetails[8]);
+					DayPriceData dayPriceData = new DayPriceData(date, scripDayDataDetails[0], scripDayDataDetails[1], Float.parseFloat(scripDayDataDetails[2]),
+							Float.parseFloat(scripDayDataDetails[3]), Float.parseFloat(scripDayDataDetails[4]), Float.parseFloat(scripDayDataDetails[5]),
+							Float.parseFloat(scripDayDataDetails[6]), Float.parseFloat(scripDayDataDetails[7]), Long.parseLong(scripDayDataDetails[8]));
 					dayPriceDataList.add(dayPriceData);
 				}
 			}

@@ -10,25 +10,25 @@ public class DayPriceData {
 
 	private String series;
 
-	private String open;
+	private float open;
 
-	private String high;
+	private float high;
 
-	private String low;
+	private float low;
 
-	private String close;
+	private float close;
 
-	private String last;
+	private float last;
 
-	private String prevClose;
+	private float prevClose;
 
-	private String volume;
+	private long volume;
 
 	public DayPriceData() {
 
 	}
 
-	public DayPriceData(LocalDate date, String scripName, String series, String open, String high, String low, String close, String last, String prevClose, String volume) {
+	public DayPriceData(LocalDate date, String scripName, String series, float open, float high, float low, float close, float last, float prevClose, long volume) {
 		this.date = date;
 		this.scripName = scripName;
 		this.series = series;
@@ -65,59 +65,59 @@ public class DayPriceData {
 		this.series = series;
 	}
 
-	public String getOpen() {
+	public float getOpen() {
 		return open;
 	}
 
-	public void setOpen(String open) {
+	public void setOpen(float open) {
 		this.open = open;
 	}
 
-	public String getHigh() {
+	public float getHigh() {
 		return high;
 	}
 
-	public void setHigh(String high) {
+	public void setHigh(float high) {
 		this.high = high;
 	}
 
-	public String getLow() {
+	public float getLow() {
 		return low;
 	}
 
-	public void setLow(String low) {
+	public void setLow(float low) {
 		this.low = low;
 	}
 
-	public String getClose() {
+	public float getClose() {
 		return close;
 	}
 
-	public void setClose(String close) {
+	public void setClose(float close) {
 		this.close = close;
 	}
 
-	public String getLast() {
+	public float getLast() {
 		return last;
 	}
 
-	public void setLast(String last) {
+	public void setLast(float last) {
 		this.last = last;
 	}
 
-	public String getPrevClose() {
+	public float getPrevClose() {
 		return prevClose;
 	}
 
-	public void setPrevClose(String prevClose) {
+	public void setPrevClose(float prevClose) {
 		this.prevClose = prevClose;
 	}
 
-	public String getVolume() {
+	public long getVolume() {
 		return volume;
 	}
 
-	public void setVolume(String volume) {
+	public void setVolume(long volume) {
 		this.volume = volume;
 	}
 

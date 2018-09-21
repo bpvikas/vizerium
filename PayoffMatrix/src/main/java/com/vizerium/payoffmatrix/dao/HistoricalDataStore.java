@@ -26,7 +26,7 @@ public interface HistoricalDataStore {
 
 	public float[] readHistoricalData(DateRange dateRange);
 
-	public void writeHistoricalData(LocalDate date, String open, String high, String low, String close, String volume);
+	public void writeHistoricalData(LocalDate date, float open, float high, float low, float close, long volume);
 
 	public String getUnderlyingName();
 

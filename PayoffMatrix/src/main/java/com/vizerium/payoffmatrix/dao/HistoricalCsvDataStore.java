@@ -21,6 +21,14 @@ public class HistoricalCsvDataStore implements HistoricalDataStore {
 
 	private String underlyingName;
 
+	private static NumberFormat numberformat = NumberFormat.getInstance();
+
+	static {
+		numberformat.setMinimumFractionDigits(2);
+		numberformat.setMaximumFractionDigits(2);
+		numberformat.setGroupingUsed(true);
+	}
+
 	public HistoricalCsvDataStore() {
 
 	}
@@ -95,7 +103,7 @@ public class HistoricalCsvDataStore implements HistoricalDataStore {
 	}
 
 	@Override
-	public void writeHistoricalData(LocalDate date, String open, String high, String low, String close, String volume) {
+	public void writeHistoricalData(LocalDate date, float open, float high, float low, float close, long volume) {
 		BufferedReader br = null;
 
 		List<String> csvHistoricalDataLines = new ArrayList<String>();
@@ -120,61 +128,61 @@ public class HistoricalCsvDataStore implements HistoricalDataStore {
 			}
 		}
 
-		String previousClose = csvHistoricalDataLines.get(1).replaceAll("\",", "\"#").split("#")[1].replaceAll("\"", "");
+		float previousClose = Float.parseFloat(csvHistoricalDataLines.get(1).replaceAll("\",", "\"#").split("#")[1].replaceAll("\"", "").replaceAll(",", ""));
 		String percentageChangeOverPrevious = calculatePercentageChangeOverPrevious(close, previousClose);
 
-		volume = formatVolumeData(volume);
 		String dateString = DateTimeFormatter.ofPattern("MMM dd, yyyy").format(date);
-		String localDateHistoricalData = "\"" + dateString + "\",\"" + close + "\",\"" + open + "\",\"" + high + "\",\"" + low + "\",\"" + volume + "\",\""
-				+ percentageChangeOverPrevious + "\"";
+		String localDateHistoricalData = "\"" + dateString + "\",\"" + numberformat.format(close) + "\",\"" + numberformat.format(open) + "\",\"" + numberformat.format(high)
+				+ "\",\"" + numberformat.format(low) + "\",\"" + formatVolumeData(volume) + "\",\"" + percentageChangeOverPrevious + "\"";
 
-		csvHistoricalDataLines.add(1, localDateHistoricalData);
-
-		BufferedWriter bw = null;
-
-		try {
-			bw = new BufferedWriter(new FileWriter(new File(FileUtils.directoryPath + "underlying-historical/" + "historical_" + underlyingName + ".csv")));
-			for (String csvHistoricalDataLine : csvHistoricalDataLines) {
-				bw.write(csvHistoricalDataLine);
-				bw.newLine();
+		boolean newCsvHistoricalDataLinePreExists = false;
+		for (String csvHistoricalDataLine : csvHistoricalDataLines) {
+			if (csvHistoricalDataLine.indexOf(dateString) > 0) {
+				System.out.println("Data for " + underlyingName + " for date " + dateString + " already exists.");
+				newCsvHistoricalDataLinePreExists = true;
+				break;
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		} finally {
+		}
+
+		if (!newCsvHistoricalDataLinePreExists) {
+			csvHistoricalDataLines.add(1, localDateHistoricalData);
+			BufferedWriter bw = null;
 			try {
-				bw.close();
-			} catch (IOException e) {
+				bw = new BufferedWriter(new FileWriter(new File(FileUtils.directoryPath + "underlying-historical/" + "historical_" + underlyingName + ".csv")));
+				for (String csvHistoricalDataLine : csvHistoricalDataLines) {
+					bw.write(csvHistoricalDataLine);
+					bw.newLine();
+				}
+			} catch (Exception e) {
 				e.printStackTrace();
 				throw new RuntimeException(e);
+			} finally {
+				try {
+					bw.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+					throw new RuntimeException(e);
+				}
 			}
 		}
 	}
 
-	private String formatVolumeData(String volume) {
-		NumberFormat numberformat = NumberFormat.getInstance();
-		numberformat.setMinimumFractionDigits(2);
+	private String formatVolumeData(long volume) {
 
-		int volumeInt = Integer.parseInt(volume);
-		if (volumeInt < Math.pow(10, 3)) {
-			// volume remains as it is
-		} else if (volumeInt >= Math.pow(10, 3) && volumeInt < Math.pow(10, 6)) {
-			volume = numberformat.format(volumeInt / Math.pow(10, 3)) + "K";
-		} else if (volumeInt >= Math.pow(10, 6) && volumeInt < Math.pow(10, 9)) {
-			volume = numberformat.format(volumeInt / Math.pow(10, 6)) + "M";
-		} else if (volumeInt >= Math.pow(10, 9)) {
-			volume = numberformat.format(volumeInt / Math.pow(10, 9)) + "B";
+		if (volume < Math.pow(10, 3)) {
+			return String.valueOf(volume);
+		} else if (volume >= Math.pow(10, 3) && volume < Math.pow(10, 6)) {
+			return numberformat.format(volume / Math.pow(10, 3)) + "K";
+		} else if (volume >= Math.pow(10, 6) && volume < Math.pow(10, 9)) {
+			return numberformat.format(volume / Math.pow(10, 6)) + "M";
+		} else if (volume >= Math.pow(10, 9)) {
+			return numberformat.format(volume / Math.pow(10, 9)) + "B";
 		}
-		return volume;
+		return String.valueOf(volume);
 	}
 
-	private String calculatePercentageChangeOverPrevious(String close, String previousClose) {
-
-		NumberFormat numberformat = NumberFormat.getInstance();
-		numberformat.setMinimumFractionDigits(2);
-
-		double percentageChangeOverPrevious = (((Float.parseFloat(close) - Float.parseFloat(previousClose)) / Float.parseFloat(previousClose)) - 1) * 100;
-
+	private String calculatePercentageChangeOverPrevious(float close, float previousClose) {
+		double percentageChangeOverPrevious = ((close - previousClose) / previousClose) * 100;
 		return numberformat.format(percentageChangeOverPrevious) + "%";
 	}
 

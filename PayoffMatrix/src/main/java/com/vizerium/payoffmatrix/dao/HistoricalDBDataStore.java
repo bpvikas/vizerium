@@ -38,7 +38,7 @@ public class HistoricalDBDataStore implements HistoricalDataStore {
 	}
 
 	@Override
-	public void writeHistoricalData(LocalDate date, String open, String high, String low, String close, String volume) {
+	public void writeHistoricalData(LocalDate date, float open, float high, float low, float close, long volume) {
 		throw new UnsupportedOperationException("Historical data cannot be updated into the DB as yet.");
 	}
 
