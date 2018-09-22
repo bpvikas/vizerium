@@ -19,7 +19,7 @@ public abstract class CsvHistoricalDataVolatilityCalculatorTest {
 		System.out.println("Forecasted " + volatility.getUnderlyingRange());
 
 		HistoricalDataStore historicalDataStore = getUnit().getHistoricalDataStore();
-		float[] historicalClosingPrices = historicalDataStore.readHistoricalData(historicalDateRange);
+		float[] historicalClosingPrices = historicalDataStore.readHistoricalClosingPrices(historicalDateRange);
 
 		float _9sma = historicalDataStore.calculateSMA(historicalClosingPrices, 9);
 		float _26sma = historicalDataStore.calculateSMA(historicalClosingPrices, 26);
@@ -33,7 +33,7 @@ public abstract class CsvHistoricalDataVolatilityCalculatorTest {
 		float rsi = historicalDataStore.calculateRSI(historicalClosingPrices, 14);
 
 		int upperEndVolatilityViolations = 0, lowerEndVolatilityViolations = 0, upperEndBollingerViolations = 0, lowerEndBollingerViolations = 0;
-		float[] closingPrices = historicalDataStore.readHistoricalData(futureDateRange);
+		float[] closingPrices = historicalDataStore.readHistoricalClosingPrices(futureDateRange);
 		float minClosingPrice = closingPrices[0], maxClosingPrice = closingPrices[0];
 		for (float closingPrice : closingPrices) {
 			if (closingPrice > volatility.getUnderlyingRange().getHigh()) {

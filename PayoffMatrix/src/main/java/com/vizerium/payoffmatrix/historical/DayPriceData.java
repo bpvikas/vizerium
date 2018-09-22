@@ -24,10 +24,15 @@ public class DayPriceData {
 
 	private long volume;
 
+	private float percentageChange;
+
 	public DayPriceData() {
 
 	}
 
+	/*
+	 * This constructor is used to get the TEI data format into the DayPriceData object.
+	 */
 	public DayPriceData(LocalDate date, String scripName, String series, float open, float high, float low, float close, float last, float prevClose, long volume) {
 		this.date = date;
 		this.scripName = scripName;
@@ -39,6 +44,18 @@ public class DayPriceData {
 		this.last = last;
 		this.prevClose = prevClose;
 		this.volume = volume;
+	}
+
+	/*
+	 * This constructor is used to get the Inv data format into the DayPriceData object.
+	 */
+	public DayPriceData(LocalDate date, String scripName, float open, float high, float low, float close) {
+		this.date = date;
+		this.scripName = scripName;
+		this.open = open;
+		this.high = high;
+		this.low = low;
+		this.close = close;
 	}
 
 	public LocalDate getDate() {
@@ -119,6 +136,14 @@ public class DayPriceData {
 
 	public void setVolume(long volume) {
 		this.volume = volume;
+	}
+
+	public float getPercentageChange() {
+		return percentageChange;
+	}
+
+	public void setPercentageChange(float percentageChange) {
+		this.percentageChange = percentageChange;
 	}
 
 	@Override

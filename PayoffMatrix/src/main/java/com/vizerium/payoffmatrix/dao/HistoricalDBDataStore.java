@@ -18,6 +18,7 @@ package com.vizerium.payoffmatrix.dao;
 
 import java.time.LocalDate;
 
+import com.vizerium.payoffmatrix.historical.DayPriceData;
 import com.vizerium.payoffmatrix.volatility.DateRange;
 
 public class HistoricalDBDataStore implements HistoricalDataStore {
@@ -33,8 +34,13 @@ public class HistoricalDBDataStore implements HistoricalDataStore {
 	}
 
 	@Override
-	public float[] readHistoricalData(DateRange dateRange) {
+	public DayPriceData[] readHistoricalData(DateRange dateRange) {
 		throw new UnsupportedOperationException("Historical data cannot be read from the DB as yet.");
+	}
+
+	@Override
+	public float[] readHistoricalClosingPrices(DateRange dateRange) {
+		throw new UnsupportedOperationException("Historical closing prices cannot be read from the DB as yet.");
 	}
 
 	@Override

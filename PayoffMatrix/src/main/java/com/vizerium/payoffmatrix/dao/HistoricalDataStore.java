@@ -19,12 +19,15 @@ package com.vizerium.payoffmatrix.dao;
 import java.time.LocalDate;
 import java.util.Arrays;
 
+import com.vizerium.payoffmatrix.historical.DayPriceData;
 import com.vizerium.payoffmatrix.volatility.BollingerBand;
 import com.vizerium.payoffmatrix.volatility.DateRange;
 
 public interface HistoricalDataStore {
 
-	public float[] readHistoricalData(DateRange dateRange);
+	public float[] readHistoricalClosingPrices(DateRange dateRange);
+
+	public DayPriceData[] readHistoricalData(DateRange dateRange);
 
 	public void writeHistoricalData(LocalDate date, float open, float high, float low, float close, long volume);
 

@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.vizerium.payoffmatrix.historical.DayPriceData;
 import com.vizerium.payoffmatrix.io.FileUtils;
 import com.vizerium.payoffmatrix.volatility.DateRange;
 
@@ -38,9 +39,35 @@ public class HistoricalCsvDataStore implements HistoricalDataStore {
 	}
 
 	@Override
-	public float[] readHistoricalData(DateRange dateRange) {
+	public DayPriceData[] readHistoricalData(DateRange dateRange) {
+
+		String[] historicalFileLines = readHistoricalDataFileLines(dateRange);
+
+		DayPriceData[] dayPriceData = new DayPriceData[historicalFileLines.length];
+		for (int i = 0; i < historicalFileLines.length; i++) {
+			String[] csvHistoricalDataDetails = historicalFileLines[i].split("#");
+			dayPriceData[i] = new DayPriceData(LocalDate.parse(csvHistoricalDataDetails[0], DateTimeFormatter.ofPattern("MMM dd, yyyy")), underlyingName,
+					Float.parseFloat(csvHistoricalDataDetails[2]), Float.parseFloat(csvHistoricalDataDetails[3]), Float.parseFloat(csvHistoricalDataDetails[4]),
+					Float.parseFloat(csvHistoricalDataDetails[1]));
+		}
+		return dayPriceData;
+	}
+
+	@Override
+	public float[] readHistoricalClosingPrices(DateRange dateRange) {
+		String[] historicalFileLines = readHistoricalDataFileLines(dateRange);
+
+		float[] closingPrices = new float[historicalFileLines.length];
+		for (int i = 0; i < historicalFileLines.length; i++) {
+			String[] csvHistoricalDataDetails = historicalFileLines[i].split("#");
+			closingPrices[i] = Float.parseFloat(csvHistoricalDataDetails[1]);
+		}
+		return closingPrices;
+	}
+
+	private String[] readHistoricalDataFileLines(DateRange dateRange) {
 		BufferedReader br = null;
-		List<String> closingPricesString = new ArrayList<String>();
+		List<String> historicalDataFileLines = new ArrayList<String>();
 
 		try {
 			File csvHistoricalDataFile = FileUtils.getLastModifiedFileInDirectory(FileUtils.directoryPath + "underlying-historical/", "historical_" + underlyingName + ".csv");
@@ -58,19 +85,15 @@ public class HistoricalCsvDataStore implements HistoricalDataStore {
 					throw new RuntimeException("Historical data details obtained from CSV may not be correct. " + csvHistoricalDataLine);
 				}
 				if (isDateWithinRange(csvHistoricalDataDetails[0], dateRange)) {
-					closingPricesString.add(csvHistoricalDataDetails[1].replaceAll("\"", "").replaceAll(",", "").trim());
+					historicalDataFileLines.add(csvHistoricalDataLine.replaceAll("\",", "\"#").replaceAll("\"", "").replaceAll(",", "").trim());
 				}
 			}
 
-			float[] closingPrices = new float[closingPricesString.size()];
-			for (int i = 0; i < closingPricesString.size(); i++) {
-				closingPrices[i] = Float.parseFloat(closingPricesString.get(i));
-			}
-
+			String[] historicalDataFileLinesArray = historicalDataFileLines.toArray(new String[historicalDataFileLines.size()]);
 			// reverse the array as the data in the investing csv files are in reverse order.
-			ArrayUtils.reverse(closingPrices);
+			ArrayUtils.reverse(historicalDataFileLinesArray);
 
-			return closingPrices;
+			return historicalDataFileLinesArray;
 
 		} catch (Exception e) {
 			e.printStackTrace();

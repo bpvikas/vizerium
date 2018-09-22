@@ -37,7 +37,7 @@ public class CsvHistoricalDataVolatilityCalculator implements VolatilityCalculat
 
 	@Override
 	public Volatility calculateVolatility(DateRange dateRange) {
-		float[] closingPrices = csvDataStore.readHistoricalData(dateRange);
+		float[] closingPrices = csvDataStore.readHistoricalClosingPrices(dateRange);
 		float[] logNaturalDailyReturns = calculateLogNaturalDailyReturns(closingPrices);
 
 		Volatility volatility = calculateMeanAndStandardDeviation(logNaturalDailyReturns);
