@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Iterator;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -26,8 +27,11 @@ public class TEIBHistoricalDataUpdaterTest {
 
 	private TEIArchiveDataDownloader archiveDataDownloader;
 
-	private String[] teibComponents = new String[] { "KNABSIXA", "ADORABKNAB", "KNBLAREDEF", "KNABCFDH", "KNABICICI", "KNABCFDI", "KBDNISUDNI", "KNABKATOK", "BNP", "KNABLBR",
-			"NIBS", "KNABSEY" };
+	private String[] teibComponents = new String[] { "KNABCFDH", "KNABICICI", "KNABKATOK", "KBDNISUDNI", "NIBS", "KNABSIXA", "KNABSEY", "KNABLBR", "KNBLAREDEF", "ADORABKNAB",
+			"BNP", "KNABCFDI" };
+
+	// Position of KNABCFDH's details in the Analysis sheet.
+	private int teibComponentsCurrentStartLocation = 223;
 
 	private String[] testComponents = new String[] { "KNABSIXA" };
 
@@ -49,34 +53,12 @@ public class TEIBHistoricalDataUpdaterTest {
 	}
 
 	private void updateAnalysisExcelSheet(LocalDate date, HistoricalDataStore csvDataStore) {
-
 		try {
 			File analysisExcelFile = FileUtils.getLastModifiedFileInDirectory(FileUtils.directoryPath + "bn-analysis/", ".xlsx");
 
 			FileInputStream analysisFileInput = new FileInputStream(analysisExcelFile);
 			Workbook workbook = new XSSFWorkbook(analysisFileInput);
-			Sheet datatypeSheet = workbook.getSheetAt(0);
-			Iterator<Row> iterator = datatypeSheet.iterator();
-			while (iterator.hasNext()) {
-
-				Row currentRow = iterator.next();
-				Iterator<Cell> cellIterator = currentRow.iterator();
-
-				while (cellIterator.hasNext()) {
-					Cell currentCell = cellIterator.next();
-					System.out.println();
-					System.out.print(currentCell.getAddress() + "--");
-					if (currentCell.getCellType() == CellType.STRING) {
-						System.out.print(currentCell.getStringCellValue() + "--");
-					} else if (currentCell.getCellType() == CellType.NUMERIC) {
-						if (DateUtil.isCellDateFormatted(currentCell)) {
-							System.out.print(currentCell.getDateCellValue() + "--");
-						} else {
-							System.out.print(currentCell.getNumericCellValue() + "--");
-						}
-					}
-				}
-			}
+			Sheet analysisSheet = workbook.getSheetAt(0);
 
 			float[] closingPrices = csvDataStore.readHistoricalClosingPrices(new DateRange(null, date));
 			float _5dema = csvDataStore.calculateEMA(closingPrices, 5);
@@ -89,13 +71,46 @@ public class TEIBHistoricalDataUpdaterTest {
 
 			DayPriceData dayPriceData = csvDataStore.readHistoricalData(new DateRange(date, date))[0];
 
-			for (int i = 4; i <= 6; i++) {
-				CellReference cr = new CellReference("BA" + i);
-				Row row = datatypeSheet.getRow(cr.getRow());
-				Cell cell = row.getCell(cr.getCol());
-				System.out.println(cell.getAddress() + " : " + cell.getStringCellValue());
-				cell.setCellValue(cell.getStringCellValue() + "--" + cell.getStringCellValue());
+			CellReference cr = new CellReference("A3");
+			Row dateRow = analysisSheet.getRow(cr.getRow());
+
+			Iterator<Cell> cellIterator = dateRow.iterator();
+
+			String currentDateColumn = null;
+			while (cellIterator.hasNext()) {
+				Cell currentCell = cellIterator.next();
+				if ((currentCell.getCellType() == CellType.NUMERIC) && DateUtil.isCellDateFormatted(currentCell)) {
+					System.out.println(currentCell.getDateCellValue());
+					if (currentCell.getDateCellValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
+						currentDateColumn = CellReference.convertNumToColString(currentCell.getColumnIndex());
+						System.out.println(currentDateColumn);
+						break;
+					}
+				}
 			}
+
+			Cell openCell = getCell(analysisSheet, currentDateColumn + String.valueOf(teibComponentsCurrentStartLocation));
+			openCell.setCellValue(dayPriceData.getOpen());
+			Cell highCell = getCell(analysisSheet, currentDateColumn + String.valueOf(teibComponentsCurrentStartLocation + 1));
+			highCell.setCellValue(dayPriceData.getHigh());
+			Cell lowCell = getCell(analysisSheet, currentDateColumn + String.valueOf(teibComponentsCurrentStartLocation + 2));
+			lowCell.setCellValue(dayPriceData.getLow());
+			Cell closeCell = getCell(analysisSheet, currentDateColumn + String.valueOf(teibComponentsCurrentStartLocation + 3));
+			closeCell.setCellValue(dayPriceData.getClose());
+			Cell _5demaCell = getCell(analysisSheet, currentDateColumn + String.valueOf(teibComponentsCurrentStartLocation + 21));
+			_5demaCell.setCellValue(_5dema);
+			Cell _9demaCell = getCell(analysisSheet, currentDateColumn + String.valueOf(teibComponentsCurrentStartLocation + 22));
+			_9demaCell.setCellValue(_9dema);
+			Cell _13demaCell = getCell(analysisSheet, currentDateColumn + String.valueOf(teibComponentsCurrentStartLocation + 23));
+			_13demaCell.setCellValue(_13dema);
+			Cell _26demaCell = getCell(analysisSheet, currentDateColumn + String.valueOf(teibComponentsCurrentStartLocation + 24));
+			_26demaCell.setCellValue(_26dema);
+			Cell _50demaCell = getCell(analysisSheet, currentDateColumn + String.valueOf(teibComponentsCurrentStartLocation + 25));
+			_50demaCell.setCellValue(_50dema);
+			Cell _100demaCell = getCell(analysisSheet, currentDateColumn + String.valueOf(teibComponentsCurrentStartLocation + 26));
+			_100demaCell.setCellValue(_100dema);
+			Cell _200demaCell = getCell(analysisSheet, currentDateColumn + String.valueOf(teibComponentsCurrentStartLocation + 27));
+			_200demaCell.setCellValue(_200dema);
 
 			analysisFileInput.close();
 
@@ -108,6 +123,11 @@ public class TEIBHistoricalDataUpdaterTest {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+	}
+
+	private Cell getCell(Sheet sheet, String cellReference) {
+		CellReference cellRef = new CellReference(cellReference);
+		return sheet.getRow(cellRef.getRow()).getCell(cellRef.getCol());
 	}
 
 	@Test
@@ -126,7 +146,8 @@ public class TEIBHistoricalDataUpdaterTest {
 	public void testAllTeibComponentsHistoricalDataUpdate() {
 		for (String component : teibComponents) {
 			HistoricalDataStore csvDataStore = new HistoricalCsvDataStore(new StringBuilder(component).reverse().toString());
-			updateHistoricalData(csvDataStore);
+			updateHistoricalData(LocalDate.of(2018, 9, 21), csvDataStore);
+			teibComponentsCurrentStartLocation += 40;
 		}
 	}
 }

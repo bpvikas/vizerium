@@ -46,7 +46,7 @@ public class HistoricalCsvDataStore implements HistoricalDataStore {
 		DayPriceData[] dayPriceData = new DayPriceData[historicalFileLines.length];
 		for (int i = 0; i < historicalFileLines.length; i++) {
 			String[] csvHistoricalDataDetails = historicalFileLines[i].split("#");
-			dayPriceData[i] = new DayPriceData(LocalDate.parse(csvHistoricalDataDetails[0], DateTimeFormatter.ofPattern("MMM dd, yyyy")), underlyingName,
+			dayPriceData[i] = new DayPriceData(LocalDate.parse(csvHistoricalDataDetails[0], DateTimeFormatter.ofPattern("MMM dd yyyy")), underlyingName,
 					Float.parseFloat(csvHistoricalDataDetails[2]), Float.parseFloat(csvHistoricalDataDetails[3]), Float.parseFloat(csvHistoricalDataDetails[4]),
 					Float.parseFloat(csvHistoricalDataDetails[1]));
 		}
