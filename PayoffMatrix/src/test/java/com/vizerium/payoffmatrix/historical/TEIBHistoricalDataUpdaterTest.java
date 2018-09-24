@@ -27,7 +27,7 @@ public class TEIBHistoricalDataUpdaterTest {
 
 	private TEIArchiveDataDownloader archiveDataDownloader;
 
-	private String[] teibComponents = new String[] { "KNABCFDH", "KNABICICI", "KNABKATOK", "KBDNISUDNI", "NIBS", "KNABSIXA", "KNABSEY", "KNABLBR", "KNBLAREDEF", "ADORABKNAB",
+	private String[] teibComponents = new String[] { "KNABCFDH", "KNABKATOK", "KNABICICI", "KBDNISUDNI", "NIBS", "KNABSIXA", "KNABSEY", "KNABLBR", "KNBLAREDEF", "ADORABKNAB",
 			"BNP", "KNABCFDI" };
 
 	// Position of KNABCFDH's details in the Analysis sheet.
@@ -146,7 +146,7 @@ public class TEIBHistoricalDataUpdaterTest {
 	public void testAllTeibComponentsHistoricalDataUpdate() {
 		for (String component : teibComponents) {
 			HistoricalDataStore csvDataStore = new HistoricalCsvDataStore(new StringBuilder(component).reverse().toString());
-			updateHistoricalData(LocalDate.of(2018, 9, 21), csvDataStore);
+			updateHistoricalData(LocalDate.of(2018, 9, 24), csvDataStore);
 			teibComponentsCurrentStartLocation += 40;
 		}
 	}

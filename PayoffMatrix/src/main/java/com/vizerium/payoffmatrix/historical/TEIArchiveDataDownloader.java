@@ -152,9 +152,10 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 			while ((scripDayData = br.readLine()) != null) {
 				String[] scripDayDataDetails = scripDayData.split(",");
 
-				if (scripNames == null || scripNames.length == 0
-						|| (scripNames != null && scripNames.length > 0 && Arrays.stream(scripNames).anyMatch(scripDayDataDetails[0]::equals))) {
-
+				if (scripNames == null
+						|| scripNames.length == 0
+						|| (scripNames != null && scripNames.length > 0 && Arrays.stream(scripNames).anyMatch(scripDayDataDetails[0]::equals) && "EQ".equals(scripDayDataDetails[1]
+								.trim()))) {
 					DayPriceData dayPriceData = new DayPriceData(date, scripDayDataDetails[0], scripDayDataDetails[1], Float.parseFloat(scripDayDataDetails[2]),
 							Float.parseFloat(scripDayDataDetails[3]), Float.parseFloat(scripDayDataDetails[4]), Float.parseFloat(scripDayDataDetails[5]),
 							Float.parseFloat(scripDayDataDetails[6]), Float.parseFloat(scripDayDataDetails[7]), Long.parseLong(scripDayDataDetails[8]));
