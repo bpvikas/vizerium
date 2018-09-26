@@ -59,6 +59,8 @@ public class Criteria {
 
 	private int maxOptionOpenPositions;
 
+	private int maxOptionSpreadOpenPositions;
+
 	private int maxOptionNumberOfLots;
 
 	private int lotSize;
@@ -183,6 +185,14 @@ public class Criteria {
 		this.maxOptionOpenPositions = maxOptionOpenPositions;
 	}
 
+	public int getMaxOptionSpreadOpenPositions() {
+		return maxOptionSpreadOpenPositions;
+	}
+
+	public void setMaxOptionSpreadOpenPositions(int maxOptionSpreadOpenPositions) {
+		this.maxOptionSpreadOpenPositions = maxOptionSpreadOpenPositions;
+	}
+
 	public int getMaxOptionNumberOfLots() {
 		return maxOptionNumberOfLots;
 	}
@@ -204,7 +214,8 @@ public class Criteria {
 		return "Criteria [underlyingName=" + underlyingName + ", volatility=" + volatility + ", maxLoss=" + maxLoss + ", tradingBias=" + tradingBias + ", contractSeries="
 				+ contractSeries + ", expiryDate=" + expiryDate + ", existingPositions=" + Arrays.toString(existingPositions) + ", remoteDatasource=" + remoteDatasource
 				+ ", localDatasource=" + localDatasource + ", minOpenInterest=" + minOpenInterest + ", maxOptionPremium=" + maxOptionPremium + ", sellOrderMargin="
-				+ sellOrderMargin + ", investibleAmount=" + investibleAmount + ", maxOptionOpenPositions=" + maxOptionOpenPositions + ", maxOptionNumberOfLots="
-				+ maxOptionNumberOfLots + ", lotSize=" + lotSize + "]";
+				+ sellOrderMargin + ", investibleAmount=" + investibleAmount + ", maxOptionOpenPositions=" + maxOptionOpenPositions + ", maxOptionSpreadOpenPositions="
+				+ maxOptionSpreadOpenPositions + ", maxOptionNumberOfLots=" + maxOptionNumberOfLots + ", lotSize=" + lotSize + "]";
 	}
+
 }

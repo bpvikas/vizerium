@@ -18,6 +18,7 @@ package com.vizerium.payoffmatrix.io;
 
 import java.util.Arrays;
 
+import com.vizerium.payoffmatrix.comparator.BestRiskRewardRatioPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.HighestProfitProbabilityPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.MaximumProfitPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.MinimumLossPayoffMatrixComparator;
@@ -36,6 +37,8 @@ public class Output {
 	private OptionsWithPayoff[] maxPositivePayoffs;
 
 	private OptionsWithPayoff[] minNegativePayoffs;
+
+	private OptionsWithPayoff[] bestRiskRewardRatioPayoffs;
 
 	public Output() {
 
@@ -71,6 +74,7 @@ public class Output {
 		highestProfitProbabilityPayoffs = new OptionsWithPayoff[analysisPayoffsLengths];
 		maxPositivePayoffs = new OptionsWithPayoff[analysisPayoffsLengths];
 		minNegativePayoffs = new OptionsWithPayoff[analysisPayoffsLengths];
+		bestRiskRewardRatioPayoffs = new OptionsWithPayoff[analysisPayoffsLengths];
 
 		Arrays.sort(optionsWithPayoffs, new HighestProfitProbabilityPayoffMatrixComparator());
 		System.arraycopy(optionsWithPayoffs, 0, highestProfitProbabilityPayoffs, 0, highestProfitProbabilityPayoffs.length);
@@ -78,11 +82,14 @@ public class Output {
 		System.arraycopy(optionsWithPayoffs, 0, maxPositivePayoffs, 0, maxPositivePayoffs.length);
 		Arrays.sort(optionsWithPayoffs, new MinimumLossPayoffMatrixComparator());
 		System.arraycopy(optionsWithPayoffs, 0, minNegativePayoffs, 0, minNegativePayoffs.length);
+		Arrays.sort(optionsWithPayoffs, new BestRiskRewardRatioPayoffMatrixComparator());
+		System.arraycopy(optionsWithPayoffs, 0, bestRiskRewardRatioPayoffs, 0, bestRiskRewardRatioPayoffs.length);
 	}
 
 	@Override
 	public String toString() {
-		return "Output " + System.lineSeparator() + printExistingPositionPayoff() + printHighestProfitProbabilityPayoffs() + printMaxPositivePayoffs() + printMinNegativePayoffs();
+		return "Output " + System.lineSeparator() + printExistingPositionPayoff() + printHighestProfitProbabilityPayoffs() + printMaxPositivePayoffs() + printMinNegativePayoffs()
+				+ printBestRiskRewardRatioPayoffs();
 	}
 
 	private String printExistingPositionPayoff() {
@@ -99,6 +106,10 @@ public class Output {
 
 	private String printMinNegativePayoffs() {
 		return printPayoffs("minNegativePayoffs", minNegativePayoffs);
+	}
+
+	private String printBestRiskRewardRatioPayoffs() {
+		return printPayoffs("bestRiskRewardRatioPayoffs", bestRiskRewardRatioPayoffs);
 	}
 
 	private String printPayoffs(String payoffName, OptionsWithPayoff[] payoffs) {

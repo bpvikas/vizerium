@@ -40,7 +40,7 @@ public enum OptionType {
 		} else if ("pe".equalsIgnoreCase(property.trim()) || "put".equalsIgnoreCase(property.trim())) {
 			return PUT;
 		} else {
-			return null;
+			throw new RuntimeException("Unable to recognize OptionType from property : " + property);
 		}
 	}
 }

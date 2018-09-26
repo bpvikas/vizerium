@@ -65,6 +65,11 @@ public class OptionsWithPayoff {
 		return payoffMatrix.getPayoffAverage();
 	}
 
+	public float getRiskRewardRatio() {
+		// This is best used only for Spread positions.
+		return (payoffMatrix.getMinNegativePayoff().getPayoff() / payoffMatrix.getMaxPositivePayoff().getPayoff());
+	}
+
 	public float getTotalPremium() {
 		float totalPremium = 0;
 		for (Option option : options) {

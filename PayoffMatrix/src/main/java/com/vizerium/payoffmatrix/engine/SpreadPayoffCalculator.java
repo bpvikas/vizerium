@@ -26,21 +26,25 @@ import com.vizerium.payoffmatrix.dao.OptionDataStore;
 import com.vizerium.payoffmatrix.io.Output;
 import com.vizerium.payoffmatrix.option.Option;
 import com.vizerium.payoffmatrix.option.OptionChainIterator;
+import com.vizerium.payoffmatrix.option.OptionSpread;
 import com.vizerium.payoffmatrix.option.TradeAction;
 
-public class OptionPayoffCalculator {
+public class SpreadPayoffCalculator extends PayoffCalculator {
 
-	// can return a configurable number of best payoffs to look at.
+	// can return a configurable number of best spread payoffs to look at.
+	@Override
 	public Output calculatePayoff(Criteria criteria, OptionDataStore optionDataStore) {
 
 		Option[] optionChain = filterOptionChainForEvaluatingNewPositions(optionDataStore.readOptionChainData(criteria), criteria);
-		List<OptionsWithPayoff> allOptionsWithPayoff = new ArrayList<OptionsWithPayoff>(optionChain.length * 2);
+		OptionSpread[] optionSpreadChain = createOptionSpreadsFromSingleOptions(optionChain);
+
+		List<OptionsWithPayoff> allOptionsWithPayoff = new ArrayList<OptionsWithPayoff>(optionSpreadChain.length * 2);
 
 		float underlyingRangeTop = criteria.getVolatility().getUnderlyingRange().getHigh();
 		float underlyingRangeBottom = criteria.getVolatility().getUnderlyingRange().getLow();
 		float underlyingRangeStep = criteria.getVolatility().getUnderlyingRange().getStep();
 
-		for (int j = 0; j <= criteria.getMaxOptionOpenPositions() - criteria.getExistingPositions().length; j++) {
+		for (int j = 0; j <= criteria.getMaxOptionSpreadOpenPositions(); j++) {
 			OptionChainIterator optionChainIterator = new OptionChainIterator(optionChain, j);
 			while (optionChainIterator.hasNext()) {
 				Option[] newPositions = optionChainIterator.next();
@@ -86,25 +90,46 @@ public class OptionPayoffCalculator {
 		return new Output(allOptionsWithPayoff.toArray(new OptionsWithPayoff[allOptionsWithPayoff.size()]));
 	}
 
-	private Option[] filterOptionChainForEvaluatingNewPositions(Option[] optionChain, Criteria criteria) {
+	@Override
+	public Option[] filterOptionChainForEvaluatingNewPositions(Option[] optionChain, Criteria criteria) {
 		List<Option> filteredOptionChain = new ArrayList<Option>();
 
 		for (Option optionChainEntry : optionChain) {
 			if (optionChainEntry.getOpenInterest() >= criteria.getMinOpenInterest() && optionChainEntry.getCurrentPremium() <= criteria.getMaxOptionPremium()) {
-				for (int numberOfLots = 1; numberOfLots <= criteria.getMaxOptionNumberOfLots(); numberOfLots++) {
-					Option longOption = optionChainEntry.clone();
-					longOption.setTradeAction(TradeAction.LONG);
-					longOption.setNumberOfLots(numberOfLots);
-					filteredOptionChain.add(longOption);
+				Option longOption = optionChainEntry.clone();
+				longOption.setTradeAction(TradeAction.LONG);
+				filteredOptionChain.add(longOption);
 
-					Option shortOption = optionChainEntry.clone();
-					shortOption.setTradeAction(TradeAction.SHORT);
-					shortOption.setNumberOfLots(numberOfLots);
-					filteredOptionChain.add(shortOption);
+				Option shortOption = optionChainEntry.clone();
+				shortOption.setTradeAction(TradeAction.SHORT);
+				filteredOptionChain.add(shortOption);
+			}
+		}
+		if (filteredOptionChain.size() == 0) {
+			throw new RuntimeException("Could not find any options matching the filter criteria provided.");
+		}
+
+		return filteredOptionChain.toArray(new Option[filteredOptionChain.size()]);
+	}
+
+	private OptionSpread[] createOptionSpreadsFromSingleOptions(Option[] optionChain) {
+		List<OptionSpread> optionSpreadChain = new ArrayList<OptionSpread>();
+
+		for (int i = 0; i < optionChain.length - 1; i++) {
+			for (int j = i + 1; j < optionChain.length; j++) {
+				try {
+					optionSpreadChain.add(new OptionSpread(optionChain[i], optionChain[j]));
+				} catch (RuntimeException e) {
+					// All invalid spread combinations will be eliminated here, due to the validations in the OptionSpread constructor;
+					// Not duplicating any of those validations here.
 				}
 			}
 		}
 
-		return filteredOptionChain.toArray(new Option[filteredOptionChain.size()]);
+		if (optionSpreadChain.size() == 0) {
+			throw new RuntimeException("Could not find any option Spreads among the filtered options.");
+		}
+
+		return optionSpreadChain.toArray(new OptionSpread[optionSpreadChain.size()]);
 	}
 }

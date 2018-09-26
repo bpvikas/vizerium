@@ -21,13 +21,13 @@ import com.vizerium.payoffmatrix.criteria.CriteriaReader;
 import com.vizerium.payoffmatrix.criteria.PropertiesFileCriteriaReader;
 import com.vizerium.payoffmatrix.dao.OptionDataStore;
 import com.vizerium.payoffmatrix.dao.OptionDataStoreFactory;
-import com.vizerium.payoffmatrix.engine.PositionalPayoffCalculator;
+import com.vizerium.payoffmatrix.engine.SpreadPayoffCalculator;
 import com.vizerium.payoffmatrix.io.OptionChainReader;
 import com.vizerium.payoffmatrix.io.OptionChainReaderFactory;
 import com.vizerium.payoffmatrix.io.Output;
 import com.vizerium.payoffmatrix.option.Option;
 
-public class Positional {
+public class Spread {
 
 	public static void main(String[] args) {
 
@@ -39,7 +39,7 @@ public class Positional {
 		OptionDataStore optionDataStore = OptionDataStoreFactory.getOptionDataStore(criteria.getLocalDatasource());
 		optionDataStore.saveOptionChainData(criteria, optionChain);
 
-		PositionalPayoffCalculator payoffCalculator = new PositionalPayoffCalculator();
+		SpreadPayoffCalculator payoffCalculator = new SpreadPayoffCalculator();
 		Output output = payoffCalculator.calculatePayoff(criteria, optionDataStore);
 		System.out.println(criteria);
 		System.out.println(output);
