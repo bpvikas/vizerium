@@ -23,7 +23,7 @@ underlying.range.step=25
 exchange=TEI
 
 # The max loss which the trader is willing to bear
-maxLoss=20000.00
+maxLoss=10000.00
 
 # The bias to be used to bear minimum loss with small sized profits. # minLoss
 # The bias to be used to obtain maximum profit with potentially large losses. #maxProfit
@@ -64,7 +64,7 @@ historical.data.local.datasource=csv
 minimum.openinterest=
 
 # The premium limit on every order. Helps in reducing the cost incurred in a single trade.
-maximum.option.premium=800.00
+maximum.option.premium=400.00
 
 #Margin for sell orders. Total margin to be maintained for sell orders.
 sell.order.margin=12.5
@@ -74,10 +74,10 @@ investing.amount=400000.00
 
 #max positions to be held(including existing positions)
 #Currently, this value can be "no of existing positions + 3" for 512 MB Java memory
-max.option.positions=
+max.option.positions=2
 
 #number of lots to be held for a particular option
-max.option.lots=2
+max.option.lots=1
 
 #The lot size (e.g. 75 for the Index or 40 for the Bank Index)
 lotsize=

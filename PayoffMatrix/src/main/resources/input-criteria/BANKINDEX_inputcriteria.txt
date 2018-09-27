@@ -9,7 +9,7 @@ underlying.range.bottom=
 contract.duration=week
 
 # contract.series Default is near, possible values are "near", "mid", "far"
-contract.series=near
+contract.series=mid
 
 #Any existing positions that needs to be considered in the payoff, with the premium prices at which they were purchased or sold.
 #Format CE/PE,Strike,BUY/SELL,Lots,Premium Paid,Traded Date(DDMMYYYY), NEAR/MID/FAR
@@ -22,7 +22,16 @@ existingposition5=
 
 #max positions to be held(including existing positions)
 #Currently, this value can be "no of existing positions + 3" for 512 MB Java memory
-max.option.positions=3
+max.option.positions=2
+
+#max spread positions to be held
+#Currently, this value can be 2 for 512 MB Java memory
+max.option.spread.positions=1
 
 #The lot size (e.g. 40 for the Bank Index)
 lotsize=40
+
+#If not provided, taken as the Index default of the next Thursday of the current settlement.
+#If it is a holiday, then please manually enter the date here
+#format DDMMYYYY
+expiryDate=

@@ -28,6 +28,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 
 import com.vizerium.payoffmatrix.dao.LocalDataSource;
 import com.vizerium.payoffmatrix.dao.RemoteDataSource;
@@ -47,6 +48,8 @@ import com.vizerium.payoffmatrix.volatility.Volatility;
 import com.vizerium.payoffmatrix.volatility.VolatilityCalculator;
 
 public class PropertiesFileCriteriaReader implements CriteriaReader {
+
+	private static final Logger logger = Logger.getLogger(PropertiesFileCriteriaReader.class);
 
 	private DateTimeFormatter df = DateTimeFormatter.ofPattern("ddMMyyyy");
 
@@ -113,7 +116,7 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 			throw new RuntimeException(e);
 		}
 
-		System.out.println("The input values are : " + criteria);
+		logger.info("The input values are : " + criteria);
 		return criteria;
 	}
 
