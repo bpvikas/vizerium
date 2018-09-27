@@ -35,6 +35,10 @@ public class ExpiryDateCalculator {
 		return convertToExpiryDate(contractDuration, contractSeries, localDate);
 	}
 
+	public static LocalDate convertToExpiryDate(ContractDuration contractDuration, ContractSeries contractSeries) {
+		return convertToExpiryDate(contractDuration, contractSeries, LocalDate.now());
+	}
+
 	public static LocalDate convertToExpiryDate(ContractDuration contractDuration, ContractSeries contractSeries, LocalDate localDate) {
 		LocalDate expiryLocalDate = null;
 

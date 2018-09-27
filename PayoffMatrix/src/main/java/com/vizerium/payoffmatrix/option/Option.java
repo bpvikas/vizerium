@@ -19,7 +19,7 @@ package com.vizerium.payoffmatrix.option;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public abstract class Option implements Cloneable, Serializable {
+public abstract class Option implements Cloneable, Serializable, OptionStrategy {
 
 	private static final long serialVersionUID = 5247339041828137416L;
 
@@ -36,6 +36,8 @@ public abstract class Option implements Cloneable, Serializable {
 	protected boolean existing;
 
 	protected float underlyingPrice;
+
+	protected ContractSeries contractSeries;
 
 	protected LocalDate expiryDate;
 
@@ -55,6 +57,14 @@ public abstract class Option implements Cloneable, Serializable {
 
 	public void setUnderlyingPrice(float underlyingPrice) {
 		this.underlyingPrice = underlyingPrice;
+	}
+
+	public ContractSeries getContractSeries() {
+		return contractSeries;
+	}
+
+	public void setContractSeries(ContractSeries contractSeries) {
+		this.contractSeries = contractSeries;
 	}
 
 	public LocalDate getExpiryDate() {
@@ -165,6 +175,11 @@ public abstract class Option implements Cloneable, Serializable {
 	public abstract float getLongPayoffAtExpiryForTradedPremium(float underlyingSpotPrice);
 
 	@Override
+	public Option[] getOptions() {
+		return new Option[] { this };
+	}
+
+	@Override
 	public abstract Option clone();
 
 	@Override
@@ -175,7 +190,7 @@ public abstract class Option implements Cloneable, Serializable {
 
 	public String toFullString() {
 		return "Option [openInterest=" + openInterest + ", currentPremium=" + currentPremium + ", tradedPremium=" + tradedPremium + ", strike=" + strike + ", type=" + type
-				+ ", existing=" + existing + ", underlyingPrice=" + underlyingPrice + ", expiryDate=" + expiryDate + ", tradedDate=" + tradedDate + ", currentPremiumDate="
-				+ currentPremiumDate + ", tradeAction=" + tradeAction + ", numberOfLots=" + numberOfLots + ", lotSize=" + lotSize + "]";
+				+ ", existing=" + existing + ", underlyingPrice=" + underlyingPrice + ", contractSeries=" + contractSeries + ", expiryDate=" + expiryDate + ", tradedDate="
+				+ tradedDate + ", currentPremiumDate=" + currentPremiumDate + ", tradeAction=" + tradeAction + ", numberOfLots=" + numberOfLots + ", lotSize=" + lotSize + "]";
 	}
 }

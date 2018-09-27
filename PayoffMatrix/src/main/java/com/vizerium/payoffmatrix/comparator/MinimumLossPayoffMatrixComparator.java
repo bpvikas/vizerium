@@ -18,12 +18,12 @@ package com.vizerium.payoffmatrix.comparator;
 
 import java.util.Comparator;
 
-import com.vizerium.payoffmatrix.engine.OptionsWithPayoff;
+import com.vizerium.payoffmatrix.engine.OptionStrategiesWithPayoff;
 
-public class MinimumLossPayoffMatrixComparator implements Comparator<OptionsWithPayoff> {
+public class MinimumLossPayoffMatrixComparator implements Comparator<OptionStrategiesWithPayoff> {
 
 	@Override
-	public int compare(OptionsWithPayoff o1, OptionsWithPayoff o2) {
-		return Comparator.comparing(OptionsWithPayoff::getMinNegativePayoff).compare(o2, o1);
+	public int compare(OptionStrategiesWithPayoff o1, OptionStrategiesWithPayoff o2) {
+		return Comparator.comparing(OptionStrategiesWithPayoff::getMinNegativePayoff).compare(o2, o1);
 	}
 }

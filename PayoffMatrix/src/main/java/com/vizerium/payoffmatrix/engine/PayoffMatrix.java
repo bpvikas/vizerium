@@ -16,6 +16,8 @@
 
 package com.vizerium.payoffmatrix.engine;
 
+import java.text.NumberFormat;
+
 public class PayoffMatrix {
 
 	private Payoff[] payoffs;
@@ -31,6 +33,8 @@ public class PayoffMatrix {
 	private float profitProbability = 0.0f;
 
 	private float payoffAverage = 0.0f;
+
+	private float riskRewardRatio = 0.0f;
 
 	private float underlyingCurrentPrice = 0.0f;
 
@@ -77,6 +81,20 @@ public class PayoffMatrix {
 		return payoffAverage;
 	}
 
+	public float getRiskRewardRatio() {
+		// This is best used only for Spread positions.
+		return riskRewardRatio;
+	}
+
+	public String getRiskRewardRatioAsString() {
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setMinimumFractionDigits(2);
+		nf.setMaximumFractionDigits(2);
+		nf.setGroupingUsed(false);
+
+		return "1:" + nf.format(1 / riskRewardRatio);
+	}
+
 	public void performPayoffAnalysis() {
 		positivePayoffsCount = 0;
 		negativePayoffsCount = 0;
@@ -103,6 +121,8 @@ public class PayoffMatrix {
 		}
 		payoffAverage = payoffSum / payoffs.length;
 		profitProbability = (float) (positivePayoffsCount) / (float) (positivePayoffsCount + negativePayoffsCount);
+
+		riskRewardRatio = Math.abs(getMinNegativePayoff().getPayoff() / getMaxPositivePayoff().getPayoff());
 	}
 
 	public String getPayoffAtEachUnderlyingPrice() {
@@ -117,6 +137,7 @@ public class PayoffMatrix {
 	public String toString() {
 		return "positive : " + positivePayoffsCount + ", negative : " + negativePayoffsCount + ", maxPositive : " + maxPositivePayoff.getPayoff() + " at "
 				+ maxPositivePayoff.getUnderlyingPrice() + ", minNegative : " + minNegativePayoff.getPayoff() + " at " + minNegativePayoff.getUnderlyingPrice()
-				+ ", profitProbability : " + profitProbability + ", payoffAverage : " + payoffAverage + ", underlyingCurrentPrice : " + underlyingCurrentPrice;
+				+ ", profitProbability : " + profitProbability + ", payoffAverage : " + payoffAverage + ", riskRewardRatio : " + getRiskRewardRatioAsString()
+				+ ", underlyingCurrentPrice : " + underlyingCurrentPrice;
 	}
 }

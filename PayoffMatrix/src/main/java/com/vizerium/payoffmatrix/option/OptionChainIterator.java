@@ -17,16 +17,17 @@
 package com.vizerium.payoffmatrix.option;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public class OptionChainIterator implements Iterator<Option[]> {
+public class OptionChainIterator<E extends OptionStrategy> implements Iterator<List<E>> {
 
 	private int selectionSetSize;
 
 	private int[] cpos; // currentPosition
 
-	private Option[] optionChain;
+	private List<E> optionStrategyChain;
 
 	private boolean returnTrueOnlyOnceIfSelectionSetSizeIs0;
 
@@ -34,8 +35,12 @@ public class OptionChainIterator implements Iterator<Option[]> {
 
 	}
 
-	public OptionChainIterator(Option[] optionChain, int selectionSetSize) {
-		this.optionChain = optionChain;
+	public OptionChainIterator(E[] optionStrategyChain, int selectionSetSize) {
+		this(Arrays.asList(optionStrategyChain), selectionSetSize);
+	}
+
+	public OptionChainIterator(List<E> optionStrategyChain, int selectionSetSize) {
+		this.optionStrategyChain = optionStrategyChain;
 		this.selectionSetSize = selectionSetSize;
 		this.cpos = new int[selectionSetSize];
 		initializeCurrentPosition();
@@ -47,7 +52,7 @@ public class OptionChainIterator implements Iterator<Option[]> {
 	@Override
 	public boolean hasNext() {
 		for (int i = 0; i < cpos.length; i++) {
-			if (cpos[i] < optionChain.length - 1) {
+			if (cpos[i] < optionStrategyChain.size() - 1) {
 				return true;
 			}
 		}
@@ -59,22 +64,22 @@ public class OptionChainIterator implements Iterator<Option[]> {
 	}
 
 	@Override
-	public Option[] next() {
-		List<Option> nextOptionTradingList = new ArrayList<Option>(selectionSetSize);
+	public List<E> next() {
+		List<E> nextOptionTradingList = new ArrayList<E>(selectionSetSize);
 		for (int i = 0; i < cpos.length; i++) {
-			nextOptionTradingList.add(optionChain[cpos[i]]);
+			nextOptionTradingList.add(optionStrategyChain.get(cpos[i]));
 		}
-
 		incrementCurrentPosition();
-		return nextOptionTradingList.toArray(new Option[selectionSetSize]);
+
+		return nextOptionTradingList;
 	}
 
 	public int getSelectionSetSize() {
 		return selectionSetSize;
 	}
 
-	public Option[] getOptionChain() {
-		return optionChain;
+	public List<E> getOptionChain() {
+		return optionStrategyChain;
 	}
 
 	private void initializeCurrentPosition() {
@@ -86,7 +91,7 @@ public class OptionChainIterator implements Iterator<Option[]> {
 
 	private void incrementCurrentPosition() {
 		if (cpos.length > 0) {
-			if (cpos[cpos.length - 1] >= optionChain.length - 1) {
+			if (cpos[cpos.length - 1] >= optionStrategyChain.size() - 1) {
 				incrementParent(cpos.length - 1);
 			} else {
 				cpos[cpos.length - 1] = ++cpos[cpos.length - 1];
@@ -97,7 +102,7 @@ public class OptionChainIterator implements Iterator<Option[]> {
 
 	private void incrementParent(int location) {
 		if (location > 0) {
-			if (cpos[location - 1] >= optionChain.length - 1) {
+			if (cpos[location - 1] >= optionStrategyChain.size() - 1) {
 				incrementParent(location - 1);
 			} else {
 				cpos[location - 1] = cpos[location - 1] + 1;

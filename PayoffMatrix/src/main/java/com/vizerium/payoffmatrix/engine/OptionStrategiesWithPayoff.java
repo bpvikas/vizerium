@@ -17,27 +17,28 @@
 package com.vizerium.payoffmatrix.engine;
 
 import com.vizerium.payoffmatrix.option.Option;
+import com.vizerium.payoffmatrix.option.OptionStrategy;
 
-public class OptionsWithPayoff {
+public class OptionStrategiesWithPayoff {
 
 	private PayoffMatrix payoffMatrix;
 
-	private Option[] options;
+	private OptionStrategy[] optionStrategies;
 
 	private boolean existingOpenPosition;
 
-	public OptionsWithPayoff(Option[] newAndExistingPositions, PayoffMatrix payoffMatrix) {
-		this.options = newAndExistingPositions;
+	public OptionStrategiesWithPayoff(OptionStrategy[] newAndExistingPositions, PayoffMatrix payoffMatrix) {
+		this.optionStrategies = newAndExistingPositions;
 		this.payoffMatrix = payoffMatrix;
 		setExistingOpenPosition();
 	}
 
-	public Option[] getOptions() {
-		return options;
+	public OptionStrategy[] getOptions() {
+		return optionStrategies;
 	}
 
-	public void setOptions(Option[] options) {
-		this.options = options;
+	public void setOptions(OptionStrategy[] optionStrategies) {
+		this.optionStrategies = optionStrategies;
 		setExistingOpenPosition();
 	}
 
@@ -67,21 +68,23 @@ public class OptionsWithPayoff {
 
 	public float getRiskRewardRatio() {
 		// This is best used only for Spread positions.
-		return (payoffMatrix.getMinNegativePayoff().getPayoff() / payoffMatrix.getMaxPositivePayoff().getPayoff());
+		return payoffMatrix.getRiskRewardRatio();
 	}
 
 	public float getTotalPremium() {
 		float totalPremium = 0;
-		for (Option option : options) {
-			totalPremium += option.getPremiumPaidReceived();
+		for (OptionStrategy optionStrategy : optionStrategies) {
+			for (Option option : optionStrategy.getOptions()) {
+				totalPremium += option.getPremiumPaidReceived();
+			}
 		}
 		return totalPremium;
 	}
 
 	private void setExistingOpenPosition() {
 		existingOpenPosition = true;
-		for (Option option : options) {
-			if (!option.isExisting()) {
+		for (OptionStrategy optionStrategy : optionStrategies) {
+			if (!optionStrategy.isExisting()) {
 				existingOpenPosition = false;
 				break;
 			}
@@ -94,16 +97,16 @@ public class OptionsWithPayoff {
 
 	@Override
 	public String toString() {
-		if (options.length > 0) {
+		if (optionStrategies.length > 0) {
 			String optionsString = "";
-			for (Option option : options) {
-				optionsString += (option + " ");
+			for (OptionStrategy optionStrategy : optionStrategies) {
+				optionsString += (optionStrategy + " ");
 			}
-			return "OptionsWithPayoff with options [" + optionsString + "]" + System.lineSeparator() + "for premium paid/received " + getTotalPremium() + " with payoff at "
-					+ System.lineSeparator() + payoffMatrix + System.lineSeparator() + "Payoff at each underlying " + System.lineSeparator()
+			return "OptionsWithPayoff with optionStrategies [" + optionsString + "]" + System.lineSeparator() + "for premium paid/received " + getTotalPremium()
+					+ " with payoff at " + System.lineSeparator() + payoffMatrix + System.lineSeparator() + "Payoff at each underlying " + System.lineSeparator()
 					+ payoffMatrix.getPayoffAtEachUnderlyingPrice();
 		} else {
-			return "No options present.";
+			return "No option strategies present.";
 		}
 	}
 }

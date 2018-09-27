@@ -8,7 +8,7 @@ public class OptionChainIteratorTest {
 	private Option[] optionChain;
 	private int selectionSetSize;
 
-	private OptionChainIterator unit;
+	private OptionChainIterator<Option> unit;
 
 	@Before
 	public void setup() {
@@ -21,7 +21,7 @@ public class OptionChainIteratorTest {
 
 		selectionSetSize = 3;
 
-		unit = new OptionChainIterator(optionChain, selectionSetSize);
+		unit = new OptionChainIterator<Option>(optionChain, selectionSetSize);
 	}
 
 	@Test

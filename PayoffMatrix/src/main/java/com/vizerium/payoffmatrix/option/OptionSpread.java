@@ -16,7 +16,7 @@
 
 package com.vizerium.payoffmatrix.option;
 
-public class OptionSpread {
+public class OptionSpread implements OptionStrategy {
 
 	private Option optionOne;
 
@@ -29,11 +29,15 @@ public class OptionSpread {
 	public OptionSpread(Option optionOne, Option optionTwo) {
 
 		if (optionOne.type != optionTwo.type) {
-			throw new RuntimeException("Both the options need to be of the same type (either Calls or Puts) for a Spread.");
+			throw new RuntimeException("Both the options need to be of the same type (either Calls or Puts) to create a Spread.");
 		}
 
 		if (optionOne.tradeAction == optionTwo.tradeAction) {
-			throw new RuntimeException("The actions for both options need to be opposite (a Buy and a Sell) for a Spread.");
+			throw new RuntimeException("The actions for both options need to be opposite (a Buy and a Sell) to create a Spread.");
+		}
+
+		if (optionOne.strike == optionTwo.strike && optionOne.contractSeries.equals(optionTwo.contractSeries)) {
+			throw new RuntimeException("The strikes Or series for both options need to be different to create a Spread.");
 		}
 
 		this.optionOne = optionOne;
@@ -59,6 +63,11 @@ public class OptionSpread {
 			return false;
 		}
 
+	}
+
+	@Override
+	public Option[] getOptions() {
+		return new Option[] { optionOne, optionTwo };
 	}
 
 	public boolean isExisting() {

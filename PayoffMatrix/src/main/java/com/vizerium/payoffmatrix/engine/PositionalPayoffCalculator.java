@@ -35,17 +35,17 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 	public Output calculatePayoff(Criteria criteria, OptionDataStore optionDataStore) {
 
 		Option[] optionChain = filterOptionChainForEvaluatingNewPositions(optionDataStore.readOptionChainData(criteria), criteria);
-		List<OptionsWithPayoff> allOptionsWithPayoff = new ArrayList<OptionsWithPayoff>(optionChain.length * 2);
+		List<OptionStrategiesWithPayoff> allOptionsWithPayoff = new ArrayList<OptionStrategiesWithPayoff>(optionChain.length * 2);
 
 		float underlyingRangeTop = criteria.getVolatility().getUnderlyingRange().getHigh();
 		float underlyingRangeBottom = criteria.getVolatility().getUnderlyingRange().getLow();
 		float underlyingRangeStep = criteria.getVolatility().getUnderlyingRange().getStep();
 
 		for (int j = 0; j <= criteria.getMaxOptionOpenPositions() - criteria.getExistingPositions().length; j++) {
-			OptionChainIterator optionChainIterator = new OptionChainIterator(optionChain, j);
+			OptionChainIterator<Option> optionChainIterator = new OptionChainIterator<Option>(optionChain, j);
 			while (optionChainIterator.hasNext()) {
-				Option[] newPositions = optionChainIterator.next();
-				Option[] newAndExistingPositions = ArrayUtils.addAll(criteria.getExistingPositions(), newPositions);
+				List<Option> newPositions = optionChainIterator.next();
+				Option[] newAndExistingPositions = ArrayUtils.addAll(criteria.getExistingPositions(), newPositions.toArray(new Option[newPositions.size()]));
 
 				System.out.println("Options being evaluated are : ");
 				for (Option newOrExistingPosition : newAndExistingPositions) {
@@ -80,11 +80,11 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 				PayoffMatrix payoffMatrix = new PayoffMatrix(payoffs.toArray(new Payoff[payoffs.size()]), criteria.getVolatility().getUnderlyingValue());
 				System.out.println(payoffMatrix);
 				if (payoffMatrix.getMinNegativePayoff().getPayoff() > (criteria.getMaxLoss() * -1)) {
-					allOptionsWithPayoff.add(new OptionsWithPayoff(newAndExistingPositions, payoffMatrix));
+					allOptionsWithPayoff.add(new OptionStrategiesWithPayoff(newAndExistingPositions, payoffMatrix));
 				}
 			}
 		}
-		return new Output(allOptionsWithPayoff.toArray(new OptionsWithPayoff[allOptionsWithPayoff.size()]));
+		return new Output(allOptionsWithPayoff.toArray(new OptionStrategiesWithPayoff[allOptionsWithPayoff.size()]));
 	}
 
 	@Override
@@ -97,11 +97,13 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 					Option longOption = optionChainEntry.clone();
 					longOption.setTradeAction(TradeAction.LONG);
 					longOption.setNumberOfLots(numberOfLots);
+					longOption.setContractSeries(criteria.getContractSeries());
 					filteredOptionChain.add(longOption);
 
 					Option shortOption = optionChainEntry.clone();
 					shortOption.setTradeAction(TradeAction.SHORT);
 					shortOption.setNumberOfLots(numberOfLots);
+					shortOption.setContractSeries(criteria.getContractSeries());
 					filteredOptionChain.add(shortOption);
 				}
 			}

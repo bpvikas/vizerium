@@ -22,68 +22,68 @@ import com.vizerium.payoffmatrix.comparator.BestRiskRewardRatioPayoffMatrixCompa
 import com.vizerium.payoffmatrix.comparator.HighestProfitProbabilityPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.MaximumProfitPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.MinimumLossPayoffMatrixComparator;
-import com.vizerium.payoffmatrix.engine.OptionsWithPayoff;
+import com.vizerium.payoffmatrix.engine.OptionStrategiesWithPayoff;
 
 public class Output {
 
 	private int analysisPayoffsLengths = 3;
 
-	private OptionsWithPayoff[] optionsWithPayoffs;
+	private OptionStrategiesWithPayoff[] optionStrategiesWithPayoffs;
 
-	private OptionsWithPayoff existingPositionPayoff;
+	private OptionStrategiesWithPayoff existingPositionPayoff;
 
-	private OptionsWithPayoff[] highestProfitProbabilityPayoffs;
+	private OptionStrategiesWithPayoff[] highestProfitProbabilityPayoffs;
 
-	private OptionsWithPayoff[] maxPositivePayoffs;
+	private OptionStrategiesWithPayoff[] maxPositivePayoffs;
 
-	private OptionsWithPayoff[] minNegativePayoffs;
+	private OptionStrategiesWithPayoff[] minNegativePayoffs;
 
-	private OptionsWithPayoff[] bestRiskRewardRatioPayoffs;
+	private OptionStrategiesWithPayoff[] bestRiskRewardRatioPayoffs;
 
 	public Output() {
 
 	}
 
-	public Output(OptionsWithPayoff[] optionsWithPayoffs) {
+	public Output(OptionStrategiesWithPayoff[] optionStrategiesWithPayoffs) {
 		super();
-		this.optionsWithPayoffs = optionsWithPayoffs;
+		this.optionStrategiesWithPayoffs = optionStrategiesWithPayoffs;
 		performPayoffAnalysis();
 	}
 
-	public OptionsWithPayoff[] getOptionsWithPayoffs() {
-		return optionsWithPayoffs;
+	public OptionStrategiesWithPayoff[] getOptionsWithPayoffs() {
+		return optionStrategiesWithPayoffs;
 	}
 
-	public void setOptionsWithPayoffs(OptionsWithPayoff[] optionsWithPayoffs) {
-		this.optionsWithPayoffs = optionsWithPayoffs;
+	public void setOptionsWithPayoffs(OptionStrategiesWithPayoff[] optionStrategiesWithPayoffs) {
+		this.optionStrategiesWithPayoffs = optionStrategiesWithPayoffs;
 		performPayoffAnalysis();
 	}
 
 	public void performPayoffAnalysis() {
-		for (OptionsWithPayoff optionsWithPayoff : optionsWithPayoffs) {
-			if (optionsWithPayoff.isExistingOpenPosition()) {
-				existingPositionPayoff = optionsWithPayoff;
+		for (OptionStrategiesWithPayoff optionStrategiesWithPayoff : optionStrategiesWithPayoffs) {
+			if (optionStrategiesWithPayoff.isExistingOpenPosition()) {
+				existingPositionPayoff = optionStrategiesWithPayoff;
 				break;
 			}
 		}
 
-		if (analysisPayoffsLengths > optionsWithPayoffs.length) {
-			analysisPayoffsLengths = optionsWithPayoffs.length;
+		if (analysisPayoffsLengths > optionStrategiesWithPayoffs.length) {
+			analysisPayoffsLengths = optionStrategiesWithPayoffs.length;
 		}
 
-		highestProfitProbabilityPayoffs = new OptionsWithPayoff[analysisPayoffsLengths];
-		maxPositivePayoffs = new OptionsWithPayoff[analysisPayoffsLengths];
-		minNegativePayoffs = new OptionsWithPayoff[analysisPayoffsLengths];
-		bestRiskRewardRatioPayoffs = new OptionsWithPayoff[analysisPayoffsLengths];
+		highestProfitProbabilityPayoffs = new OptionStrategiesWithPayoff[analysisPayoffsLengths];
+		maxPositivePayoffs = new OptionStrategiesWithPayoff[analysisPayoffsLengths];
+		minNegativePayoffs = new OptionStrategiesWithPayoff[analysisPayoffsLengths];
+		bestRiskRewardRatioPayoffs = new OptionStrategiesWithPayoff[analysisPayoffsLengths];
 
-		Arrays.sort(optionsWithPayoffs, new HighestProfitProbabilityPayoffMatrixComparator());
-		System.arraycopy(optionsWithPayoffs, 0, highestProfitProbabilityPayoffs, 0, highestProfitProbabilityPayoffs.length);
-		Arrays.sort(optionsWithPayoffs, new MaximumProfitPayoffMatrixComparator());
-		System.arraycopy(optionsWithPayoffs, 0, maxPositivePayoffs, 0, maxPositivePayoffs.length);
-		Arrays.sort(optionsWithPayoffs, new MinimumLossPayoffMatrixComparator());
-		System.arraycopy(optionsWithPayoffs, 0, minNegativePayoffs, 0, minNegativePayoffs.length);
-		Arrays.sort(optionsWithPayoffs, new BestRiskRewardRatioPayoffMatrixComparator());
-		System.arraycopy(optionsWithPayoffs, 0, bestRiskRewardRatioPayoffs, 0, bestRiskRewardRatioPayoffs.length);
+		Arrays.sort(optionStrategiesWithPayoffs, new HighestProfitProbabilityPayoffMatrixComparator());
+		System.arraycopy(optionStrategiesWithPayoffs, 0, highestProfitProbabilityPayoffs, 0, highestProfitProbabilityPayoffs.length);
+		Arrays.sort(optionStrategiesWithPayoffs, new MaximumProfitPayoffMatrixComparator());
+		System.arraycopy(optionStrategiesWithPayoffs, 0, maxPositivePayoffs, 0, maxPositivePayoffs.length);
+		Arrays.sort(optionStrategiesWithPayoffs, new MinimumLossPayoffMatrixComparator());
+		System.arraycopy(optionStrategiesWithPayoffs, 0, minNegativePayoffs, 0, minNegativePayoffs.length);
+		Arrays.sort(optionStrategiesWithPayoffs, new BestRiskRewardRatioPayoffMatrixComparator());
+		System.arraycopy(optionStrategiesWithPayoffs, 0, bestRiskRewardRatioPayoffs, 0, bestRiskRewardRatioPayoffs.length);
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class Output {
 	}
 
 	private String printExistingPositionPayoff() {
-		return printPayoffs("existingPositionPayoff", new OptionsWithPayoff[] { existingPositionPayoff });
+		return printPayoffs("existingPositionPayoff", new OptionStrategiesWithPayoff[] { existingPositionPayoff });
 	}
 
 	private String printHighestProfitProbabilityPayoffs() {
@@ -112,11 +112,11 @@ public class Output {
 		return printPayoffs("bestRiskRewardRatioPayoffs", bestRiskRewardRatioPayoffs);
 	}
 
-	private String printPayoffs(String payoffName, OptionsWithPayoff[] payoffs) {
+	private String printPayoffs(String payoffName, OptionStrategiesWithPayoff[] payoffs) {
 		String printPayoff = System.lineSeparator() + "***************************************" + System.lineSeparator() + payoffName + " : " + System.lineSeparator()
 				+ "***************************************" + System.lineSeparator();
 		if (payoffs != null && payoffs.length > 0) {
-			for (OptionsWithPayoff payoff : payoffs) {
+			for (OptionStrategiesWithPayoff payoff : payoffs) {
 				printPayoff += payoff;
 				printPayoff += System.lineSeparator();
 			}

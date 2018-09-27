@@ -19,8 +19,6 @@ package com.vizerium.payoffmatrix.engine;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.vizerium.payoffmatrix.criteria.Criteria;
 import com.vizerium.payoffmatrix.dao.OptionDataStore;
 import com.vizerium.payoffmatrix.io.Output;
@@ -36,45 +34,46 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 	public Output calculatePayoff(Criteria criteria, OptionDataStore optionDataStore) {
 
 		Option[] optionChain = filterOptionChainForEvaluatingNewPositions(optionDataStore.readOptionChainData(criteria), criteria);
-		OptionSpread[] optionSpreadChain = createOptionSpreadsFromSingleOptions(optionChain);
+		OptionSpread[] optionSpreadChain = createOptionSpreadsFromSingleOptions(optionChain, criteria.getExistingPositions());
 
-		List<OptionsWithPayoff> allOptionsWithPayoff = new ArrayList<OptionsWithPayoff>(optionSpreadChain.length * 2);
+		List<OptionStrategiesWithPayoff> allOptionsWithPayoff = new ArrayList<OptionStrategiesWithPayoff>(optionSpreadChain.length * 2);
 
 		float underlyingRangeTop = criteria.getVolatility().getUnderlyingRange().getHigh();
 		float underlyingRangeBottom = criteria.getVolatility().getUnderlyingRange().getLow();
 		float underlyingRangeStep = criteria.getVolatility().getUnderlyingRange().getStep();
 
 		for (int j = 0; j <= criteria.getMaxOptionSpreadOpenPositions(); j++) {
-			OptionChainIterator optionChainIterator = new OptionChainIterator(optionChain, j);
+			OptionChainIterator<OptionSpread> optionChainIterator = new OptionChainIterator<OptionSpread>(optionSpreadChain, j);
 			while (optionChainIterator.hasNext()) {
-				Option[] newPositions = optionChainIterator.next();
-				Option[] newAndExistingPositions = ArrayUtils.addAll(criteria.getExistingPositions(), newPositions);
+				List<OptionSpread> optionSpreads = optionChainIterator.next();
 
-				System.out.println("Options being evaluated are : ");
-				for (Option newOrExistingPosition : newAndExistingPositions) {
-					System.out.print(newOrExistingPosition);
+				System.out.println("Option Spreads being evaluated are : ");
+				for (OptionSpread optionSpread : optionSpreads) {
+					System.out.print(optionSpread);
 				}
 
 				List<Payoff> payoffs = new ArrayList<Payoff>();
 				for (float underlyingPrice = underlyingRangeBottom; underlyingPrice <= underlyingRangeTop; underlyingPrice += underlyingRangeStep) {
 					float netPayoff = 0.0f;
-					for (Option newOrExistingPosition : newAndExistingPositions) {
-						if (newOrExistingPosition.isExisting()) {
-							if (TradeAction.LONG.equals(newOrExistingPosition.getTradeAction())) {
-								netPayoff += newOrExistingPosition.getLongPayoffAtExpiryForTradedPremium(underlyingPrice);
-							} else if (TradeAction.SHORT.equals(newOrExistingPosition.getTradeAction())) {
-								netPayoff += newOrExistingPosition.getShortPayoffAtExpiryForTradedPremium(underlyingPrice);
-							} else {
-								throw new RuntimeException("Could not determine whether the existing position is long/short, " + newOrExistingPosition);
-							}
+					for (OptionSpread optionSpread : optionSpreads) {
+						for (Option option : optionSpread.getOptions()) {
+							if (optionSpread.isExisting()) {
+								if (TradeAction.LONG.equals(option.getTradeAction())) {
+									netPayoff += option.getLongPayoffAtExpiryForTradedPremium(underlyingPrice);
+								} else if (TradeAction.SHORT.equals(option.getTradeAction())) {
+									netPayoff += option.getShortPayoffAtExpiryForTradedPremium(underlyingPrice);
+								} else {
+									throw new RuntimeException("Could not determine whether the existing position is long/short, " + optionSpread);
+								}
 
-						} else {
-							if (TradeAction.LONG.equals(newOrExistingPosition.getTradeAction())) {
-								netPayoff += newOrExistingPosition.getLongPayoffAtExpiryForCurrentPremium(underlyingPrice);
-							} else if (TradeAction.SHORT.equals(newOrExistingPosition.getTradeAction())) {
-								netPayoff += newOrExistingPosition.getShortPayoffAtExpiryForCurrentPremium(underlyingPrice);
 							} else {
-								throw new RuntimeException("Could not determine whether the existing position is long/short, " + newOrExistingPosition);
+								if (TradeAction.LONG.equals(option.getTradeAction())) {
+									netPayoff += option.getLongPayoffAtExpiryForCurrentPremium(underlyingPrice);
+								} else if (TradeAction.SHORT.equals(option.getTradeAction())) {
+									netPayoff += option.getShortPayoffAtExpiryForCurrentPremium(underlyingPrice);
+								} else {
+									throw new RuntimeException("Could not determine whether the existing position is long/short, " + optionSpread);
+								}
 							}
 						}
 					}
@@ -83,11 +82,11 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 				PayoffMatrix payoffMatrix = new PayoffMatrix(payoffs.toArray(new Payoff[payoffs.size()]), criteria.getVolatility().getUnderlyingValue());
 				System.out.println(payoffMatrix);
 				if (payoffMatrix.getMinNegativePayoff().getPayoff() > (criteria.getMaxLoss() * -1)) {
-					allOptionsWithPayoff.add(new OptionsWithPayoff(newAndExistingPositions, payoffMatrix));
+					allOptionsWithPayoff.add(new OptionStrategiesWithPayoff(optionSpreads.toArray(new OptionSpread[optionSpreads.size()]), payoffMatrix));
 				}
 			}
 		}
-		return new Output(allOptionsWithPayoff.toArray(new OptionsWithPayoff[allOptionsWithPayoff.size()]));
+		return new Output(allOptionsWithPayoff.toArray(new OptionStrategiesWithPayoff[allOptionsWithPayoff.size()]));
 	}
 
 	@Override
@@ -98,10 +97,12 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 			if (optionChainEntry.getOpenInterest() >= criteria.getMinOpenInterest() && optionChainEntry.getCurrentPremium() <= criteria.getMaxOptionPremium()) {
 				Option longOption = optionChainEntry.clone();
 				longOption.setTradeAction(TradeAction.LONG);
+				longOption.setContractSeries(criteria.getContractSeries());
 				filteredOptionChain.add(longOption);
 
 				Option shortOption = optionChainEntry.clone();
 				shortOption.setTradeAction(TradeAction.SHORT);
+				shortOption.setContractSeries(criteria.getContractSeries());
 				filteredOptionChain.add(shortOption);
 			}
 		}
@@ -112,7 +113,17 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 		return filteredOptionChain.toArray(new Option[filteredOptionChain.size()]);
 	}
 
-	private OptionSpread[] createOptionSpreadsFromSingleOptions(Option[] optionChain) {
+	private OptionSpread[] createOptionSpreadsFromSingleOptions(Option[] optionChain, Option[] existingPositions) {
+
+		for (Option existingOption : existingPositions) {
+			for (Option optionChainOption : optionChain) {
+				if ((optionChainOption.getStrike() == existingOption.getStrike()) && (optionChainOption.getType().equals(existingOption.getType()))
+						&& (optionChainOption.getExpiryDate().equals(existingOption.getExpiryDate())) && optionChainOption.getTradeAction().equals(existingOption.getTradeAction())) {
+					optionChainOption.setExisting(true);
+				}
+			}
+		}
+
 		List<OptionSpread> optionSpreadChain = new ArrayList<OptionSpread>();
 
 		for (int i = 0; i < optionChain.length - 1; i++) {

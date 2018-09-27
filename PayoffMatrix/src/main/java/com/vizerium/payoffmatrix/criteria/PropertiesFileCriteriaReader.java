@@ -80,8 +80,7 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 			if (StringUtils.isNotBlank(criteriaProperties.getProperty("expiryDate"))) {
 				criteria.setExpiryDate(LocalDate.parse(criteriaProperties.getProperty("expiryDate"), df));
 			} else {
-				criteria.setExpiryDate(ExpiryDateCalculator.convertToExpiryDate(criteriaProperties.getProperty("contract.duration"),
-						criteriaProperties.getProperty("contract.series")));
+				criteria.setExpiryDate(ExpiryDateCalculator.convertToExpiryDate(criteria.getContractDuration(), criteria.getContractSeries()));
 			}
 
 			criteria.setVolatility(getVolatility(criteriaProperties, criteria.getUnderlyingName(), criteria.getExpiryDate()));
@@ -104,6 +103,7 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 			criteria.setInvestibleAmount(Float.parseFloat(criteriaProperties.getProperty("investing.amount")));
 
 			criteria.setMaxOptionOpenPositions(Integer.parseInt(criteriaProperties.getProperty("max.option.positions")));
+			criteria.setMaxOptionSpreadOpenPositions(Integer.parseInt(criteriaProperties.getProperty("max.option.spread.positions")));
 			criteria.setMaxOptionNumberOfLots(Integer.parseInt(criteriaProperties.getProperty("max.option.lots")));
 
 			criteria.setLotSize(Integer.parseInt(criteriaProperties.getProperty("lotsize")));
@@ -149,6 +149,7 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 					existingOption.setTradedPremium(Float.parseFloat(existingPositionDetails[4]));
 
 					existingOption.setTradedDate(LocalDate.parse(existingPositionDetails[5], df));
+					existingOption.setContractSeries(ContractSeries.getByProperty(existingPositionDetails[6]));
 
 					existingOption.setExpiryDate(ExpiryDateCalculator.convertToExpiryDate(criteriaProperties.getProperty("contract.duration"), existingPositionDetails[6]));
 					existingOption.setExisting(true);
