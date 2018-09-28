@@ -26,7 +26,7 @@ public enum TradeAction {
 		} else if ("short".equalsIgnoreCase(property.trim()) || "sell".equalsIgnoreCase(property.trim())) {
 			return SHORT;
 		} else {
-			return null;
+			throw new RuntimeException("Unable to determine trade action." + property);
 		}
 	}
 }

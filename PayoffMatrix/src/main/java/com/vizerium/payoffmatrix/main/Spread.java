@@ -32,7 +32,7 @@ import com.vizerium.payoffmatrix.util.LogUtils;
 
 public class Spread {
 	static {
-		LogUtils.initializeLogging();
+		LogUtils.initializeLogging(Spread.class.getSimpleName());
 	}
 
 	private static final Logger logger = Logger.getLogger(Spread.class);

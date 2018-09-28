@@ -32,7 +32,7 @@ import com.vizerium.payoffmatrix.util.LogUtils;
 
 public class Positional {
 	static {
-		LogUtils.initializeLogging();
+		LogUtils.initializeLogging(Positional.class.getSimpleName());
 	}
 
 	private static final Logger logger = Logger.getLogger(Positional.class);

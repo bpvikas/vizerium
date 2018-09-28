@@ -23,6 +23,7 @@ import com.vizerium.payoffmatrix.comparator.HighestProfitProbabilityPayoffMatrix
 import com.vizerium.payoffmatrix.comparator.MaximumProfitPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.MinimumLossPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.engine.OptionStrategiesWithPayoff;
+import com.vizerium.payoffmatrix.reports.PayoffReportXlsx;
 
 public class Output {
 
@@ -119,6 +120,8 @@ public class Output {
 			for (OptionStrategiesWithPayoff payoff : payoffs) {
 				printPayoff += payoff;
 				printPayoff += System.lineSeparator();
+
+				PayoffReportXlsx.createReport(payoff);
 			}
 		}
 		return printPayoff;
