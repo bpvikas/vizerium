@@ -21,7 +21,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class OptionChainIterator<E extends OptionStrategy> implements Iterator<List<E>> {
+
+	private static final Logger logger = Logger.getLogger(OptionChainIterator.class);
 
 	private int selectionSetSize;
 
@@ -112,9 +116,10 @@ public class OptionChainIterator<E extends OptionStrategy> implements Iterator<L
 	}
 
 	private void printCurrentPosition() {
+		String currentPositionString = "";
 		for (int i = 0; i < cpos.length; i++) {
-			System.out.print(cpos[i] + " ");
+			currentPositionString += (cpos[i] + " ");
 		}
-		System.out.println();
+		logger.info(currentPositionString);
 	}
 }

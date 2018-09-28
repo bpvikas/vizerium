@@ -2,14 +2,14 @@ underlying.volatility.standardDeviationMultiple=1.099
 
 # The upper and lower end of the range of the underlying.
 # If this is provided, then the standard deviation calculations are ignored.
-underlying.range.top=
-underlying.range.bottom=
+underlying.range.top=26000.00
+underlying.range.bottom=24200.00
 
 # contract.duration can be "week", when you are trading the BankIndex. 
 contract.duration=week
 
 # contract.series Default is near, possible values are "near", "mid", "far"
-contract.series=mid
+contract.series=near
 
 #Any existing positions that needs to be considered in the payoff, with the premium prices at which they were purchased or sold.
 #Format CE/PE,Strike,BUY/SELL,Lots,Premium Paid,Traded Date(DDMMYYYY), NEAR/MID/FAR

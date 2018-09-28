@@ -28,8 +28,12 @@ import com.vizerium.payoffmatrix.io.OptionChainReader;
 import com.vizerium.payoffmatrix.io.OptionChainReaderFactory;
 import com.vizerium.payoffmatrix.io.Output;
 import com.vizerium.payoffmatrix.option.Option;
+import com.vizerium.payoffmatrix.util.LogUtils;
 
 public class Spread {
+	static {
+		LogUtils.initializeLogging();
+	}
 
 	private static final Logger logger = Logger.getLogger(Spread.class);
 

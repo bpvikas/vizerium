@@ -32,7 +32,7 @@ import com.vizerium.payoffmatrix.option.TradeAction;
 public class SpreadPayoffCalculator extends PayoffCalculator {
 
 	private static final Logger logger = Logger.getLogger(SpreadPayoffCalculator.class);
-	
+
 	// can return a configurable number of best spread payoffs to look at.
 	@Override
 	public Output calculatePayoff(Criteria criteria, OptionDataStore optionDataStore) {
@@ -52,9 +52,11 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 				List<OptionSpread> optionSpreads = optionChainIterator.next();
 
 				logger.info("Option Spreads being evaluated are : ");
+				String optionsSpreadString = "";
 				for (OptionSpread optionSpread : optionSpreads) {
-					System.out.print(optionSpread);
+					optionsSpreadString += (optionSpread);
 				}
+				logger.info(optionsSpreadString);
 
 				List<Payoff> payoffs = new ArrayList<Payoff>();
 				for (float underlyingPrice = underlyingRangeBottom; underlyingPrice <= underlyingRangeTop; underlyingPrice += underlyingRangeStep) {

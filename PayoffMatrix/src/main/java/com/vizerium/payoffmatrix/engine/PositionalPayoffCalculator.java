@@ -51,9 +51,11 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 				Option[] newAndExistingPositions = ArrayUtils.addAll(criteria.getExistingPositions(), newPositions.toArray(new Option[newPositions.size()]));
 
 				logger.info("Options being evaluated are : ");
+				String optionsString = "";
 				for (Option newOrExistingPosition : newAndExistingPositions) {
-					System.out.print(newOrExistingPosition);
+					optionsString += (newOrExistingPosition);
 				}
+				logger.info(optionsString);
 
 				List<Payoff> payoffs = new ArrayList<Payoff>();
 				for (float underlyingPrice = underlyingRangeBottom; underlyingPrice <= underlyingRangeTop; underlyingPrice += underlyingRangeStep) {

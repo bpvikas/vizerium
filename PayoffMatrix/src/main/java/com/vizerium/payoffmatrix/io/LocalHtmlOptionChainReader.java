@@ -61,9 +61,11 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 
 			Element optionChainDataTitle = optionChainData.select("thead").select("tr").get(1);
 			Elements optionChainDataTitleElements = optionChainDataTitle.select("th");
+			String headerString = "";
 			for (Element e : optionChainDataTitleElements) {
-				System.out.print(e.text() + ",");
+				headerString += (e.text() + ",");
 			}
+			logger.info(headerString);
 
 			List<Option> optionChain = new ArrayList<Option>();
 

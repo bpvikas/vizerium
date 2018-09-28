@@ -95,6 +95,15 @@ public class PayoffMatrix {
 		return "1:" + nf.format(1 / riskRewardRatio);
 	}
 
+	public String getProfitProbabilityAsString() {
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setMinimumFractionDigits(2);
+		nf.setMaximumFractionDigits(2);
+		nf.setGroupingUsed(false);
+
+		return nf.format(profitProbability * 100) + "%";
+	}
+
 	public void performPayoffAnalysis() {
 		positivePayoffsCount = 0;
 		negativePayoffsCount = 0;
@@ -137,7 +146,7 @@ public class PayoffMatrix {
 	public String toString() {
 		return "positive : " + positivePayoffsCount + ", negative : " + negativePayoffsCount + ", maxPositive : " + maxPositivePayoff.getPayoff() + " at "
 				+ maxPositivePayoff.getUnderlyingPrice() + ", minNegative : " + minNegativePayoff.getPayoff() + " at " + minNegativePayoff.getUnderlyingPrice()
-				+ ", profitProbability : " + profitProbability + ", payoffAverage : " + payoffAverage + ", riskRewardRatio : " + getRiskRewardRatioAsString()
+				+ ", profitProbability : " + getProfitProbabilityAsString() + ", riskRewardRatio : " + getRiskRewardRatioAsString() + ", payoffAverage : " + payoffAverage
 				+ ", underlyingCurrentPrice : " + underlyingCurrentPrice;
 	}
 }
