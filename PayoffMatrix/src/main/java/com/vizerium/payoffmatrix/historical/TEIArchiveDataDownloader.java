@@ -35,10 +35,14 @@ import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.log4j.Logger;
+
 import com.vizerium.payoffmatrix.exchange.Exchanges;
 import com.vizerium.payoffmatrix.io.FileUtils;
 
 public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
+
+	private static final Logger logger = Logger.getLogger(TEIArchiveDataDownloader.class);
 
 	DateTimeFormatter localFileDateFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
 
@@ -68,7 +72,7 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 		}
 
 		for (LocalDate date = fromDate; date.compareTo(toDate) <= 0; date = date.plusDays(1)) {
-			System.out.println(date + " " + date.getDayOfWeek());
+			logger.info(date + " " + date.getDayOfWeek());
 			try {
 				if (Exchanges.get("TEI").isHoliday(date)) {
 					continue;
@@ -76,7 +80,7 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 
 				File localRawDataFile = new File(FileUtils.directoryPath + "underlying-raw-data/" + "cm" + localFileDateFormat.format(date) + ".zip");
 				if (localRawDataFile.exists()) {
-					System.out.println("Raw data file already exists.");
+					logger.info("Raw data file already exists.");
 					continue;
 				}
 
@@ -86,7 +90,7 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 				String historicalDataUrlString = new StringBuilder("/SEITIUQE/lacirotsih/tnetnoc/moc.aidniesn//:sptth").reverse().toString() + date.getYear() + "/"
 						+ monthOnly.format(date).toUpperCase() + "/cm" + fullDate.format(date).toUpperCase() + new StringBuilder("piz.vsc.vahb").reverse().toString();
 
-				System.out.println(historicalDataUrlString);
+				logger.info(historicalDataUrlString);
 
 				URL url = new URL(historicalDataUrlString);
 				BufferedInputStream is = new BufferedInputStream(url.openStream());

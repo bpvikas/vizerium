@@ -13,12 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.log4j.Logger;
 
 import com.vizerium.payoffmatrix.historical.DayPriceData;
 import com.vizerium.payoffmatrix.io.FileUtils;
 import com.vizerium.payoffmatrix.volatility.DateRange;
 
 public class HistoricalCsvDataStore implements HistoricalDataStore {
+
+	private static final Logger logger = Logger.getLogger(HistoricalCsvDataStore.class);
 
 	private String underlyingName;
 
@@ -161,7 +164,7 @@ public class HistoricalCsvDataStore implements HistoricalDataStore {
 		boolean newCsvHistoricalDataLinePreExists = false;
 		for (String csvHistoricalDataLine : csvHistoricalDataLines) {
 			if (csvHistoricalDataLine.indexOf(dateString) > 0) {
-				System.out.println("Data for " + underlyingName + " for date " + dateString + " already exists.");
+				logger.info("Data for " + underlyingName + " for date " + dateString + " already exists.");
 				newCsvHistoricalDataLinePreExists = true;
 				break;
 			}

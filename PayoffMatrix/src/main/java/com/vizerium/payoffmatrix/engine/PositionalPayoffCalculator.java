@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.log4j.Logger;
 
 import com.vizerium.payoffmatrix.criteria.Criteria;
 import com.vizerium.payoffmatrix.dao.OptionDataStore;
@@ -29,6 +30,8 @@ import com.vizerium.payoffmatrix.option.OptionChainIterator;
 import com.vizerium.payoffmatrix.option.TradeAction;
 
 public class PositionalPayoffCalculator extends PayoffCalculator {
+
+	private static final Logger logger = Logger.getLogger(PositionalPayoffCalculator.class);
 
 	// can return a configurable number of best payoffs to look at.
 	@Override
@@ -47,7 +50,7 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 				List<Option> newPositions = optionChainIterator.next();
 				Option[] newAndExistingPositions = ArrayUtils.addAll(criteria.getExistingPositions(), newPositions.toArray(new Option[newPositions.size()]));
 
-				System.out.println("Options being evaluated are : ");
+				logger.info("Options being evaluated are : ");
 				for (Option newOrExistingPosition : newAndExistingPositions) {
 					System.out.print(newOrExistingPosition);
 				}
@@ -78,7 +81,7 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 					payoffs.add(new Payoff(underlyingPrice, netPayoff));
 				}
 				PayoffMatrix payoffMatrix = new PayoffMatrix(payoffs.toArray(new Payoff[payoffs.size()]), criteria.getVolatility().getUnderlyingValue());
-				System.out.println(payoffMatrix);
+				logger.info(payoffMatrix);
 				if (payoffMatrix.getMinNegativePayoff().getPayoff() > (criteria.getMaxLoss() * -1)) {
 					allOptionsWithPayoff.add(new OptionStrategiesWithPayoff(newAndExistingPositions, payoffMatrix));
 				}

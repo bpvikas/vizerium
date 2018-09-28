@@ -101,8 +101,8 @@ public class Volatility {
 		}
 
 		float meanForDaystoExpiry = mean * daysToExpiry;
-		// System.out.println("Mean : " + underlyingValue * Math.exp(mean));
-		// System.out.println("meanForDaystoExpiry : " + underlyingValue * Math.exp(meanForDaystoExpiry));
+		// logger.info("Mean : " + underlyingValue * Math.exp(mean));
+		// logger.info("meanForDaystoExpiry : " + underlyingValue * Math.exp(meanForDaystoExpiry));
 		float standardDeviationForDaystoExpiry = standardDeviation * (float) Math.sqrt(daysToExpiry);
 
 		float rangeLow = meanForDaystoExpiry - (standardDeviationMultiple * standardDeviationForDaystoExpiry);

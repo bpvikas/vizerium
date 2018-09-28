@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -39,6 +40,8 @@ import com.vizerium.payoffmatrix.option.PutOption;
 //Reads from the local html file copied locally
 public class LocalHtmlOptionChainReader implements OptionChainReader {
 
+	private static final Logger logger = Logger.getLogger(LocalHtmlOptionChainReader.class);
+
 	@Override
 	public Option[] readOptionChain(Criteria criteria) {
 		try {
@@ -52,7 +55,7 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 			String optionChainDateString = underlying.get(1).text().substring(6, underlying.get(1).text().lastIndexOf(" "));
 
 			LocalDate optionChainDate = LocalDateTime.parse(optionChainDateString, formatter).toLocalDate();
-			System.out.println(underlyingPrice + " $$ " + optionChainDate);
+			logger.info(underlyingPrice + " $$ " + optionChainDate);
 
 			Element optionChainData = htmlDoc.getElementById("octable");
 

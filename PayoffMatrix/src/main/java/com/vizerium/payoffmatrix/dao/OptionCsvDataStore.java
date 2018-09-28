@@ -23,10 +23,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import com.vizerium.payoffmatrix.criteria.Criteria;
 import com.vizerium.payoffmatrix.io.FileUtils;
@@ -38,13 +39,15 @@ import com.vizerium.payoffmatrix.option.PutOption;
 //Saves and reads the option chain data from a CSV file.
 public class OptionCsvDataStore implements OptionDataStore {
 
+	private static final Logger logger = Logger.getLogger(OptionCsvDataStore.class);
+
 	@Override
 	public Option[] readOptionChainData(Criteria criteria) {
 		List<Option> optionChain = new ArrayList<Option>();
 		BufferedReader br = null;
 		try {
 			File csvFile = FileUtils.getLastModifiedFileInDirectory(FileUtils.directoryPath + "optionchain-localcsv/", criteria.getUnderlyingName() + ".csv");
-			System.out.println(csvFile.getAbsolutePath());
+			logger.info(csvFile.getAbsolutePath());
 			br = new BufferedReader(new FileReader(csvFile));
 			String[] headers = br.readLine().split(",");
 
@@ -106,7 +109,7 @@ public class OptionCsvDataStore implements OptionDataStore {
 		}
 
 		try {
-			String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+			String dateString = System.getProperty("application.run.datetime");
 			BufferedWriter bw = new BufferedWriter(new FileWriter(FileUtils.directoryPath + "optionchain-localcsv/" + dateString + "_" + criteria.getUnderlyingName() + ".csv"));
 
 			bw.write(optionChain[0].getCurrentPremiumDate().format(DateTimeFormatter.ISO_DATE) + "," + optionChain[0].getUnderlyingPrice() + "," + optionChain[0].getLotSize());

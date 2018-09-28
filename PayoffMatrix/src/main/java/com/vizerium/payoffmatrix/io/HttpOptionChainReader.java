@@ -20,7 +20,6 @@ import java.io.BufferedInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import com.vizerium.payoffmatrix.criteria.Criteria;
@@ -51,7 +50,7 @@ public class HttpOptionChainReader implements OptionChainReader {
 
 			bis.close();
 
-			String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+			String dateString = System.getProperty("application.run.datetime");
 			FileWriter fw = new FileWriter(FileUtils.directoryPath + "optionchain-localhtml/" + dateString + "_" + criteria.getUnderlyingName() + ".html");
 
 			fw.write(content);

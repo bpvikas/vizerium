@@ -40,7 +40,7 @@ public class ListContracts {
 
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			ContractNote contractNote = (ContractNote) jaxbUnmarshaller.unmarshal(combinedContractNotes);
-			// System.out.println(contractNote.getContracts().getContracts().length);
+			// logger.info(contractNote.getContracts().getContracts().length);
 
 			DateTimeFormatter sourceFormatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
 			DateTimeFormatter destinationFormatter = DateTimeFormatter.ofPattern("MMM dd; yyyy");
@@ -50,7 +50,7 @@ public class ListContracts {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(contractNoteCsvFile));
 
 			for (Contract contract : contractNote.getContracts().getContracts()) {
-				// System.out.println(contract.getId() + " " + contract.getName() + " " + contract.getDescription() + " " + contract.getTimestamp());
+				// logger.info(contract.getId() + " " + contract.getName() + " " + contract.getDescription() + " " + contract.getTimestamp());
 				int dayTradeNo = 0;
 				for (Trade trade : contract.getTrades().getTrades()) {
 					if (dayTradeNo++ == 0) {

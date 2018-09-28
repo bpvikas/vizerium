@@ -16,6 +16,8 @@
 
 package com.vizerium.payoffmatrix.main;
 
+import org.apache.log4j.Logger;
+
 import com.vizerium.payoffmatrix.criteria.Criteria;
 import com.vizerium.payoffmatrix.criteria.CriteriaReader;
 import com.vizerium.payoffmatrix.criteria.PropertiesFileCriteriaReader;
@@ -29,6 +31,8 @@ import com.vizerium.payoffmatrix.option.Option;
 
 public class Spread {
 
+	private static final Logger logger = Logger.getLogger(Spread.class);
+
 	public static void main(String[] args) {
 
 		CriteriaReader criteriaReader = new PropertiesFileCriteriaReader();
@@ -41,7 +45,7 @@ public class Spread {
 
 		SpreadPayoffCalculator payoffCalculator = new SpreadPayoffCalculator();
 		Output output = payoffCalculator.calculatePayoff(criteria, optionDataStore);
-		System.out.println(criteria);
-		System.out.println(output);
+		logger.info(criteria);
+		logger.info(output);
 	}
 }

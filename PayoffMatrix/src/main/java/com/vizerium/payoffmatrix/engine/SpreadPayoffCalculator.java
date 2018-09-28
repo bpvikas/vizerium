@@ -19,6 +19,8 @@ package com.vizerium.payoffmatrix.engine;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.vizerium.payoffmatrix.criteria.Criteria;
 import com.vizerium.payoffmatrix.dao.OptionDataStore;
 import com.vizerium.payoffmatrix.io.Output;
@@ -29,6 +31,8 @@ import com.vizerium.payoffmatrix.option.TradeAction;
 
 public class SpreadPayoffCalculator extends PayoffCalculator {
 
+	private static final Logger logger = Logger.getLogger(SpreadPayoffCalculator.class);
+	
 	// can return a configurable number of best spread payoffs to look at.
 	@Override
 	public Output calculatePayoff(Criteria criteria, OptionDataStore optionDataStore) {
@@ -47,7 +51,7 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 			while (optionChainIterator.hasNext()) {
 				List<OptionSpread> optionSpreads = optionChainIterator.next();
 
-				System.out.println("Option Spreads being evaluated are : ");
+				logger.info("Option Spreads being evaluated are : ");
 				for (OptionSpread optionSpread : optionSpreads) {
 					System.out.print(optionSpread);
 				}
@@ -80,7 +84,7 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 					payoffs.add(new Payoff(underlyingPrice, netPayoff));
 				}
 				PayoffMatrix payoffMatrix = new PayoffMatrix(payoffs.toArray(new Payoff[payoffs.size()]), criteria.getVolatility().getUnderlyingValue());
-				System.out.println(payoffMatrix);
+				logger.info(payoffMatrix);
 				if (payoffMatrix.getMinNegativePayoff().getPayoff() > (criteria.getMaxLoss() * -1)) {
 					allOptionsWithPayoff.add(new OptionStrategiesWithPayoff(optionSpreads.toArray(new OptionSpread[optionSpreads.size()]), payoffMatrix));
 				}

@@ -20,10 +20,14 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 
+import org.apache.log4j.Logger;
+
 import com.vizerium.payoffmatrix.option.ContractDuration;
 import com.vizerium.payoffmatrix.option.ContractSeries;
 
 public class ExpiryDateCalculator {
+
+	private static final Logger logger = Logger.getLogger(ExpiryDateCalculator.class);
 
 	public static LocalDate convertToExpiryDate(String contractDurationProperty, String contactSeriesProperty) {
 		return convertToExpiryDate(contractDurationProperty, contactSeriesProperty, LocalDate.now());
@@ -84,7 +88,7 @@ public class ExpiryDateCalculator {
 		} else {
 			throw new RuntimeException("Unable to determine contractPeriodDuration, whether NEAR, MID or FAR.");
 		}
-		System.out.println(localDate + " " + contractSeries.name() + " " + contractDuration.name() + " " + expiryLocalDate);
+		logger.info(localDate + " " + contractSeries.name() + " " + contractDuration.name() + " " + expiryLocalDate);
 		return expiryLocalDate;
 	}
 }

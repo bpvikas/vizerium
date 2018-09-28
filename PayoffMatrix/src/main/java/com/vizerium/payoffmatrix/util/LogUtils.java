@@ -1,11 +1,11 @@
 package com.vizerium.payoffmatrix.util;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class LogUtils {
 	static {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hhmmss");
-		System.setProperty("current.datetime", dateFormat.format(new Date()));
+		String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+		System.setProperty("application.run.datetime", dateString);
 	}
 }
