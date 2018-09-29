@@ -39,12 +39,10 @@ public class PayoffReportXlsx {
 			int dataSheetNum = initialOpenPositionDataSheetNumber;
 			for (OptionStrategiesWithPayoff payoff : payoffs) {
 				Sheet dataSheet = workbook.getSheetAt(dataSheetNum++);
-				// String outputFileName = "";
 				for (OptionStrategy optionStrategy : payoff.getOptions()) {
 					int colNum = initialColNum;
 					for (Option option : optionStrategy.getOptions()) {
 						updateOptionDetailsInOpenPositionDataSheet(dataSheet, colNum++, option);
-						// outputFileName += (((int) option.getStrike()) + option.getType().getShortName() + option.getTradeAction().name().substring(0, 2) + "_");
 					}
 				}
 			}
