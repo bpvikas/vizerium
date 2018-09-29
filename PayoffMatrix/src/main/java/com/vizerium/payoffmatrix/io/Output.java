@@ -27,7 +27,7 @@ import com.vizerium.payoffmatrix.reports.PayoffReportXlsx;
 
 public class Output {
 
-	private int analysisPayoffsLengths = 5;
+	public static int analysisPayoffsLengths = 7;
 
 	private OptionStrategiesWithPayoff[] optionStrategiesWithPayoffs;
 

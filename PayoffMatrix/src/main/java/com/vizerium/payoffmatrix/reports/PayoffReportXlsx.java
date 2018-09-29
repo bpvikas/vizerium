@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018 Vizerium, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.vizerium.payoffmatrix.reports;
 
 import java.io.File;
@@ -17,6 +33,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.vizerium.payoffmatrix.engine.OptionStrategiesWithPayoff;
 import com.vizerium.payoffmatrix.io.FileUtils;
+import com.vizerium.payoffmatrix.io.Output;
 import com.vizerium.payoffmatrix.option.Option;
 import com.vizerium.payoffmatrix.option.OptionStrategy;
 import com.vizerium.payoffmatrix.option.TradeAction;
@@ -27,7 +44,7 @@ public class PayoffReportXlsx {
 
 	private static String reportLocation = FileUtils.directoryPath + "output-formatted/";
 
-	private static int initialOpenPositionDataSheetNumber = 5;
+	private static int initialOpenPositionDataSheetNumber = Output.analysisPayoffsLengths;
 
 	private static final int initialRowNum = 1;
 
@@ -39,8 +56,8 @@ public class PayoffReportXlsx {
 			int dataSheetNum = initialOpenPositionDataSheetNumber;
 			for (OptionStrategiesWithPayoff payoff : payoffs) {
 				Sheet dataSheet = workbook.getSheetAt(dataSheetNum++);
+				int colNum = initialColNum;
 				for (OptionStrategy optionStrategy : payoff.getOptions()) {
-					int colNum = initialColNum;
 					for (Option option : optionStrategy.getOptions()) {
 						updateOptionDetailsInOpenPositionDataSheet(dataSheet, colNum++, option);
 					}
