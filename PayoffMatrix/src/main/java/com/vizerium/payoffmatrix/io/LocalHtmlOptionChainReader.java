@@ -102,7 +102,7 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 
 			return optionChain.toArray(new Option[optionChain.size()]);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("An error occurred while parsing option chain data locally.", e);
 			throw new RuntimeException(e);
 		}
 	}

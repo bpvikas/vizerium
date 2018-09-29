@@ -111,9 +111,9 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 
 			} catch (FileNotFoundException e) {
 				// This will happen in case of holidays, as the archive data file is not present for that day.
-				e.printStackTrace();
+				logger.error("File not found while downloading archive data file.", e);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error("An error occurred while downloading archive data file.", e);
 				throw new RuntimeException(e);
 			}
 		}
@@ -169,7 +169,7 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 			br.close();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("An error occurred while reading local historical data.", e);
 			throw new RuntimeException(e);
 		}
 		return dayPriceDataList.toArray(new DayPriceData[dayPriceDataList.size()]);

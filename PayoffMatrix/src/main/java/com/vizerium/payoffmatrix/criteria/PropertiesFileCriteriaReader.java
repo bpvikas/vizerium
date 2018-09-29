@@ -112,7 +112,7 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 			criteria.setLotSize(Integer.parseInt(criteriaProperties.getProperty("lotsize")));
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("An error occurred while reading input criteria properties file.", e);
 			throw new RuntimeException(e);
 		}
 
@@ -162,7 +162,7 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("An error occurred while reading existing positions from input criteria.", e);
 			throw new RuntimeException(e);
 		}
 		return existingOptionOpenPositions.toArray(new Option[existingOptionOpenPositions.size()]);

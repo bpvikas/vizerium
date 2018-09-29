@@ -87,14 +87,14 @@ public class OptionCsvDataStore implements OptionDataStore {
 				optionChain.add(option);
 			}
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("An error occurred while reading option chain local csv data file.", e);
 			throw new RuntimeException(e);
 		} finally {
 			try {
 				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				logger.error("An error occurred while closing option chain local csv data file.", e);
 				throw new RuntimeException(e);
 			}
 		}
@@ -122,7 +122,7 @@ public class OptionCsvDataStore implements OptionDataStore {
 			bw.flush();
 			bw.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("An error occurred while writing option chain local csv data file.", e);
 			throw new RuntimeException(e);
 		}
 	}

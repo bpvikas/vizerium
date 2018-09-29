@@ -27,7 +27,7 @@ import com.vizerium.payoffmatrix.reports.PayoffReportXlsx;
 
 public class Output {
 
-	private int analysisPayoffsLengths = 3;
+	private int analysisPayoffsLengths = 5;
 
 	private OptionStrategiesWithPayoff[] optionStrategiesWithPayoffs;
 
@@ -120,9 +120,8 @@ public class Output {
 			for (OptionStrategiesWithPayoff payoff : payoffs) {
 				printPayoff += payoff;
 				printPayoff += System.lineSeparator();
-
-				PayoffReportXlsx.createReport(payoff);
 			}
+			PayoffReportXlsx.createReport(payoffName, payoffs);
 		}
 		return printPayoff;
 	}

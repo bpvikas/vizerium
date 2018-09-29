@@ -99,13 +99,13 @@ public class HistoricalCsvDataStore implements HistoricalDataStore {
 			return historicalDataFileLinesArray;
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("An error occurred while reading historical data file.", e);
 			throw new RuntimeException(e);
 		} finally {
 			try {
 				br.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("An error occurred while closing historical data file.", e);
 				throw new RuntimeException(e);
 			}
 		}
@@ -143,13 +143,13 @@ public class HistoricalCsvDataStore implements HistoricalDataStore {
 				csvHistoricalDataLines.add(csvHistoricalDataLine);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("An error occurred while reading historical data file before writing into it.", e);
 			throw new RuntimeException(e);
 		} finally {
 			try {
 				br.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("An error occurred while closing historical data file.", e);
 				throw new RuntimeException(e);
 			}
 		}
@@ -180,13 +180,13 @@ public class HistoricalCsvDataStore implements HistoricalDataStore {
 					bw.newLine();
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error("An error occurred while writing historical data file.", e);
 				throw new RuntimeException(e);
 			} finally {
 				try {
 					bw.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					logger.error("An error occurred while closing historical data file.", e);
 					throw new RuntimeException(e);
 				}
 			}

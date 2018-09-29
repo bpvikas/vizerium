@@ -18,15 +18,18 @@ package com.vizerium.payoffmatrix.io;
 
 import java.io.BufferedInputStream;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
+
+import org.apache.log4j.Logger;
 
 import com.vizerium.payoffmatrix.criteria.Criteria;
 import com.vizerium.payoffmatrix.option.Option;
 
 // Reads from the TEI website
 public class HttpOptionChainReader implements OptionChainReader {
+
+	private static Logger logger = Logger.getLogger(HttpOptionChainReader.class);
 
 	@Override
 	public Option[] readOptionChain(Criteria criteria) {
@@ -60,8 +63,8 @@ public class HttpOptionChainReader implements OptionChainReader {
 			LocalHtmlOptionChainReader localHtmlOptionChainReader = new LocalHtmlOptionChainReader();
 			return localHtmlOptionChainReader.readOptionChain(criteria);
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("An error occurred while downloading option chain data.", e);
 			throw new RuntimeException(e);
 		}
 	}
