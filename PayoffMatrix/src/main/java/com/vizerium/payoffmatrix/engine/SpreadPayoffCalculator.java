@@ -58,6 +58,9 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 				}
 				logger.info(optionsSpreadString);
 
+				if (containsOppositeActionsForSameStrikeAndSeries(optionSpreads)) {
+					continue;
+				}
 				List<Payoff> payoffs = new ArrayList<Payoff>();
 				for (float underlyingPrice = underlyingRangeBottom; underlyingPrice <= underlyingRangeTop; underlyingPrice += underlyingRangeStep) {
 					float netPayoff = 0.0f;

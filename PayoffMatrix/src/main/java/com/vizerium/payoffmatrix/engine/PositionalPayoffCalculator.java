@@ -56,6 +56,9 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 					optionsString += (newOrExistingPosition);
 				}
 				logger.info(optionsString);
+				if (containsOppositeActionsForSameStrikeAndSeries(newPositions)) {
+					continue;
+				}
 
 				List<Payoff> payoffs = new ArrayList<Payoff>();
 				for (float underlyingPrice = underlyingRangeBottom; underlyingPrice <= underlyingRangeTop; underlyingPrice += underlyingRangeStep) {

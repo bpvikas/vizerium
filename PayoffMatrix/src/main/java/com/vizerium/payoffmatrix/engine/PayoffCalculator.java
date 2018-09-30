@@ -16,15 +16,43 @@
 
 package com.vizerium.payoffmatrix.engine;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import com.vizerium.payoffmatrix.criteria.Criteria;
 import com.vizerium.payoffmatrix.dao.OptionDataStore;
 import com.vizerium.payoffmatrix.io.Output;
 import com.vizerium.payoffmatrix.option.Option;
+import com.vizerium.payoffmatrix.option.OptionStrategy;
 
 public abstract class PayoffCalculator {
+
+	private static Logger logger = Logger.getLogger(PayoffCalculator.class);
 
 	public abstract Option[] filterOptionChainForEvaluatingNewPositions(Option[] optionChain, Criteria criteria);
 
 	public abstract Output calculatePayoff(Criteria criteria, OptionDataStore optionDataStore);
 
+	protected <E extends OptionStrategy> boolean containsOppositeActionsForSameStrikeAndSeries(List<E> optionStrategies) {
+		List<Option> currentOptions = new ArrayList<Option>();
+		for (OptionStrategy optionStrategy : optionStrategies) {
+			for (Option option : optionStrategy.getOptions()) {
+				currentOptions.add(option);
+			}
+		}
+		for (int i = 0; i < currentOptions.size() - 1; i++) {
+			for (int j = i + 1; j < currentOptions.size(); j++) {
+				if (currentOptions.get(i).getStrike() == currentOptions.get(j).getStrike() && currentOptions.get(i).getType().equals(currentOptions.get(j).getType())
+						&& currentOptions.get(i).getContractSeries().equals(currentOptions.get(j).getContractSeries())
+						&& currentOptions.get(i).getNumberOfLots() == currentOptions.get(j).getNumberOfLots()
+						&& !(currentOptions.get(i).getTradeAction().equals(currentOptions.get(j).getTradeAction()))) {
+					logger.info("Same option with opposite actions. " + currentOptions.get(i) + " " + currentOptions.get(j));
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

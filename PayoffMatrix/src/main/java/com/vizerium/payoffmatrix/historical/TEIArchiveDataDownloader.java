@@ -128,7 +128,12 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 	}
 
 	public DayPriceData readDataForDateAndScripName(LocalDate date, String scripName) {
-		return readDataForDateAndScripNames(date, new String[] { scripName })[0];
+		DayPriceData[] dayPriceDataArray = readDataForDateAndScripNames(date, new String[] { scripName });
+		if (dayPriceDataArray != null && dayPriceDataArray.length > 0) {
+			return dayPriceDataArray[0];
+		} else {
+			return null;
+		}
 	}
 
 	private DayPriceData[] readDataForDateAndScripNames(LocalDate date, String[] scripNames) {

@@ -23,7 +23,7 @@ import java.util.Comparator;
 
 public class FileUtils {
 
-	public static final String directoryPath = "C:/Work/Vizerium/data/";
+	public static String directoryPath = "C:/Work/Vizerium/data/";
 
 	public static File getLastModifiedFileInDirectory(String directoryPath, String endsWith) {
 

@@ -19,11 +19,22 @@ package com.vizerium.payoffmatrix.util;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.vizerium.payoffmatrix.io.FileUtils;
+
 public class LogUtils {
 
 	public static void initializeLogging(String strategyName) {
 		String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 		System.setProperty("application.run.datetime", dateString);
 		System.setProperty("application.strategy.name", strategyName);
+
+		String commandLineParameterDirectoryPath = System.getProperty("directoryPath");
+		if (StringUtils.isNotBlank(commandLineParameterDirectoryPath)) {
+			FileUtils.directoryPath = commandLineParameterDirectoryPath;
+		} else {
+			System.setProperty("directoryPath", FileUtils.directoryPath);
+		}
 	}
 }
