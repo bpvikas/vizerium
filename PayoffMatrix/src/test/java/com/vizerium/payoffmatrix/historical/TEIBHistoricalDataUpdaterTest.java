@@ -180,7 +180,7 @@ public class TEIBHistoricalDataUpdaterTest {
 	public void testAllTeibComponentsHistoricalDataUpdate() {
 		for (String component : teibComponents) {
 			HistoricalDataStore csvDataStore = new HistoricalCsvDataStore(new StringBuilder(component).reverse().toString());
-			updateHistoricalData(LocalDate.of(2018, 9, 28), csvDataStore, teibComponentsCurrentStartLocation);
+			updateHistoricalData(csvDataStore, teibComponentsCurrentStartLocation);
 			teibComponentsCurrentStartLocation += 40;
 		}
 	}
@@ -197,6 +197,6 @@ public class TEIBHistoricalDataUpdaterTest {
 	@Test
 	public void testTeibHistoricalDataUpdate() {
 		HistoricalDataStore csvDataStore = new HistoricalCsvDataStore(new StringBuilder(teib).reverse().toString());
-		updateHistoricalData(LocalDate.of(2018, 9, 28), csvDataStore, teibCurrentStartLocation);
+		updateHistoricalData(csvDataStore, teibCurrentStartLocation);
 	}
 }

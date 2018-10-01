@@ -37,6 +37,7 @@ import com.vizerium.payoffmatrix.io.Output;
 import com.vizerium.payoffmatrix.option.Option;
 import com.vizerium.payoffmatrix.option.OptionStrategy;
 import com.vizerium.payoffmatrix.option.TradeAction;
+import com.vizerium.payoffmatrix.volatility.Range;
 
 public class PayoffReportXlsx {
 
@@ -50,7 +51,7 @@ public class PayoffReportXlsx {
 
 	private static final int initialColNum = 69; // column "E"
 
-	public static void createReport(String payoffName, OptionStrategiesWithPayoff[] payoffs) {
+	public static void createReport(String payoffName, OptionStrategiesWithPayoff[] payoffs, int optionStrategiesCount, Range underlyingRange) {
 		Workbook workbook = getReportTemplate();
 		try {
 			int dataSheetNum = initialOpenPositionDataSheetNumber;
@@ -63,7 +64,7 @@ public class PayoffReportXlsx {
 					}
 				}
 			}
-			revaluateFormulaAndCreateOutputFile(workbook, payoffName);
+			revaluateFormulaAndCreateOutputFile(workbook, payoffName, optionStrategiesCount, underlyingRange);
 		} catch (Exception e) {
 			logger.error("An error occurred while generating the report.", e);
 			throw new RuntimeException(e);
@@ -125,10 +126,12 @@ public class PayoffReportXlsx {
 		cell.setCellValue(option.getNumberOfLots());
 	}
 
-	private static void revaluateFormulaAndCreateOutputFile(Workbook workbook, String outputFileName) {
+	private static void revaluateFormulaAndCreateOutputFile(Workbook workbook, String outputFileName, int optionStrategiesCount, Range underlyingRange) {
 		XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
 
-		String currentReportDirectoryPath = reportLocation + System.getProperty("application.run.datetime") + "_" + System.getProperty("application.strategy.name") + "/";
+		String currentReportDirectoryPath = reportLocation + System.getProperty("application.run.datetime") + "_" + System.getProperty("application.strategy.name") + "_"
+				+ String.valueOf(optionStrategiesCount) + System.getProperty("application.strategy.name").toLowerCase().substring(0, 3) + "_" + (int) underlyingRange.getLow()
+				+ "_" + (int) underlyingRange.getHigh() + "/";
 		File currentReportDirectory = new File(currentReportDirectoryPath);
 		if (!currentReportDirectory.exists()) {
 			currentReportDirectory.mkdir();

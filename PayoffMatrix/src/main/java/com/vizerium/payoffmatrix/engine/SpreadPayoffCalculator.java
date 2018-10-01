@@ -95,7 +95,10 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 				}
 			}
 		}
-		return new Output(allOptionsWithPayoff.toArray(new OptionStrategiesWithPayoff[allOptionsWithPayoff.size()]));
+		Output output = new Output(allOptionsWithPayoff.toArray(new OptionStrategiesWithPayoff[allOptionsWithPayoff.size()]));
+		output.setUnderlyingRange(criteria.getVolatility().getUnderlyingRange());
+		output.setOptionStrategiesCount(criteria.getMaxOptionSpreadOpenPositions());
+		return output;
 	}
 
 	@Override

@@ -24,6 +24,7 @@ import com.vizerium.payoffmatrix.comparator.MaximumProfitPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.MinimumLossPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.engine.OptionStrategiesWithPayoff;
 import com.vizerium.payoffmatrix.reports.PayoffReportXlsx;
+import com.vizerium.payoffmatrix.volatility.Range;
 
 public class Output {
 
@@ -40,6 +41,10 @@ public class Output {
 	private OptionStrategiesWithPayoff[] minNegativePayoffs;
 
 	private OptionStrategiesWithPayoff[] bestRiskRewardRatioPayoffs;
+
+	private Range underlyingRange;
+
+	private int optionStrategiesCount;
 
 	public Output() {
 
@@ -87,6 +92,22 @@ public class Output {
 		System.arraycopy(optionStrategiesWithPayoffs, 0, bestRiskRewardRatioPayoffs, 0, bestRiskRewardRatioPayoffs.length);
 	}
 
+	public Range getUnderlyingRange() {
+		return underlyingRange;
+	}
+
+	public void setUnderlyingRange(Range underlyingRange) {
+		this.underlyingRange = underlyingRange;
+	}
+
+	public int getOptionStrategiesCount() {
+		return optionStrategiesCount;
+	}
+
+	public void setOptionStrategiesCount(int optionStrategiesCount) {
+		this.optionStrategiesCount = optionStrategiesCount;
+	}
+
 	@Override
 	public String toString() {
 		return "Output " + System.lineSeparator() + printExistingPositionPayoff() + printHighestProfitProbabilityPayoffs() + printMaxPositivePayoffs() + printMinNegativePayoffs()
@@ -121,7 +142,7 @@ public class Output {
 				printPayoff += payoff;
 				printPayoff += System.lineSeparator();
 			}
-			PayoffReportXlsx.createReport(payoffName, payoffs);
+			PayoffReportXlsx.createReport(payoffName, payoffs, optionStrategiesCount, underlyingRange);
 		}
 		return printPayoff;
 	}
