@@ -33,7 +33,7 @@ public class CsvHistoricalDataVolatilityCalculator_Index1Week_Test extends CsvHi
 
 	private CsvHistoricalDataVolatilityCalculator unit;
 
-	private float standardDeviationMultipleOfIndex = 1.013f;
+	private float standardDeviationMultipleOfIndex = 1.477f;
 
 	@Before
 	public void setup() {

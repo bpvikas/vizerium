@@ -25,7 +25,7 @@ option.chain.remote.datasource=localhtml
 
 #max positions to be held(including existing positions)
 #Currently, this value can be "no of existing positions + 3" for 512 MB Java memory
-max.option.positions=3
+max.option.positions=2
 
 #max spread positions to be held
 #Currently, this value can be 2 for 512 MB Java memory
@@ -37,4 +37,4 @@ lotsize=40
 #If not provided, taken as the Index default of the next Thursday of the current settlement.
 #If it is a holiday, then please manually enter the date here
 #format DDMMYYYY
-expiryDate=
+expiryDate=17102018
