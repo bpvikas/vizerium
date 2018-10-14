@@ -31,7 +31,7 @@ public class CsvHistoricalDataVolatilityCalculator_BankIndex1Week_Test extends C
 
 	private CsvHistoricalDataVolatilityCalculator unit;
 
-	private float standardDeviationMultipleOfBankIndex = 1.099f;
+	private float standardDeviationMultipleOfBankIndex = 1.182f;
 
 	private NumberFormat nf = NumberFormat.getInstance();
 

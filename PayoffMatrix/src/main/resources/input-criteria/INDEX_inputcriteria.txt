@@ -1,4 +1,4 @@
-underlying.volatility.standardDeviationMultiple=1.416
+underlying.volatility.standardDeviationMultiple=1.176
 
 # contract.duration can be "month" when you are trading the Index. 
 contract.duration=month
@@ -15,9 +15,16 @@ existingposition3=
 existingposition4=
 existingposition5=
 
+#Option Chain datasource, values are web, localhtml
+option.chain.remote.datasource=localhtml
+
 #max positions to be held(including existing positions)
 #Currently, this value can be "no of existing positions + 3" for 512 MB Java memory
-max.option.positions=3
+max.option.positions=2
+
+#max spread positions to be held
+#Currently, this value can be 2 for 512 MB Java memory
+max.option.spread.positions=1
 
 #The lot size (e.g. 75 for the Index)
 lotsize=75

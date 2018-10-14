@@ -50,7 +50,7 @@ existingposition4=
 existingposition5=
 
 #Option Chain datasource, values are web, localhtml
-option.chain.remote.datasource=localhtml
+option.chain.remote.datasource=
 
 #Location where option chains are stored locally for processing, values are csv, db
 option.chain.local.datasource=csv

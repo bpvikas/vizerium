@@ -53,19 +53,19 @@ public abstract class CsvHistoricalDataVolatilityCalculatorTest {
 		float minClosingPrice = closingPrices[0], maxClosingPrice = closingPrices[0];
 		for (float closingPrice : closingPrices) {
 			if (closingPrice > volatility.getUnderlyingRange().getHigh()) {
-				System.out.println("closing price > volatility range top " + closingPrice);
+				System.out.println("closing price " + closingPrice + " > volatility range top " + volatility.getUnderlyingRange().getHigh());
 				++upperEndVolatilityViolations;
 			}
 			if (closingPrice < volatility.getUnderlyingRange().getLow()) {
-				System.out.println("closing price < volatility range bottom " + closingPrice);
+				System.out.println("closing price " + closingPrice + " < volatility range bottom " + volatility.getUnderlyingRange().getLow());
 				++lowerEndVolatilityViolations;
 			}
 			if (closingPrice > bollingerBandHigh) {
-				System.out.println("closing price > bollinger band high " + closingPrice);
+				System.out.println("closing price " + closingPrice + " > bollinger band high " + bollingerBandHigh);
 				++upperEndBollingerViolations;
 			}
 			if (closingPrice < bollingerBandLow) {
-				System.out.println("closing price < bollinger band low " + closingPrice);
+				System.out.println("closing price " + closingPrice + " < bollinger band low " + bollingerBandLow);
 				++lowerEndBollingerViolations;
 			}
 			if (closingPrice < minClosingPrice) {
@@ -90,10 +90,10 @@ public abstract class CsvHistoricalDataVolatilityCalculatorTest {
 		}
 
 		if (closingPrices[closingPrices.length - 1] > volatility.getUnderlyingRange().getHigh()) {
-			Assert.fail("expiry date closing price > volatility range top " + closingPrices[closingPrices.length - 1] + " "
+			Assert.fail("expiry date closing price " + closingPrices[closingPrices.length - 1] + " > volatility range top " + volatility.getUnderlyingRange().getHigh() + " "
 					+ printUpperAndLowerEndViolations(upperEndVolatilityViolations, lowerEndVolatilityViolations, upperEndBollingerViolations, lowerEndBollingerViolations));
 		} else if (closingPrices[closingPrices.length - 1] < volatility.getUnderlyingRange().getLow()) {
-			Assert.fail("expiry date closing price < volatility range bottom " + closingPrices[closingPrices.length - 1] + " "
+			Assert.fail("expiry date closing price " + closingPrices[closingPrices.length - 1] + "  < volatility range bottom " + volatility.getUnderlyingRange().getLow() + " "
 					+ printUpperAndLowerEndViolations(upperEndVolatilityViolations, lowerEndVolatilityViolations, upperEndBollingerViolations, lowerEndBollingerViolations));
 		} else if (upperEndVolatilityViolations > 0 || lowerEndVolatilityViolations > 0) {
 			Assert.fail(printUpperAndLowerEndViolations(upperEndVolatilityViolations, lowerEndVolatilityViolations, upperEndBollingerViolations, lowerEndBollingerViolations));
@@ -118,7 +118,7 @@ public abstract class CsvHistoricalDataVolatilityCalculatorTest {
 	private String printUpperAndLowerEndViolations(int upperEndVolatilityViolations, int lowerEndVolatilityViolations, int upperEndBollingerViolations,
 			int lowerEndBollingerViolations) {
 		return "upperEndVolatilityViolations : " + upperEndVolatilityViolations + ", lowerEndVolatilityViolations : " + lowerEndVolatilityViolations;
-//				+ " upperEndBollingerViolations : " + upperEndBollingerViolations + ", lowerEndBollingerViolations : " + lowerEndBollingerViolations;
+		// + " upperEndBollingerViolations : " + upperEndBollingerViolations + ", lowerEndBollingerViolations : " + lowerEndBollingerViolations;
 	}
 
 	private float calculatePercentageOverlap(float forecastedLow, float forecastedHigh, float actualLow, float actualHigh) {

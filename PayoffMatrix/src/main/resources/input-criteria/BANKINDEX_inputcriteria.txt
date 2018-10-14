@@ -1,9 +1,9 @@
-underlying.volatility.standardDeviationMultiple=1.099
+underlying.volatility.standardDeviationMultiple=1.182
 
 # The upper and lower end of the range of the underlying.
 # If this is provided, then the standard deviation calculations are ignored.
-underlying.range.top=26000.00
-underlying.range.bottom=24200.00
+underlying.range.top=
+underlying.range.bottom=
 
 # contract.duration can be "week", when you are trading the BankIndex. 
 contract.duration=week
@@ -14,19 +14,22 @@ contract.series=near
 #Any existing positions that needs to be considered in the payoff, with the premium prices at which they were purchased or sold.
 #Format CE/PE,Strike,BUY/SELL,Lots,Premium Paid,Traded Date(DDMMYYYY), NEAR/MID/FAR
 #Format CE,26500,short,1,98.45,04062018,near
-existingposition1=
-existingposition2=
+#existingposition1=CE,25500,long,1,58.00,01102018,near
+#existingposition2=CE,25600,short,1,40.00,01102018,near
 existingposition3=
 existingposition4=
 existingposition5=
 
+#Option Chain datasource, values are web, localhtml
+option.chain.remote.datasource=localhtml
+
 #max positions to be held(including existing positions)
 #Currently, this value can be "no of existing positions + 3" for 512 MB Java memory
-max.option.positions=2
+max.option.positions=3
 
 #max spread positions to be held
 #Currently, this value can be 2 for 512 MB Java memory
-max.option.spread.positions=1
+max.option.spread.positions=2
 
 #The lot size (e.g. 40 for the Bank Index)
 lotsize=40
