@@ -250,6 +250,26 @@ public class CsvHistoricalDataVolatilityCalculator_IndexMonth_Test extends CsvHi
 		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTillPreviousMonth(2018, 5);
 	}
 
+	@Test
+	public void test201807ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill201806() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTillPreviousMonth(2018, 6);
+	}
+
+	@Test
+	public void test201808ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill201807() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTillPreviousMonth(2018, 7);
+	}
+
+	@Test
+	public void test201809ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill201808() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTillPreviousMonth(2018, 8);
+	}
+
+	@Test
+	public void test201810ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill201809() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTillPreviousMonth(2018, 9);
+	}
+
 	private void testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTillPreviousMonth(int year, int month) {
 
 		LocalDate expiryDatePreviousMonth = LocalDate.of(year, month, 1).with(TemporalAdjusters.lastInMonth(DayOfWeek.THURSDAY));

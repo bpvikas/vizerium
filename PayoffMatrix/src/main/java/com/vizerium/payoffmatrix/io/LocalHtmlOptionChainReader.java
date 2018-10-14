@@ -87,8 +87,10 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 				String putLtp = optionChainDataRow.select("td").get(17).text().trim().replace(",", "");
 				String putOI = optionChainDataRow.select("td").get(21).text().trim().replace(",", "");
 
-				if (StringUtils.isAnyBlank(callOI, callLtp, strike, putLtp, putOI) || StringUtils.equals(callOI, "-") || StringUtils.equals(callLtp, "-")
-						|| StringUtils.equals(strike, "-") || StringUtils.equals(putLtp, "-") || StringUtils.equals(putOI, "-")) {
+				if (StringUtils.isAnyBlank(callOI, callLtp, strike, putLtp, putOI) || StringUtils.equals(callOI, "-") || (Integer.parseInt(callOI) < 3000)
+						|| StringUtils.equals(callLtp, "-") || StringUtils.equals(strike, "-") || StringUtils.equals(putLtp, "-") || StringUtils.equals(putOI, "-")
+						|| (Integer.parseInt(putOI) < 3000)) {
+					// Adding the 3000 check here as there are many options in the Nifty option chain which are in few 100s and disturb the minimum Open Interest calculation
 					continue;
 				}
 

@@ -189,7 +189,7 @@ public class TEIBHistoricalDataUpdaterTest {
 	public void testAllNonTeibComponentsHistoricalDataUpdate() {
 		for (String component : nonTeibComponents) {
 			HistoricalDataStore csvDataStore = new HistoricalCsvDataStore(new StringBuilder(component).reverse().toString());
-			updateHistoricalData(LocalDate.of(2018, 9, 28), csvDataStore, nonTeibComponentsCurrentStartLocation);
+			updateHistoricalData(LocalDate.of(2018, 10, 9), csvDataStore, nonTeibComponentsCurrentStartLocation);
 			nonTeibComponentsCurrentStartLocation += 40;
 		}
 	}
