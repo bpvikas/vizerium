@@ -28,7 +28,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.vizerium.payoffmatrix.io.FileUtils;
+import com.vizerium.commons.io.FileUtils;
 
 public class ListContracts {
 

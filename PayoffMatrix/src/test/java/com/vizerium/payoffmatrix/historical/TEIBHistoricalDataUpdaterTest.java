@@ -35,9 +35,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vizerium.commons.io.FileUtils;
 import com.vizerium.payoffmatrix.dao.HistoricalCsvDataStore;
 import com.vizerium.payoffmatrix.dao.HistoricalDataStore;
-import com.vizerium.payoffmatrix.io.FileUtils;
 import com.vizerium.payoffmatrix.volatility.DateRange;
 
 public class TEIBHistoricalDataUpdaterTest {

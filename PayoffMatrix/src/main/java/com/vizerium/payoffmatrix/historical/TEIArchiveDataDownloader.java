@@ -37,8 +37,8 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.log4j.Logger;
 
+import com.vizerium.commons.io.FileUtils;
 import com.vizerium.payoffmatrix.exchange.Exchanges;
-import com.vizerium.payoffmatrix.io.FileUtils;
 
 public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 
@@ -139,14 +139,14 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 	private DayPriceData[] readDataForDateAndScripNames(LocalDate date, String[] scripNames) {
 
 		List<DayPriceData> dayPriceDataList = new ArrayList<DayPriceData>();
-		ZipInputStream localRawDataFileStream = null;
-		BufferedOutputStream bos = null;
+
 		try {
-			localRawDataFileStream = new ZipInputStream(new FileInputStream(FileUtils.directoryPath + "underlying-raw-data/" + "cm" + localFileDateFormat.format(date) + ".zip"));
+			ZipInputStream localRawDataFileStream = new ZipInputStream(new FileInputStream(FileUtils.directoryPath + "underlying-raw-data/" + "cm"
+					+ localFileDateFormat.format(date) + ".zip"));
 			ZipEntry entry = localRawDataFileStream.getNextEntry();
 
 			String outputFilePath = FileUtils.directoryPath + "underlying-raw-data-extract/" + entry.getName();
-			bos = new BufferedOutputStream(new FileOutputStream(outputFilePath));
+			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(outputFilePath));
 			byte[] bytesIn = new byte[4096];
 			int read = 0;
 			while ((read = localRawDataFileStream.read(bytesIn)) != -1) {

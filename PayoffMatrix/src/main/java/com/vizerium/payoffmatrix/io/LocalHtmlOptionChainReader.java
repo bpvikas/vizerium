@@ -31,6 +31,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.vizerium.commons.io.FileUtils;
 import com.vizerium.payoffmatrix.criteria.Criteria;
 import com.vizerium.payoffmatrix.engine.MinimumOpenInterestCalculator;
 import com.vizerium.payoffmatrix.option.CallOption;
@@ -49,11 +50,26 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 
 			Document htmlDoc = Jsoup.parse(localHtmlFile, "UTF-8");
 
-			Elements underlying = htmlDoc.getElementsByTag("span");
-			String underlyingPrice = underlying.get(0).text().substring(underlying.get(0).text().lastIndexOf(' ') + 1).replace(",", "");
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss");
-			String optionChainDateString = underlying.get(1).text().substring(6, underlying.get(1).text().lastIndexOf(" "));
+			Elements spanElements = htmlDoc.getElementsByTag("span");
+			String underlyingPrice = "";
+			String optionChainDateString = "";
+			for (Element e : spanElements) {
+				if (e.text().contains("Underlying Index")) {
+					System.out.println(e.text());
+					underlyingPrice = e.text().substring(e.text().lastIndexOf(' ') + 1).replace(",", "");
+				} else if (e.text().contains("IST")) {
+					System.out.println(e.text());
+					optionChainDateString = e.text().substring(6, e.text().lastIndexOf(" "));
+				}
+				if (!StringUtils.isAnyBlank(underlyingPrice, optionChainDateString)) {
+					break;
+				}
+			}
+			if (StringUtils.isAnyBlank(underlyingPrice, optionChainDateString)) {
+				throw new RuntimeException("Unable to determine underlyingPrice: " + underlyingPrice + " or optionChainDateString: " + optionChainDateString);
+			}
 
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss");
 			LocalDate optionChainDate = LocalDateTime.parse(optionChainDateString, formatter).toLocalDate();
 			logger.info(underlyingPrice + " $$ " + optionChainDate);
 

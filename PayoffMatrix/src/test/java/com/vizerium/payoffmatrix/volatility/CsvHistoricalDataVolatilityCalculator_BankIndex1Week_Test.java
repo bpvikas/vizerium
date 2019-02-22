@@ -1033,6 +1033,36 @@ public class CsvHistoricalDataVolatilityCalculator_BankIndex1Week_Test extends C
 	}
 
 	@Test
+	public void test201842ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2018, 42);
+	}
+
+	@Test
+	public void test201843ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2018, 43);
+	}
+
+	@Test
+	public void test201844ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2018, 44);
+	}
+
+	@Test
+	public void test201845ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2018, 45);
+	}
+
+	@Test
+	public void test201846ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2018, 46);
+	}
+
+	@Test
+	public void test201847ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill1WeekPrior(2018, 47);
+	}
+
+	@Test
 	public void testPrintOverlapSumsAndViolations() {
 		printOverlapSumsAndViolations();
 	}

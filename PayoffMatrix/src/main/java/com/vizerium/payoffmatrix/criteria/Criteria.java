@@ -118,6 +118,9 @@ public class Criteria {
 	}
 
 	public void setExpiryDate(LocalDate expiryDate) {
+		if (expiryDate.isBefore(LocalDate.now())) {
+			throw new RuntimeException("Expiry Date : " + expiryDate + " cannot be in the past.");
+		}
 		this.expiryDate = expiryDate;
 	}
 

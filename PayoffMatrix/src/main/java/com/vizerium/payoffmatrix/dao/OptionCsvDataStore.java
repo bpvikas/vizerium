@@ -29,8 +29,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.vizerium.commons.io.FileUtils;
 import com.vizerium.payoffmatrix.criteria.Criteria;
-import com.vizerium.payoffmatrix.io.FileUtils;
 import com.vizerium.payoffmatrix.option.CallOption;
 import com.vizerium.payoffmatrix.option.Option;
 import com.vizerium.payoffmatrix.option.OptionType;

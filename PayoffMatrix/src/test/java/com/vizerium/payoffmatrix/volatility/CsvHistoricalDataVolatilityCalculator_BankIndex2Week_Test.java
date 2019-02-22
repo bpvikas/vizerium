@@ -1040,6 +1040,31 @@ public class CsvHistoricalDataVolatilityCalculator_BankIndex2Week_Test extends C
 		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2018, 42);
 	}
 
+	@Test
+	public void test201843ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2018, 43);
+	}
+
+	@Test
+	public void test201844ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2018, 44);
+	}
+
+	@Test
+	public void test201845ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2018, 45);
+	}
+
+	@Test
+	public void test201846ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2018, 46);
+	}
+
+	@Test
+	public void test201847ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2018, 47);
+	}
+
 	private void testNextWeekExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(int year, int week) {
 
 		LocalDate expiryDate = LocalDate.parse(year + "-W" + nf.format(week) + "-1", DateTimeFormatter.ISO_WEEK_DATE).with(DayOfWeek.THURSDAY);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vizerium.payoffmatrix.io;
+package com.vizerium.commons.io;
 
 import java.io.File;
 import java.io.FilenameFilter;

@@ -31,8 +31,8 @@ import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Logger;
 
+import com.vizerium.commons.io.FileUtils;
 import com.vizerium.payoffmatrix.historical.DayPriceData;
-import com.vizerium.payoffmatrix.io.FileUtils;
 import com.vizerium.payoffmatrix.volatility.DateRange;
 
 public class HistoricalCsvDataStore implements HistoricalDataStore {
