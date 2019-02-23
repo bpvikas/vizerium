@@ -18,6 +18,8 @@ package com.vizerium.payoffmatrix.volatility;
 
 import org.junit.Assert;
 
+import com.vizerium.commons.historical.MovingAverageCalculator;
+import com.vizerium.commons.historical.RSICalculator;
 import com.vizerium.payoffmatrix.dao.HistoricalDataStore;
 import com.vizerium.payoffmatrix.exchange.Exchanges;
 
@@ -37,16 +39,16 @@ public abstract class CsvHistoricalDataVolatilityCalculatorTest {
 		HistoricalDataStore historicalDataStore = getUnit().getHistoricalDataStore();
 		float[] historicalClosingPrices = historicalDataStore.readHistoricalClosingPrices(historicalDateRange);
 
-		float _9sma = historicalDataStore.calculateSMA(historicalClosingPrices, 9);
-		float _26sma = historicalDataStore.calculateSMA(historicalClosingPrices, 26);
-		float _9ema = historicalDataStore.calculateEMA(historicalClosingPrices, 9);
-		float _26ema = historicalDataStore.calculateEMA(historicalClosingPrices, 26);
+		float _9sma = MovingAverageCalculator.calculateSMA(historicalClosingPrices, 9);
+		float _26sma = MovingAverageCalculator.calculateSMA(historicalClosingPrices, 26);
+		float _9ema = MovingAverageCalculator.calculateEMA(historicalClosingPrices, 9);
+		float _26ema = MovingAverageCalculator.calculateEMA(historicalClosingPrices, 26);
 
 		BollingerBand bollingerBand = historicalDataStore.calculateBollingerBand(historicalClosingPrices, 20, 2);
 		float bollingerBandHigh = bollingerBand.getHigh();
 		float bollingerBandLow = bollingerBand.getLow();
 		System.out.println(bollingerBand);
-		float rsi = historicalDataStore.calculateRSI(historicalClosingPrices, 14);
+		float rsi = RSICalculator.calculateRSI(historicalClosingPrices, 14);
 
 		int upperEndVolatilityViolations = 0, lowerEndVolatilityViolations = 0, upperEndBollingerViolations = 0, lowerEndBollingerViolations = 0;
 		float[] closingPrices = historicalDataStore.readHistoricalClosingPrices(futureDateRange);

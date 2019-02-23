@@ -24,7 +24,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.vizerium.barabanca.dao.UnitPriceData;
+import com.vizerium.commons.historical.MovingAverage;
+import com.vizerium.commons.historical.MovingAverageCalculator;
 import com.vizerium.commons.io.FileUtils;
+import com.vizerium.commons.util.FloatArrayList;
 
 public class HistoricalDataReader {
 
@@ -75,13 +78,21 @@ public class HistoricalDataReader {
 
 			BufferedWriter bw = null;
 			for (String minuteData : minuteDataSet) {
+				String scripName = minuteData.substring(0, minuteData.indexOf(','));
 				if (!(minuteData.substring(0, minuteData.indexOf(',') + 7).replace(",", "").equalsIgnoreCase(outputFileName))) {
 					outputFileName = minuteData.substring(0, minuteData.indexOf(',') + 7).replace(",", "");
 					if (bw != null) {
 						bw.flush();
 						bw.close();
 					}
-					bw = new BufferedWriter(new FileWriter(parsedExtractedDataDirectoryPath + outputFileName + outputFilePathSuffix));
+
+					String parsedExtractedDataDirectoryForScripFilePath = parsedExtractedDataDirectoryPath + scripName + "/";
+					File parsedExtractedDataDirectoryForScripFile = new File(parsedExtractedDataDirectoryForScripFilePath);
+					if (!parsedExtractedDataDirectoryForScripFile.exists()) {
+						parsedExtractedDataDirectoryForScripFile.mkdir();
+					}
+
+					bw = new BufferedWriter(new FileWriter(parsedExtractedDataDirectoryForScripFilePath + outputFileName + outputFilePathSuffix));
 				}
 				bw.write(minuteData);
 				bw.newLine();
@@ -96,20 +107,16 @@ public class HistoricalDataReader {
 		}
 	}
 
-	public void validateData(LocalDate startDate, LocalDate endDate) {
-
-		Map<LocalDate, LocalTime> startDateMap = new TreeMap<LocalDate, LocalTime>();
-		Map<LocalDate, LocalTime> endDateMap = new TreeMap<LocalDate, LocalTime>();
+	public void validateData() {
+		Map<LocalDate, LocalTime> startTimeMap = new TreeMap<LocalDate, LocalTime>();
+		Map<LocalDate, LocalTime> endTimeMap = new TreeMap<LocalDate, LocalTime>();
 
 		try {
-
 			Set<StartTimingPattern> firstFourTimingsSet = new TreeSet<StartTimingPattern>();
 
-			File[] parsedExtractedDataFiles = new File(parsedExtractedDataDirectoryPath).listFiles();
-			for (File parsedExtractedDataFile : parsedExtractedDataFiles) {
-				LocalDate fileDate = getFileDate(parsedExtractedDataFile.getName());
-				if (((fileDate.getYear() == startDate.getYear() && fileDate.getMonth().compareTo(startDate.getMonth()) >= 0) || (fileDate.getYear() > startDate.getYear()))
-						&& ((fileDate.getYear() == endDate.getYear() && fileDate.getMonth().compareTo(endDate.getMonth()) <= 0) || (fileDate.getYear() < endDate.getYear()))) {
+			File[] parsedExtractedScripDataDirectories = new File(parsedExtractedDataDirectoryPath).listFiles();
+			for (File parsedExtractedScripDataDirectory : parsedExtractedScripDataDirectories) {
+				for (File parsedExtractedDataFile : parsedExtractedScripDataDirectory.listFiles()) {
 					BufferedReader br = new BufferedReader(new FileReader(parsedExtractedDataFile));
 					String dataLine = null;
 
@@ -121,6 +128,10 @@ public class HistoricalDataReader {
 						UnitPriceData unitPriceData = new UnitPriceData(dataLineDetails);
 
 						if (!unitPriceData.getDate().isEqual(currentParsedDate)) {
+							if (!currentParsedDate.equals(LocalDate.MIN) && firstFourTimingsOfCurrentDate.size() < 4) {
+								System.out.println("1 min data for " + currentParsedDate + " has less than 4 entries.");
+							}
+
 							currentParsedDate = unitPriceData.getDate();
 							firstFourTimingsOfCurrentDate = new ArrayList<LocalTime>(4);
 						}
@@ -128,42 +139,38 @@ public class HistoricalDataReader {
 							firstFourTimingsOfCurrentDate.add(unitPriceData.getTime());
 						}
 						if (firstFourTimingsOfCurrentDate.size() == 4) {
-
 							StartTimingPattern startTimingPattern = StartTimingPattern.isValid(unitPriceData.getDate(), firstFourTimingsOfCurrentDate.toArray(new LocalTime[4]));
 							firstFourTimingsSet.add(startTimingPattern);
-
 						}
 
-						if (!unitPriceData.getDate().isBefore(startDate) && !unitPriceData.getDate().isAfter(endDate)) {
-							if (!startDateMap.containsKey(unitPriceData.getDate())) {
-								startDateMap.put(unitPriceData.getDate(), unitPriceData.getTime());
-							}
-							if (!endDateMap.containsKey(unitPriceData.getDate())) {
-								endDateMap.put(unitPriceData.getDate(), unitPriceData.getTime());
-							}
-							if (startDateMap.get(unitPriceData.getDate()).isAfter(unitPriceData.getTime())) {
-								startDateMap.put(unitPriceData.getDate(), unitPriceData.getTime());
-							}
-							if (endDateMap.get(unitPriceData.getDate()).isBefore(unitPriceData.getTime())) {
-								endDateMap.put(unitPriceData.getDate(), unitPriceData.getTime());
-							}
+						if (!startTimeMap.containsKey(unitPriceData.getDate())) {
+							startTimeMap.put(unitPriceData.getDate(), unitPriceData.getTime());
+						}
+						if (!endTimeMap.containsKey(unitPriceData.getDate())) {
+							endTimeMap.put(unitPriceData.getDate(), unitPriceData.getTime());
+						}
+						if (startTimeMap.get(unitPriceData.getDate()).isAfter(unitPriceData.getTime())) {
+							startTimeMap.put(unitPriceData.getDate(), unitPriceData.getTime());
+						}
+						if (endTimeMap.get(unitPriceData.getDate()).isBefore(unitPriceData.getTime())) {
+							endTimeMap.put(unitPriceData.getDate(), unitPriceData.getTime());
 						}
 					}
 					br.close();
 				}
 			}
 
-			for (Map.Entry<LocalDate, LocalTime> entry : startDateMap.entrySet()) {
+			for (Map.Entry<LocalDate, LocalTime> entry : startTimeMap.entrySet()) {
 				if (!entry.getValue().equals(LocalTime.of(9, 8)) && !entry.getValue().equals(LocalTime.of(9, 1)) && !entry.getValue().equals(LocalTime.of(9, 9))
 						&& !entry.getValue().equals(LocalTime.of(9, 16)) && !entry.getValue().equals(LocalTime.of(9, 55)) && !entry.getValue().equals(LocalTime.of(9, 56))) {
-					System.out.println(entry.getKey() + "\t" + entry.getValue() + "\t" + endDateMap.get(entry.getKey()));
+					System.out.println(entry.getKey() + "\t" + entry.getValue() + "\t" + endTimeMap.get(entry.getKey()));
 				}
 			}
 
 			System.out.println("**********************************");
-			for (Map.Entry<LocalDate, LocalTime> entry : endDateMap.entrySet()) {
+			for (Map.Entry<LocalDate, LocalTime> entry : endTimeMap.entrySet()) {
 				if (entry.getValue().isBefore(LocalTime.of(15, 29)) || entry.getValue().isAfter(LocalTime.of(15, 34))) {
-					System.out.println(entry.getKey() + "\t" + startDateMap.get(entry.getKey()) + "\t" + entry.getValue());
+					System.out.println(entry.getKey() + "\t" + startTimeMap.get(entry.getKey()) + "\t" + entry.getValue());
 				}
 			}
 
@@ -179,10 +186,154 @@ public class HistoricalDataReader {
 		}
 	}
 
-	private LocalDate getFileDate(String name) {
-		String year = name.substring(name.lastIndexOf('.') - 6, name.lastIndexOf('.') - 2);
-		String month = name.substring(name.lastIndexOf('.') - 2, name.lastIndexOf('.'));
-		return LocalDate.of(Integer.parseInt(year), Integer.parseInt(month), 1);
+	public void createTimeSeriesDataFiles(TimeFormat timeFormat) {
+		try {
+			File[] parsedExtractedScripDataDirectories = new File(parsedExtractedDataDirectoryPath).listFiles();
+			for (File parsedExtractedScripDataDirectory : parsedExtractedScripDataDirectories) {
+				for (File parsedExtractedDataFile : parsedExtractedScripDataDirectory.listFiles()) {
+
+					BufferedReader br = new BufferedReader(new FileReader(parsedExtractedDataFile));
+					String dataLine = null;
+
+					LocalDate currentParsedDate = LocalDate.MIN;
+					TreeMap<LocalDate, List<UnitPriceData>> currentMonthUnitPrices = new TreeMap<LocalDate, List<UnitPriceData>>();
+					List<UnitPriceData> currentDateUnitPrices = new ArrayList<UnitPriceData>();
+
+					while (StringUtils.isNotBlank(dataLine = br.readLine())) {
+						String[] dataLineDetails = dataLine.split(",");
+						UnitPriceData unitPriceData = new UnitPriceData(dataLineDetails);
+						if (!unitPriceData.getDate().equals(currentParsedDate)) {
+							if (!LocalDate.MIN.equals(currentParsedDate)) {
+								currentMonthUnitPrices.put(unitPriceData.getDate(), currentDateUnitPrices);
+							}
+							currentDateUnitPrices = new ArrayList<UnitPriceData>();
+							currentParsedDate = unitPriceData.getDate();
+						}
+						currentDateUnitPrices.add(unitPriceData);
+					}
+					br.close();
+
+					// we create a file to store current month data with the new interval values.
+					// From currentMonthUnitPrices, we get map of currentDate and all UnitPrices (List) of the currentDate
+					// from the list of 1 min prices in the current date
+					// before iterating, we need to identify if there is a pre-open value in any of them, and remove that because we eventually want to do
+					// Moving Average calculations for this, and we do not want pre-open data, modifying the values.
+					// we iterate through each of them, and at every interval say 5 min, we pick the first 5 and then next 5 and then next 5 and so on
+					// we find o h l c within that interval, and then create a new UnitPriceData object from the first of the five and
+					// then populate the h l c values in that object. The scripName, date, time, o is already present in the first of the five.
+					// We then write that to the current month file, as soon as we get that UnitPriceData which represents that interval.
+					// We will do this as long as data exists for the current date.
+					// For the last entry, we may or may not have, the exact count of the values as per the interval length.
+
+					if (currentMonthUnitPrices.size() > 0) {
+
+						File timeFormatDirectory = new File(extractedDataDirectoryPath + timeFormat.getProperty() + "/");
+						if (!timeFormatDirectory.exists()) {
+							timeFormatDirectory.mkdir();
+						}
+
+						String scripName = currentMonthUnitPrices.firstEntry().getValue().get(0).getScripName();
+						File timeFormatForScripDirectory = new File(extractedDataDirectoryPath + timeFormat.getProperty() + "/" + scripName + "/");
+						if (!timeFormatForScripDirectory.exists()) {
+							timeFormatForScripDirectory.mkdir();
+						}
+
+						BufferedWriter bw = new BufferedWriter(new FileWriter(extractedDataDirectoryPath + timeFormat.getProperty() + "/" + scripName + "/"
+								+ parsedExtractedDataFile.getName()));
+
+						for (LocalDate currentDate : currentMonthUnitPrices.keySet()) {
+							List<UnitPriceData> currentDateUnitPricesForIntervalCalculation = currentMonthUnitPrices.get(currentDate);
+
+							// The below if condition is for a special check on date 2009/5/18 when the 2009 election results caused an upper circuit and the NSE had to
+							// halt trading for the day within 1 minute twice.
+							if (currentDateUnitPricesForIntervalCalculation.size() >= 4) {
+								StartTimingPattern currentDateStartTimePattern = StartTimingPattern.isValid(currentDate, new LocalTime[] {
+										currentDateUnitPricesForIntervalCalculation.get(0).getTime(), currentDateUnitPricesForIntervalCalculation.get(1).getTime(),
+										currentDateUnitPricesForIntervalCalculation.get(2).getTime(), currentDateUnitPricesForIntervalCalculation.get(3).getTime() });
+
+								for (int i = 0; i < currentDateStartTimePattern.getTradingStartTimePosition(); i++) {
+									currentDateUnitPricesForIntervalCalculation.remove(0);
+								}
+							}
+
+							UnitPriceData currentIntervalUnitPriceData = currentDateUnitPricesForIntervalCalculation.get(0);
+							for (int i = 0; i < currentDateUnitPricesForIntervalCalculation.size(); i++) {
+								if (i % timeFormat.getInterval() == 0) {
+									if (i != 0) {
+										bw.write(currentIntervalUnitPriceData.toString());
+										bw.newLine();
+									}
+									currentIntervalUnitPriceData = currentDateUnitPricesForIntervalCalculation.get(i);
+								} else {
+									UnitPriceData currentUnitPriceData = currentDateUnitPricesForIntervalCalculation.get(i);
+									if (currentUnitPriceData.getHigh() > currentIntervalUnitPriceData.getHigh()) {
+										currentIntervalUnitPriceData.setHigh(currentUnitPriceData.getHigh());
+									}
+									if (currentUnitPriceData.getLow() < currentIntervalUnitPriceData.getLow()) {
+										currentIntervalUnitPriceData.setLow(currentUnitPriceData.getLow());
+									}
+									currentIntervalUnitPriceData.setClose(currentUnitPriceData.getClose());
+								}
+								if (i == currentDateUnitPricesForIntervalCalculation.size() - 1) {
+									bw.write(currentIntervalUnitPriceData.toString());
+									if (!currentDate.equals(currentMonthUnitPrices.lastKey())) {
+										bw.newLine();
+									}
+								}
+							}
+						}
+						bw.flush();
+						bw.close();
+					}
+				}
+			}
+		} catch (IOException ioe) {
+			logger.error("An I/O error occurred while converting parsed historical data to time Series data.", ioe);
+			throw new RuntimeException(ioe);
+		}
 	}
 
+	public void updateMovingAveragesInTimeSeriesDataFiles(TimeFormat timeFormat) {
+		try {
+			File timeSeriesDirectory = new File(extractedDataDirectoryPath + timeFormat.getProperty() + "/");
+			for (File timeSeriesScripDataDirectory : timeSeriesDirectory.listFiles()) {
+				FloatArrayList closingPrices = new FloatArrayList();
+				for (File timeSeriesScripDataFile : timeSeriesScripDataDirectory.listFiles()) {
+					BufferedReader br = new BufferedReader(new FileReader(timeSeriesScripDataFile));
+					String dataLine = null;
+					List<UnitPriceData> currentMonthUnitPrices = new ArrayList<UnitPriceData>();
+					while (StringUtils.isNotBlank(dataLine = br.readLine())) {
+						String[] dataLineDetails = dataLine.split(",");
+						UnitPriceData unitPriceData = new UnitPriceData(dataLineDetails);
+						closingPrices.add(unitPriceData.getClose());
+						calculateExponentialMovingAverage(closingPrices, unitPriceData);
+						currentMonthUnitPrices.add(unitPriceData);
+					}
+					br.close();
+
+					BufferedWriter bw = new BufferedWriter(new FileWriter(timeSeriesScripDataFile));
+					for (int i = 0; i < currentMonthUnitPrices.size(); i++) {
+						UnitPriceData unitPriceData = currentMonthUnitPrices.get(i);
+						bw.write(unitPriceData.toString() + unitPriceData.printMovingAverages());
+						if (i != currentMonthUnitPrices.size() - 1) {
+							bw.newLine();
+						}
+					}
+					bw.flush();
+					bw.close();
+				}
+			}
+		} catch (IOException ioe) {
+			logger.error("An I/O error occurred while updating moving averages to time Series data.", ioe);
+			throw new RuntimeException(ioe);
+		}
+	}
+
+	private void calculateExponentialMovingAverage(FloatArrayList closingPrices, UnitPriceData unitPriceData) {
+		float[] closingPricesArray = closingPrices.toArray();
+		for (int ma : MovingAverage.getAllValues()) {
+			float ema = MovingAverageCalculator.calculateEMA(closingPricesArray, ma);
+			unitPriceData.setMovingAverage(ma, ema);
+		}
+	}
 }

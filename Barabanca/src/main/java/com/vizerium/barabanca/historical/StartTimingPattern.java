@@ -5,6 +5,7 @@ import java.time.LocalTime;
 
 public enum StartTimingPattern {
 
+	// @formatter:off
 	START901(new LocalTime[] { LocalTime.of(9, 1), LocalTime.of(9, 2), LocalTime.of(9, 3), LocalTime.of(9, 4) }, 0),
 	PREOPEN907START915(new LocalTime[] { LocalTime.of(9, 7), LocalTime.of(9, 15), LocalTime.of(9, 16), LocalTime.of(9, 17) }, 1),
 	PREOPEN908START916(new LocalTime[] { LocalTime.of(9, 8), LocalTime.of(9, 16), LocalTime.of(9, 17), LocalTime.of(9, 18) }, 1),
@@ -16,6 +17,7 @@ public enum StartTimingPattern {
 	PREOPEN1108START1116(new LocalTime[] { LocalTime.of(11, 8), LocalTime.of(11, 16), LocalTime.of(11, 17), LocalTime.of(11, 18) }, 1),
 	MUHURATTRADINGPREOPEN1723START1731(new LocalTime[] { LocalTime.of(17, 23), LocalTime.of(17, 31), LocalTime.of(17, 32), LocalTime.of(17, 33) }, 1),
 	MUHURATTRADINGPREOPEN1823START1831(new LocalTime[] { LocalTime.of(18, 23), LocalTime.of(18, 31), LocalTime.of(18, 32), LocalTime.of(18, 33) }, 1);
+	// @formatter:on
 
 	private LocalTime[] startTimings;
 
@@ -43,6 +45,10 @@ public enum StartTimingPattern {
 			}
 		}
 		throw new RuntimeException("Start Timings for the day " + date + " are not among the valid sets." + startTimingsToBeValidated);
+	}
+
+	public int getTradingStartTimePosition() {
+		return tradingStartTimePosition;
 	}
 
 	public LocalTime getTradingStartTime() {

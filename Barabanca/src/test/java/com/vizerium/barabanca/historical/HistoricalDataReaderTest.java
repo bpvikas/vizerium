@@ -1,10 +1,11 @@
 package com.vizerium.barabanca.historical;
 
-import java.time.LocalDate;
-
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class HistoricalDataReaderTest {
 
 	private HistoricalDataReader unit;
@@ -15,13 +16,13 @@ public class HistoricalDataReaderTest {
 	}
 
 	@Test
-	public void testExtractRawData() {
+	public void test01_ExtractRawData() {
 		unit.extractRawData();
 	}
 
 	@Test
-	public void testValidateData() {
-		unit.validateData(LocalDate.of(2008, 1, 1), LocalDate.of(2019, 2, 1));
+	public void test02_ValidateData() {
+		unit.validateData();
 
 		// 2010-02-06 11:01 12:30
 		// 2011-12-27 09:07 15:30
@@ -63,5 +64,60 @@ public class HistoricalDataReaderTest {
 		// 17:23,17:31,17:32,17:33
 		// 18:23,18:31,18:32,18:33
 
+	}
+
+	@Test
+	public void test03_1MinFileCreation() {
+		unit.createTimeSeriesDataFiles(TimeFormat._1MIN);
+	}
+
+	@Test
+	public void test04_5MinFileCreation() {
+		unit.createTimeSeriesDataFiles(TimeFormat._5MIN);
+	}
+
+	@Test
+	public void test05_1HourFileCreation() {
+		unit.createTimeSeriesDataFiles(TimeFormat._1HOUR);
+	}
+
+	@Test
+	public void test06_1DayFileCreation() {
+		unit.createTimeSeriesDataFiles(TimeFormat._1DAY);
+	}
+
+	@Test
+	public void test07_AllTimeFormatsFileCreation() {
+		test03_1MinFileCreation();
+		test04_5MinFileCreation();
+		test05_1HourFileCreation();
+		test06_1DayFileCreation();
+	}
+
+	@Test
+	public void test08_UpdateMovingAveragesIn1MinDataFiles() {
+		unit.updateMovingAveragesInTimeSeriesDataFiles(TimeFormat._1MIN);
+	}
+
+	@Test
+	public void test09_UpdateMovingAveragesIn5MinDataFiles() {
+		unit.updateMovingAveragesInTimeSeriesDataFiles(TimeFormat._5MIN);
+	}
+
+	@Test
+	public void test10_UpdateMovingAveragesIn1HourDataFiles() {
+		unit.updateMovingAveragesInTimeSeriesDataFiles(TimeFormat._1HOUR);
+	}
+
+	@Test
+	public void test11_UpdateMovingAveragesIn1DayDataFiles() {
+		unit.updateMovingAveragesInTimeSeriesDataFiles(TimeFormat._1DAY);
+	}
+
+	@Test
+	public void test12_UpdateMovingAveragesInAllTimeFormatsDataFiles() {
+		test09_UpdateMovingAveragesIn5MinDataFiles();
+		test10_UpdateMovingAveragesIn1HourDataFiles();
+		test11_UpdateMovingAveragesIn1DayDataFiles();
 	}
 }
