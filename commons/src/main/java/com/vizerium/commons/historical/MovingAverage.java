@@ -5,7 +5,7 @@ import java.util.Arrays;
 public enum MovingAverage {
 	_5, _13, _26, _50, _100, _200;
 
-	public MovingAverage getMAByNumber(int maInput) {
+	public static MovingAverage getMAByNumber(int maInput) {
 		for (MovingAverage ma : values()) {
 			if (Integer.parseInt(ma.name().substring(1)) == maInput) {
 				return ma;
@@ -18,7 +18,7 @@ public enum MovingAverage {
 		return Integer.parseInt(name().substring(1));
 	}
 
-	public static int[] getAllValues() {
+	public static int[] getAllValidMAValuesSorted() {
 		int i = 0;
 		int[] allValues = new int[values().length];
 		for (MovingAverage ma : values()) {

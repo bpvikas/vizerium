@@ -67,57 +67,81 @@ public class HistoricalDataReaderTest {
 	}
 
 	@Test
-	public void test03_1MinFileCreation() {
+	public void test03_AllTimeFormatsFileCreation() {
+		test03A_1MinFileCreation();
+		test03B_5MinFileCreation();
+		test03C_1HourFileCreation();
+		test03D_1DayFileCreation();
+		test03E_1WeekFileCreation();
+		test03F_1MonthFileCreation();
+	}
+
+	@Test
+	public void test03A_1MinFileCreation() {
 		unit.createTimeSeriesDataFiles(TimeFormat._1MIN);
 	}
 
 	@Test
-	public void test04_5MinFileCreation() {
+	public void test03B_5MinFileCreation() {
 		unit.createTimeSeriesDataFiles(TimeFormat._5MIN);
 	}
 
 	@Test
-	public void test05_1HourFileCreation() {
+	public void test03C_1HourFileCreation() {
 		unit.createTimeSeriesDataFiles(TimeFormat._1HOUR);
 	}
 
 	@Test
-	public void test06_1DayFileCreation() {
+	public void test03D_1DayFileCreation() {
 		unit.createTimeSeriesDataFiles(TimeFormat._1DAY);
 	}
 
 	@Test
-	public void test07_AllTimeFormatsFileCreation() {
-		test03_1MinFileCreation();
-		test04_5MinFileCreation();
-		test05_1HourFileCreation();
-		test06_1DayFileCreation();
+	public void test03E_1WeekFileCreation() {
+		unit.createMultiDayTimeSeriesDataFiles(TimeFormat._1WEEK);
 	}
 
 	@Test
-	public void test08_UpdateMovingAveragesIn1MinDataFiles() {
+	public void test03F_1MonthFileCreation() {
+		unit.createMultiDayTimeSeriesDataFiles(TimeFormat._1MONTH);
+	}
+
+	@Test
+	public void test04_UpdateMovingAveragesInAllTimeFormatsDataFiles() {
+		test04B_UpdateMovingAveragesIn5MinDataFiles();
+		test04C_UpdateMovingAveragesIn1HourDataFiles();
+		test04D_UpdateMovingAveragesIn1DayDataFiles();
+		test04E_UpdateMovingAveragesIn1WeekDataFiles();
+		test04F_UpdateMovingAveragesIn1MonthDataFiles();
+	}
+
+	@Test
+	public void test04A_UpdateMovingAveragesIn1MinDataFiles() {
 		unit.updateMovingAveragesInTimeSeriesDataFiles(TimeFormat._1MIN);
 	}
 
 	@Test
-	public void test09_UpdateMovingAveragesIn5MinDataFiles() {
+	public void test04B_UpdateMovingAveragesIn5MinDataFiles() {
 		unit.updateMovingAveragesInTimeSeriesDataFiles(TimeFormat._5MIN);
 	}
 
 	@Test
-	public void test10_UpdateMovingAveragesIn1HourDataFiles() {
+	public void test04C_UpdateMovingAveragesIn1HourDataFiles() {
 		unit.updateMovingAveragesInTimeSeriesDataFiles(TimeFormat._1HOUR);
 	}
 
 	@Test
-	public void test11_UpdateMovingAveragesIn1DayDataFiles() {
+	public void test04D_UpdateMovingAveragesIn1DayDataFiles() {
 		unit.updateMovingAveragesInTimeSeriesDataFiles(TimeFormat._1DAY);
 	}
 
 	@Test
-	public void test12_UpdateMovingAveragesInAllTimeFormatsDataFiles() {
-		test09_UpdateMovingAveragesIn5MinDataFiles();
-		test10_UpdateMovingAveragesIn1HourDataFiles();
-		test11_UpdateMovingAveragesIn1DayDataFiles();
+	public void test04E_UpdateMovingAveragesIn1WeekDataFiles() {
+		unit.updateMovingAveragesInTimeSeriesDataFiles(TimeFormat._1WEEK);
+	}
+
+	@Test
+	public void test04F_UpdateMovingAveragesIn1MonthDataFiles() {
+		unit.updateMovingAveragesInTimeSeriesDataFiles(TimeFormat._1MONTH);
 	}
 }

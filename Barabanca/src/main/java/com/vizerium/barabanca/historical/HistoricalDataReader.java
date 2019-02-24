@@ -7,12 +7,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -187,6 +192,10 @@ public class HistoricalDataReader {
 	}
 
 	public void createTimeSeriesDataFiles(TimeFormat timeFormat) {
+		if (timeFormat.getInterval() <= 0) {
+			throw new RuntimeException("This method is not supported for creating multi day time Series data files ");
+		}
+
 		try {
 			File[] parsedExtractedScripDataDirectories = new File(parsedExtractedDataDirectoryPath).listFiles();
 			for (File parsedExtractedScripDataDirectory : parsedExtractedScripDataDirectories) {
@@ -204,13 +213,17 @@ public class HistoricalDataReader {
 						UnitPriceData unitPriceData = new UnitPriceData(dataLineDetails);
 						if (!unitPriceData.getDate().equals(currentParsedDate)) {
 							if (!LocalDate.MIN.equals(currentParsedDate)) {
-								currentMonthUnitPrices.put(unitPriceData.getDate(), currentDateUnitPrices);
+								currentMonthUnitPrices.put(currentParsedDate, currentDateUnitPrices);
 							}
 							currentDateUnitPrices = new ArrayList<UnitPriceData>();
 							currentParsedDate = unitPriceData.getDate();
 						}
 						currentDateUnitPrices.add(unitPriceData);
 					}
+					// The line below has been added at the end as the last entry was not getting inserted because the condition
+					// of if(!unitPriceData.getDate().equals(currentParsedDate)) will not be true as the last entry will have the
+					// same date as that of the currentParsedDate.
+					currentMonthUnitPrices.put(currentParsedDate, currentDateUnitPrices);
 					br.close();
 
 					// we create a file to store current month data with the new interval values.
@@ -266,17 +279,13 @@ public class HistoricalDataReader {
 									currentIntervalUnitPriceData = currentDateUnitPricesForIntervalCalculation.get(i);
 								} else {
 									UnitPriceData currentUnitPriceData = currentDateUnitPricesForIntervalCalculation.get(i);
-									if (currentUnitPriceData.getHigh() > currentIntervalUnitPriceData.getHigh()) {
-										currentIntervalUnitPriceData.setHigh(currentUnitPriceData.getHigh());
-									}
-									if (currentUnitPriceData.getLow() < currentIntervalUnitPriceData.getLow()) {
-										currentIntervalUnitPriceData.setLow(currentUnitPriceData.getLow());
-									}
-									currentIntervalUnitPriceData.setClose(currentUnitPriceData.getClose());
+									updateCurrentUnitPriceDataIntoCurrentIntervalUnitPriceData(currentUnitPriceData, currentIntervalUnitPriceData);
 								}
 								if (i == currentDateUnitPricesForIntervalCalculation.size() - 1) {
 									bw.write(currentIntervalUnitPriceData.toString());
 									if (!currentDate.equals(currentMonthUnitPrices.lastKey())) {
+										// The above if condition is so that a blank line is not created at the end of the file,
+										// which contains all data for all dates in that month.
 										bw.newLine();
 									}
 								}
@@ -331,9 +340,169 @@ public class HistoricalDataReader {
 
 	private void calculateExponentialMovingAverage(FloatArrayList closingPrices, UnitPriceData unitPriceData) {
 		float[] closingPricesArray = closingPrices.toArray();
-		for (int ma : MovingAverage.getAllValues()) {
+		for (int ma : MovingAverage.getAllValidMAValuesSorted()) {
 			float ema = MovingAverageCalculator.calculateEMA(closingPricesArray, ma);
-			unitPriceData.setMovingAverage(ma, ema);
+			unitPriceData.setMovingAverage(MovingAverage.getMAByNumber(ma), ema);
 		}
+	}
+
+	public void createMultiDayTimeSeriesDataFiles(TimeFormat timeFormat) {
+		if (timeFormat.getInterval() > 0) {
+			throw new RuntimeException("This method is not supported for creating time Series data files for upto 1 day. ");
+		}
+
+		try {
+			File[] _1DayTimeSeriesScripDataDirectories = new File(extractedDataDirectoryPath + TimeFormat._1DAY.getProperty() + "/").listFiles();
+			for (File _1DayTimeSeriesScripDataDirectory : _1DayTimeSeriesScripDataDirectories) {
+
+				List<UnitPriceData> _1DayUnitPriceDataList = new ArrayList<UnitPriceData>();
+				for (File _1DayTimeSeriesScripDataFile : _1DayTimeSeriesScripDataDirectory.listFiles()) {
+
+					BufferedReader br = new BufferedReader(new FileReader(_1DayTimeSeriesScripDataFile));
+					String dataLine = null;
+
+					while (StringUtils.isNotBlank(dataLine = br.readLine())) {
+						String[] dataLineDetails = dataLine.split(",");
+						UnitPriceData unitPriceData = new UnitPriceData(dataLineDetails);
+						_1DayUnitPriceDataList.add(unitPriceData);
+					}
+					br.close();
+				}
+
+				if (_1DayUnitPriceDataList.size() > 0) {
+
+					File timeFormatDirectory = new File(extractedDataDirectoryPath + timeFormat.getProperty() + "/");
+					if (!timeFormatDirectory.exists()) {
+						timeFormatDirectory.mkdir();
+					}
+
+					String scripName = _1DayUnitPriceDataList.get(0).getScripName();
+					File timeFormatForScripDirectory = new File(extractedDataDirectoryPath + timeFormat.getProperty() + "/" + scripName + "/");
+					if (!timeFormatForScripDirectory.exists()) {
+						timeFormatForScripDirectory.mkdir();
+					}
+
+					BufferedWriter bw = new BufferedWriter(new FileWriter(extractedDataDirectoryPath + timeFormat.getProperty() + "/" + scripName + "/" + scripName + ".txt"));
+
+					if (TimeFormat._1WEEK.equals(timeFormat)) {
+						int currentParsedDateWeekOfYear = 0;
+						UnitPriceData currentIntervalUnitPriceData = _1DayUnitPriceDataList.get(0);
+
+						for (UnitPriceData currentUnitPriceData : _1DayUnitPriceDataList) {
+							if (!(currentUnitPriceData.getDate().get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear()) == currentParsedDateWeekOfYear)) {
+								if (currentParsedDateWeekOfYear > 0) {
+									bw.write(currentIntervalUnitPriceData.toString());
+									bw.newLine();
+								}
+								currentIntervalUnitPriceData = currentUnitPriceData;
+								currentParsedDateWeekOfYear = currentUnitPriceData.getDate().get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
+
+							} else {
+								updateCurrentUnitPriceDataIntoCurrentIntervalUnitPriceData(currentUnitPriceData, currentIntervalUnitPriceData);
+							}
+							if (_1DayUnitPriceDataList.get(_1DayUnitPriceDataList.size() - 1).equals(currentUnitPriceData)) {
+								bw.write(currentIntervalUnitPriceData.toString());
+							}
+						}
+
+					} else if (TimeFormat._1MONTH.equals(timeFormat)) {
+						int currentMonth = 0;
+						UnitPriceData currentIntervalUnitPriceData = _1DayUnitPriceDataList.get(0);
+
+						for (UnitPriceData currentUnitPriceData : _1DayUnitPriceDataList) {
+							if (!(currentUnitPriceData.getDate().getMonthValue() == currentMonth)) {
+								if (currentMonth > 0) {
+									bw.write(currentIntervalUnitPriceData.toString());
+									bw.newLine();
+								}
+								currentIntervalUnitPriceData = currentUnitPriceData;
+								currentMonth = currentUnitPriceData.getDate().getMonthValue();
+
+							} else {
+								updateCurrentUnitPriceDataIntoCurrentIntervalUnitPriceData(currentUnitPriceData, currentIntervalUnitPriceData);
+							}
+							if (_1DayUnitPriceDataList.get(_1DayUnitPriceDataList.size() - 1).equals(currentUnitPriceData)) {
+								bw.write(currentIntervalUnitPriceData.toString());
+							}
+						}
+					} else {
+						bw.flush();
+						bw.close();
+						throw new RuntimeException("The supplied timeFormat is unsupported for this method " + timeFormat);
+					}
+
+					bw.flush();
+					bw.close();
+				}
+			}
+		} catch (IOException ioe) {
+			logger.error("An I/O error occurred while converting parsed historical data to time Series data.", ioe);
+			throw new RuntimeException(ioe);
+		}
+	}
+
+	private void updateCurrentUnitPriceDataIntoCurrentIntervalUnitPriceData(UnitPriceData currentUnitPriceData, UnitPriceData currentIntervalUnitPriceData) {
+		if (currentUnitPriceData.getHigh() > currentIntervalUnitPriceData.getHigh()) {
+			currentIntervalUnitPriceData.setHigh(currentUnitPriceData.getHigh());
+		}
+		if (currentUnitPriceData.getLow() < currentIntervalUnitPriceData.getLow()) {
+			currentIntervalUnitPriceData.setLow(currentUnitPriceData.getLow());
+		}
+		currentIntervalUnitPriceData.setClose(currentUnitPriceData.getClose());
+	}
+
+	public List<UnitPriceData> getUnitPriceDataForRange(String scripName, LocalDateTime startDateTime, LocalDateTime endDateTime, TimeFormat timeFormat) {
+		File timeSeriesForScripDirectory = new File(extractedDataDirectoryPath + timeFormat.getProperty() + "/" + scripName + "/");
+		if (!timeSeriesForScripDirectory.exists()) {
+			throw new RuntimeException(timeFormat.getProperty() + " data file does not exist for " + scripName);
+		}
+
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setMinimumIntegerDigits(2);
+		nf.setMaximumIntegerDigits(2);
+
+		int startDateFilter = Integer.parseInt(String.valueOf(startDateTime.getYear()) + nf.format(startDateTime.getMonthValue()));
+		int endDateFilter = Integer.parseInt(String.valueOf(endDateTime.getYear()) + nf.format(endDateTime.getMonthValue()));
+
+		File[] filesEligibletoReturnData = null;
+		if (timeFormat.getInterval() > 0) {
+			FilenameFilter fileNameFilter = new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String name) {
+					int fileDate = Integer.parseInt(name.substring(scripName.length(), name.lastIndexOf('.')));
+					if (fileDate >= startDateFilter && fileDate <= endDateFilter) {
+						return true;
+					}
+					return false;
+				}
+			};
+			filesEligibletoReturnData = timeSeriesForScripDirectory.listFiles(fileNameFilter);
+
+		} else {
+			filesEligibletoReturnData = new File[] { new File(extractedDataDirectoryPath + timeFormat.getProperty() + "/" + scripName + "/" + scripName + ".txt") };
+		}
+
+		List<UnitPriceData> unitPriceDataList = new ArrayList<UnitPriceData>();
+		for (File eligibleFile : filesEligibletoReturnData) {
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(eligibleFile));
+				String dataLine = null;
+				while (StringUtils.isNotBlank(dataLine = br.readLine())) {
+					String[] dataLineDetails = dataLine.split(",");
+					UnitPriceData unitPriceData = new UnitPriceData(dataLineDetails);
+					if (timeFormat.getInterval() > 0 && !unitPriceData.getDateTime().isBefore(startDateTime) && !unitPriceData.getDateTime().isAfter(endDateTime)) {
+						unitPriceDataList.add(unitPriceData);
+					} else if (timeFormat.getInterval() <= 0 && !unitPriceData.getDate().isBefore(startDateTime.toLocalDate())
+							&& !unitPriceData.getDate().isAfter(endDateTime.toLocalDate())) {
+						unitPriceDataList.add(unitPriceData);
+					}
+				}
+				br.close();
+			} catch (IOException ioe) {
+				logger.error("An I/O error occurred while filtering historical data.", ioe);
+				throw new RuntimeException(ioe);
+			}
+		}
+		return unitPriceDataList;
 	}
 }

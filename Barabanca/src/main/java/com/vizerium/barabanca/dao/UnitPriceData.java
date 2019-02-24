@@ -54,6 +54,15 @@ public class UnitPriceData {
 	public UnitPriceData(String[] unitPriceDetailsArray) {
 		this(unitPriceDetailsArray[0], unitPriceDetailsArray[1], unitPriceDetailsArray[2], unitPriceDetailsArray[3], unitPriceDetailsArray[4], unitPriceDetailsArray[5],
 				unitPriceDetailsArray[6]);
+		if (unitPriceDetailsArray.length > 11) {
+			// The above condition is to take care of parsedData which has upto 8 elements. 2 elements as 0,0 beyond the OHLC information.
+			setMovingAverage(MovingAverage._5, Float.parseFloat(unitPriceDetailsArray[7]));
+			setMovingAverage(MovingAverage._13, Float.parseFloat(unitPriceDetailsArray[8]));
+			setMovingAverage(MovingAverage._26, Float.parseFloat(unitPriceDetailsArray[9]));
+			setMovingAverage(MovingAverage._50, Float.parseFloat(unitPriceDetailsArray[10]));
+			setMovingAverage(MovingAverage._100, Float.parseFloat(unitPriceDetailsArray[11]));
+			setMovingAverage(MovingAverage._200, Float.parseFloat(unitPriceDetailsArray[12]));
+		}
 	}
 
 	public UnitPriceData(String scripName, LocalDateTime dateTime, float open, float high, float low, float close) {
@@ -139,7 +148,7 @@ public class UnitPriceData {
 		this.movingAverages = movingAverages;
 	}
 
-	public void setMovingAverage(int ma, float value) {
+	public void setMovingAverage(MovingAverage ma, float value) {
 		this.movingAverages.add(new MovingAverageAndValue(ma, value));
 		Collections.sort(movingAverages);
 	}
@@ -165,8 +174,8 @@ public class UnitPriceData {
 
 		}
 
-		public MovingAverageAndValue(int ma, float value) {
-			this.ma = ma;
+		public MovingAverageAndValue(MovingAverage ma, float value) {
+			this.ma = ma.getNumber();
 			this.value = value;
 		}
 

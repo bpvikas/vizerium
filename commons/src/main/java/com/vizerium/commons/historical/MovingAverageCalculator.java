@@ -12,16 +12,13 @@ public class MovingAverageCalculator {
 			}
 			return sma / numberOfPeriods;
 		} else {
-			for (int i = 0; i < closingPrices.length; i++) {
-				sma += closingPrices[i];
-			}
-			return sma / closingPrices.length;
+			return 0.0f;
 		}
 	}
 
 	public static float calculateEMA(float[] closingPrices, int numberOfPeriods) {
 		if (closingPrices.length < numberOfPeriods) {
-			return calculateSMA(closingPrices, numberOfPeriods);
+			return 0.0f;
 		} else {
 			float weightingMultiplier = 2.0f / (numberOfPeriods + 1);
 			float ema = calculateSMA(Arrays.copyOfRange(closingPrices, 0, numberOfPeriods), numberOfPeriods);
