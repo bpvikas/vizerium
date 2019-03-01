@@ -35,7 +35,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.vizerium.commons.historical.MovingAverageCalculator;
+import com.vizerium.commons.calculators.MovingAverageCalculator;
 import com.vizerium.commons.io.FileUtils;
 import com.vizerium.payoffmatrix.dao.HistoricalCsvDataStore;
 import com.vizerium.payoffmatrix.dao.HistoricalDataStore;

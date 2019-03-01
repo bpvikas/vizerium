@@ -9,9 +9,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.vizerium.commons.historical.MovingAverage;
+import com.vizerium.commons.calculators.MovingAverage;
+import com.vizerium.commons.calculators.UnitPrice;
 
-public class UnitPriceData {
+public class UnitPriceData extends UnitPrice {
 
 	private static DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd,HH:mm");
 
@@ -32,14 +33,6 @@ public class UnitPriceData {
 	private String scripName;
 
 	private LocalDateTime dateTime;
-
-	private float open;
-
-	private float high;
-
-	private float low;
-
-	private float close;
 
 	private List<MovingAverageAndValue> movingAverages = new ArrayList<MovingAverageAndValue>(MovingAverage.values().length);
 
@@ -98,38 +91,6 @@ public class UnitPriceData {
 		this.dateTime = dateTime;
 	}
 
-	public float getOpen() {
-		return open;
-	}
-
-	public void setOpen(float open) {
-		this.open = open;
-	}
-
-	public float getHigh() {
-		return high;
-	}
-
-	public void setHigh(float high) {
-		this.high = high;
-	}
-
-	public float getLow() {
-		return low;
-	}
-
-	public void setLow(float low) {
-		this.low = low;
-	}
-
-	public float getClose() {
-		return close;
-	}
-
-	public void setClose(float close) {
-		this.close = close;
-	}
-
 	public List<MovingAverageAndValue> getMovingAverages() {
 		return movingAverages;
 	}
@@ -151,6 +112,10 @@ public class UnitPriceData {
 	public void setMovingAverage(MovingAverage ma, float value) {
 		this.movingAverages.add(new MovingAverageAndValue(ma, value));
 		Collections.sort(movingAverages);
+	}
+
+	public float getMACDHistogram(int ma1, int ma2) {
+		return getMovingAverage(ma1) - getMovingAverage(ma2);
 	}
 
 	@Override

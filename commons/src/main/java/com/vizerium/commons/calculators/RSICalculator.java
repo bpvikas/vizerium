@@ -1,4 +1,4 @@
-package com.vizerium.commons.historical;
+package com.vizerium.commons.calculators;
 
 public class RSICalculator {
 

@@ -19,7 +19,7 @@ package com.vizerium.payoffmatrix.dao;
 import java.time.LocalDate;
 import java.util.Arrays;
 
-import com.vizerium.commons.historical.MovingAverageCalculator;
+import com.vizerium.commons.calculators.MovingAverageCalculator;
 import com.vizerium.payoffmatrix.historical.DayPriceData;
 import com.vizerium.payoffmatrix.volatility.BollingerBand;
 import com.vizerium.payoffmatrix.volatility.DateRange;
@@ -33,7 +33,6 @@ public interface HistoricalDataStore {
 	public void writeHistoricalData(LocalDate date, float open, float high, float low, float close, long volume);
 
 	public String getUnderlyingName();
-
 
 	public default BollingerBand calculateBollingerBand(float[] closingPrices, int numberOfDays, float standardDeviationMultiple) {
 		float mid = MovingAverageCalculator.calculateSMA(closingPrices, numberOfDays);

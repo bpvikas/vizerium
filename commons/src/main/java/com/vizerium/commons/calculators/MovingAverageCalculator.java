@@ -1,18 +1,18 @@
-package com.vizerium.commons.historical;
+package com.vizerium.commons.calculators;
 
 import java.util.Arrays;
 
 public class MovingAverageCalculator {
 
 	public static float calculateSMA(float[] closingPrices, int numberOfPeriods) {
-		float sma = 0.0f;
-		if (closingPrices.length > numberOfPeriods) {
+		if (closingPrices.length < numberOfPeriods) {
+			return 0.0f;
+		} else {
+			float sma = 0.0f;
 			for (int i = closingPrices.length - numberOfPeriods; i < closingPrices.length; i++) {
 				sma += closingPrices[i];
 			}
 			return sma / numberOfPeriods;
-		} else {
-			return 0.0f;
 		}
 	}
 
