@@ -114,7 +114,7 @@ public class UnitPriceData extends UnitPrice {
 		Collections.sort(movingAverages);
 	}
 
-	public float getMACDHistogram(int ma1, int ma2) {
+	public float getMACD(int ma1, int ma2) {
 		return getMovingAverage(ma1) - getMovingAverage(ma2);
 	}
 

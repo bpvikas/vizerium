@@ -37,11 +37,11 @@ public class TrendIdentificationTest {
 				TimeFormat._1HOUR);
 
 		for (int i = 3; i < unitPriceDataList.size(); i++) {
-			if (unitPriceDataList.get(i - 3).getMACDHistogram(13, 26) < unitPriceDataList.get(i - 2).getMACDHistogram(13, 26)
-					&& unitPriceDataList.get(i - 2).getMACDHistogram(13, 26) < unitPriceDataList.get(i - 1).getMACDHistogram(13, 26)) {
+			if (unitPriceDataList.get(i - 3).getMACD(13, 26) < unitPriceDataList.get(i - 2).getMACD(13, 26)
+					&& unitPriceDataList.get(i - 2).getMACD(13, 26) < unitPriceDataList.get(i - 1).getMACD(13, 26)) {
 				System.out.println(unitPriceDataList.get(i).getDateTime().toString() + " : Prior trend is UP.");
-			} else if (unitPriceDataList.get(i - 3).getMACDHistogram(13, 26) > unitPriceDataList.get(i - 2).getMACDHistogram(13, 26)
-					&& unitPriceDataList.get(i - 2).getMACDHistogram(13, 26) > unitPriceDataList.get(i - 1).getMACDHistogram(13, 26)) {
+			} else if (unitPriceDataList.get(i - 3).getMACD(13, 26) > unitPriceDataList.get(i - 2).getMACD(13, 26)
+					&& unitPriceDataList.get(i - 2).getMACD(13, 26) > unitPriceDataList.get(i - 1).getMACD(13, 26)) {
 				System.out.println(unitPriceDataList.get(i).getDateTime().toString() + " : Prior trend is DOWN.");
 			} else {
 				System.out.println(unitPriceDataList.get(i).getDateTime().toString() + " : Prior trend is CHOPPY.");

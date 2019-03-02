@@ -23,6 +23,9 @@ public class StochasticMomentumCalculator implements StochasticCalculatorBase {
 	// //Signals
 	// buy = crossedAbove(SMI, SIGNAL);
 	// sell = crossedBelow(SMI, SIGNAL);
+	
+	// https://tradingqna.com/t/need-formula-for-stochastic-momentum-index-indicator/43201
+	// Above URL explains the same formula in text format
 
 	public StochasticMomentum calculate(List<UnitPrice> unitPrices) {
 		return calculate(unitPrices, new StochasticMomentum());

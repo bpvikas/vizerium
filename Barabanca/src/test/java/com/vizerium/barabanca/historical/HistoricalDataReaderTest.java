@@ -11,7 +11,7 @@ public class HistoricalDataReaderTest {
 	private HistoricalDataReader unit;
 
 	@Before
-	public void setup() {
+	public void setUp() {
 		unit = new HistoricalDataReader();
 	}
 

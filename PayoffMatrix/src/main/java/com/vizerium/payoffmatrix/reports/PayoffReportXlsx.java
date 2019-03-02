@@ -32,11 +32,11 @@ import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.vizerium.commons.io.FileUtils;
+import com.vizerium.commons.trade.TradeAction;
 import com.vizerium.payoffmatrix.engine.OptionStrategiesWithPayoff;
 import com.vizerium.payoffmatrix.io.Output;
 import com.vizerium.payoffmatrix.option.Option;
 import com.vizerium.payoffmatrix.option.OptionStrategy;
-import com.vizerium.payoffmatrix.option.TradeAction;
 import com.vizerium.payoffmatrix.volatility.Range;
 
 public class PayoffReportXlsx {

@@ -31,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.vizerium.commons.io.FileUtils;
+import com.vizerium.commons.trade.TradeAction;
 import com.vizerium.payoffmatrix.dao.LocalDataSource;
 import com.vizerium.payoffmatrix.dao.RemoteDataSource;
 import com.vizerium.payoffmatrix.engine.ExpiryDateCalculator;
@@ -40,7 +41,6 @@ import com.vizerium.payoffmatrix.option.ContractDuration;
 import com.vizerium.payoffmatrix.option.ContractSeries;
 import com.vizerium.payoffmatrix.option.Option;
 import com.vizerium.payoffmatrix.option.PutOption;
-import com.vizerium.payoffmatrix.option.TradeAction;
 import com.vizerium.payoffmatrix.option.TradingBias;
 import com.vizerium.payoffmatrix.volatility.CsvHistoricalDataVolatilityCalculator;
 import com.vizerium.payoffmatrix.volatility.Range;

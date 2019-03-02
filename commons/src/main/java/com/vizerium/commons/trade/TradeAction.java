@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vizerium.payoffmatrix.option;
+package com.vizerium.commons.trade;
 
 public enum TradeAction {
 

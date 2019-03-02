@@ -19,6 +19,8 @@ package com.vizerium.payoffmatrix.option;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import com.vizerium.commons.trade.TradeAction;
+
 public abstract class Option implements Cloneable, Serializable, OptionStrategy {
 
 	private static final long serialVersionUID = 5247339041828137416L;

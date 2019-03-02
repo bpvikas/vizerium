@@ -22,12 +22,12 @@ import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Logger;
 
+import com.vizerium.commons.trade.TradeAction;
 import com.vizerium.payoffmatrix.criteria.Criteria;
 import com.vizerium.payoffmatrix.dao.OptionDataStore;
 import com.vizerium.payoffmatrix.io.Output;
 import com.vizerium.payoffmatrix.option.Option;
 import com.vizerium.payoffmatrix.option.OptionChainIterator;
-import com.vizerium.payoffmatrix.option.TradeAction;
 
 public class PositionalPayoffCalculator extends PayoffCalculator {
 
