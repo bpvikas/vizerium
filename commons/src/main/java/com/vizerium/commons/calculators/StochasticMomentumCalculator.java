@@ -2,6 +2,8 @@ package com.vizerium.commons.calculators;
 
 import java.util.List;
 
+import com.vizerium.barabanca.dao.UnitPrice;
+
 public class StochasticMomentumCalculator implements StochasticCalculatorBase {
 
 	// https://www.motivewave.com/studies/stochastic_momentum_index.htm
@@ -23,7 +25,7 @@ public class StochasticMomentumCalculator implements StochasticCalculatorBase {
 	// //Signals
 	// buy = crossedAbove(SMI, SIGNAL);
 	// sell = crossedBelow(SMI, SIGNAL);
-	
+
 	// https://tradingqna.com/t/need-formula-for-stochastic-momentum-index-indicator/43201
 	// Above URL explains the same formula in text format
 

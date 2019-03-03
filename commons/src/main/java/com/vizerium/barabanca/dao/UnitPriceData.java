@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.vizerium.commons.calculators.MovingAverage;
-import com.vizerium.commons.calculators.UnitPrice;
 
 public class UnitPriceData extends UnitPrice {
 

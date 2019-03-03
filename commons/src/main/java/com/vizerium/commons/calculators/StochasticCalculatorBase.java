@@ -2,6 +2,8 @@ package com.vizerium.commons.calculators;
 
 import java.util.List;
 
+import com.vizerium.barabanca.dao.UnitPrice;
+
 public interface StochasticCalculatorBase {
 
 	/*

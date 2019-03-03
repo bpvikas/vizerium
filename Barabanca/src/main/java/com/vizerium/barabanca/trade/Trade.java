@@ -1,7 +1,9 @@
-package com.vizerium.commons.trade;
+package com.vizerium.barabanca.trade;
 
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
+
+import com.vizerium.commons.trade.TradeAction;
 
 public class Trade {
 
@@ -23,6 +25,8 @@ public class Trade {
 	private float entryPrice;
 
 	private float exitPrice;
+
+	private float payoff = Float.MIN_VALUE;
 
 	public Trade() {
 
@@ -90,11 +94,14 @@ public class Trade {
 	}
 
 	public float getPayoff() {
-		if (entryDateTime != null && exitDateTime != null) {
-			return (action == TradeAction.LONG) ? exitPrice - entryPrice : entryPrice - exitPrice;
-		} else {
-			return 0.0f;
+		if (payoff == Float.MIN_VALUE) {
+			if (entryDateTime != null && exitDateTime != null) {
+				payoff = (action == TradeAction.LONG) ? exitPrice - entryPrice : entryPrice - exitPrice;
+			} else {
+				payoff = 0.0f;
+			}
 		}
+		return payoff;
 	}
 
 	public boolean isProfitable() {

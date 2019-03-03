@@ -1,13 +1,11 @@
 package com.vizerium.barabanca.historical;
 
 public enum TimeFormat {
-	_1MIN("1min", 1), _5MIN("5min", 5), _1HOUR("1hour", 60), _1DAY("1day", 1440), _1WEEK("1week", -1), _1MONTH("1month", -1);
-
-	private String property;
+	_1MIN(1), _5MIN(5), _1HOUR(60), _1DAY(1440), _1WEEK(-1), _1MONTH(-1);
 
 	private int interval;
 
-	public static TimeFormat getByPropertyOrInterval(String propertyOrInterval) {
+	public static TimeFormat getByNameOrInterval(String propertyOrInterval) {
 		if ("1min".equalsIgnoreCase(propertyOrInterval.trim()) || "1".equalsIgnoreCase(propertyOrInterval.trim())) {
 			return _1MIN;
 		} else if ("5min".equalsIgnoreCase(propertyOrInterval.trim()) || "5".equalsIgnoreCase(propertyOrInterval.trim())) {
@@ -29,13 +27,12 @@ public enum TimeFormat {
 
 	}
 
-	private TimeFormat(String property, int interval) {
-		this.property = property;
+	private TimeFormat(int interval) {
 		this.interval = interval;
 	}
 
 	public String getProperty() {
-		return property;
+		return name().substring(1).toLowerCase();
 	}
 
 	public int getInterval() {

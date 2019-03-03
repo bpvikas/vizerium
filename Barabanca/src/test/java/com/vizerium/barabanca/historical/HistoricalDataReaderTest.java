@@ -108,7 +108,6 @@ public class HistoricalDataReaderTest {
 
 	@Test
 	public void test04_UpdateMovingAveragesInAllTimeFormatsDataFiles() {
-		test04B_UpdateMovingAveragesIn5MinDataFiles();
 		test04C_UpdateMovingAveragesIn1HourDataFiles();
 		test04D_UpdateMovingAveragesIn1DayDataFiles();
 		test04E_UpdateMovingAveragesIn1WeekDataFiles();
