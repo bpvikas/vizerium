@@ -18,6 +18,7 @@ package com.vizerium.payoffmatrix.main;
 
 import org.apache.log4j.Logger;
 
+import com.vizerium.commons.util.LogUtils;
 import com.vizerium.payoffmatrix.criteria.Criteria;
 import com.vizerium.payoffmatrix.criteria.CriteriaReader;
 import com.vizerium.payoffmatrix.criteria.PropertiesFileCriteriaReader;
@@ -28,7 +29,6 @@ import com.vizerium.payoffmatrix.io.OptionChainReader;
 import com.vizerium.payoffmatrix.io.OptionChainReaderFactory;
 import com.vizerium.payoffmatrix.io.Output;
 import com.vizerium.payoffmatrix.option.Option;
-import com.vizerium.payoffmatrix.util.LogUtils;
 
 public class Spread {
 	static {

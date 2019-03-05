@@ -1,4 +1,4 @@
-package com.vizerium.barabanca.dao;
+package com.vizerium.commons.dao;
 
 public class UnitPrice {
 

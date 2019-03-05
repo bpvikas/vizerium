@@ -13,7 +13,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.vizerium.barabanca.dao.UnitPrice;
+import com.vizerium.commons.dao.UnitPrice;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class StochasticCalculatorTest {

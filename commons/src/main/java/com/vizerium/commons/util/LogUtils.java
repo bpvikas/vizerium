@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package com.vizerium.payoffmatrix.util;
+package com.vizerium.commons.util;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.vizerium.commons.io.FileUtils;
 
@@ -31,7 +29,7 @@ public class LogUtils {
 		System.setProperty("application.strategy.name", strategyName);
 
 		String commandLineParameterDirectoryPath = System.getProperty("directoryPath");
-		if (StringUtils.isNotBlank(commandLineParameterDirectoryPath)) {
+		if (commandLineParameterDirectoryPath != null && !"".equals(commandLineParameterDirectoryPath)) {
 			FileUtils.directoryPath = commandLineParameterDirectoryPath;
 		} else {
 			System.setProperty("directoryPath", FileUtils.directoryPath);

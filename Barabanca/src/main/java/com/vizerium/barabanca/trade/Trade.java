@@ -3,6 +3,7 @@ package com.vizerium.barabanca.trade;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 
+import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.trade.TradeAction;
 
 public class Trade {
@@ -27,6 +28,14 @@ public class Trade {
 	private float exitPrice;
 
 	private float payoff = Float.MIN_VALUE;
+
+	private float maxUnrealisedProfit = Float.MIN_VALUE;
+
+	private LocalDateTime maxUnrealisedProfitDateTime;
+
+	private float maxUnrealisedLoss = Float.MAX_VALUE;
+
+	private LocalDateTime maxUnrealisedLossDateTime;
 
 	public Trade() {
 
@@ -108,8 +117,50 @@ public class Trade {
 		return getPayoff() > 0 ? true : false;
 	}
 
+	public String getUnrealisedStatus() {
+		return "Max unrealised profit at " + maxUnrealisedProfitDateTime + " @ " + nf.format(maxUnrealisedProfit) + " \tMax unrealised loss at " + maxUnrealisedLossDateTime
+				+ " @ " + nf.format(maxUnrealisedLoss);
+	}
+
+	public void setUnrealisedStatus(UnitPriceData unitPriceData) {
+		if (exitDateTime == null || exitPrice == 0.0f) {
+			if (TradeAction.LONG.equals(action) && ((unitPriceData.getClose() - entryPrice) > maxUnrealisedProfit)) {
+				maxUnrealisedProfit = unitPriceData.getClose() - entryPrice;
+				maxUnrealisedProfitDateTime = unitPriceData.getDateTime();
+			}
+			if (TradeAction.SHORT.equals(action) && ((entryPrice - unitPriceData.getClose()) > maxUnrealisedProfit)) {
+				maxUnrealisedProfit = entryPrice - unitPriceData.getClose();
+				maxUnrealisedProfitDateTime = unitPriceData.getDateTime();
+			}
+			if (TradeAction.LONG.equals(action) && ((unitPriceData.getClose() - entryPrice) < maxUnrealisedLoss)) {
+				maxUnrealisedLoss = unitPriceData.getClose() - entryPrice;
+				maxUnrealisedLossDateTime = unitPriceData.getDateTime();
+			}
+			if (TradeAction.SHORT.equals(action) && ((entryPrice - unitPriceData.getClose()) < maxUnrealisedLoss)) {
+				maxUnrealisedLoss = entryPrice - unitPriceData.getClose();
+				maxUnrealisedLossDateTime = unitPriceData.getDateTime();
+			}
+		}
+	}
+
+	public float getMaxUnrealisedLoss() {
+		return maxUnrealisedLoss;
+	}
+
+	public LocalDateTime getMaxUnrealisedLossDateTime() {
+		return maxUnrealisedLossDateTime;
+	}
+
+	public float getMaxUnrealisedProfit() {
+		return maxUnrealisedProfit;
+	}
+
+	public LocalDateTime getMaxUnrealisedProfitDateTime() {
+		return maxUnrealisedProfitDateTime;
+	}
+
 	public String toString() {
 		return action.name() + "\t" + scripName + " at " + entryDateTime + " @ " + nf.format(entryPrice) + " exited at " + exitDateTime + " @ " + nf.format(exitPrice) + "\t"
-				+ (isProfitable() ? "PROFIT" : "LOSS") + "\t" + nf.format(getPayoff());
+				+ (isProfitable() ? "PROFIT" : "LOSS") + "\t" + nf.format(getPayoff()) + " \t" + getUnrealisedStatus();
 	}
 }

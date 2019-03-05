@@ -2,7 +2,7 @@ package com.vizerium.commons.calculators;
 
 import java.util.List;
 
-import com.vizerium.barabanca.dao.UnitPrice;
+import com.vizerium.commons.dao.UnitPrice;
 
 public class StochasticCalculator implements StochasticCalculatorBase {
 

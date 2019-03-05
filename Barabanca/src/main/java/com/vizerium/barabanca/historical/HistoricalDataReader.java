@@ -28,9 +28,9 @@ import java.util.zip.ZipInputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.vizerium.barabanca.dao.UnitPriceData;
 import com.vizerium.commons.calculators.MovingAverage;
 import com.vizerium.commons.calculators.MovingAverageCalculator;
+import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.io.FileUtils;
 import com.vizerium.commons.util.FloatArrayList;
 

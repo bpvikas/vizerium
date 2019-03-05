@@ -3,8 +3,8 @@ package com.vizerium.barabanca.trade;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-import com.vizerium.barabanca.dao.UnitPriceData;
 import com.vizerium.barabanca.historical.TimeFormat;
+import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.trade.TradeAction;
 
 public class TradeBook extends ArrayList<Trade> {
@@ -30,7 +30,7 @@ public class TradeBook extends ArrayList<Trade> {
 		while (i.hasNext()) {
 			Trade t = i.next();
 			if (Math.abs(t.getPayoff() / t.getExitPrice()) > 0.1f) {
-				System.out.println(t);
+				// System.out.println(t);
 			}
 		}
 	}
@@ -71,6 +71,14 @@ public class TradeBook extends ArrayList<Trade> {
 		return (size() > 0) ? (last().getExitDateTime() != null) || (last().getExitPrice() != 0.0f) : true;
 	}
 
+	public boolean isLastTradeLong() {
+		return (size() > 0 && TradeAction.LONG.equals(last().getAction())) ? true : false;
+	}
+
+	public boolean isLastTradeShort() {
+		return (size() > 0 && TradeAction.SHORT.equals(last().getAction())) ? true : false;
+	}
+
 	public Trade last() {
 		return get(size() - 1);
 	}
@@ -88,6 +96,9 @@ public class TradeBook extends ArrayList<Trade> {
 	private void exitLastTrade(UnitPriceData unitPriceData) {
 		if (size() != 0) {
 			Trade currentTrade = last();
+			if ((currentTrade.getExitDateTime() != null) || (currentTrade.getExitPrice() != 0.0f)) {
+				throw new RuntimeException("Trying to close an already closed trade.");
+			}
 			currentTrade.setExitDateTime(unitPriceData.getDateTime());
 			currentTrade.setExitPrice(unitPriceData.getClose());
 		}

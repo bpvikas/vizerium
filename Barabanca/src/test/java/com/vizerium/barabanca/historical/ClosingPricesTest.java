@@ -8,9 +8,9 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.vizerium.barabanca.dao.UnitPriceData;
 import com.vizerium.barabanca.trade.Trade;
 import com.vizerium.barabanca.trade.TradeBook;
+import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.trade.TradeAction;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -23,24 +23,24 @@ public class ClosingPricesTest {
 		unit = new HistoricalDataReader();
 	}
 
-	// @Test
+	@Test
 	public void test01_BankNiftyHourlyChartWithStopAndReverse() {
-		testStopAndReverse("BANKNIFTY", TimeFormat._1HOUR, 2018, 2018);
+		testStopAndReverse("BANKNIFTY", TimeFormat._1HOUR, 2012, 2018);
 	}
 
 	@Test
 	public void test02_BankNiftyDailyChartWithStopAndReverse() {
-		testStopAndReverse("BANKNIFTY", TimeFormat._1DAY, 2018, 2018);
+		testStopAndReverse("BANKNIFTY", TimeFormat._1DAY, 2012, 2018);
 	}
 
-	// @Test
+	@Test
 	public void test03_NiftyHourlyChartWithStopAndReverse() {
 		testStopAndReverse("NIFTY", TimeFormat._1HOUR, 2012, 2018);
 	}
 
-	// @Test
+	@Test
 	public void test04_NiftyDailyChartWithStopAndReverse() {
-		testStopAndReverse("NIFTY", TimeFormat._1DAY, 2016, 2016);
+		testStopAndReverse("NIFTY", TimeFormat._1DAY, 2012, 2018);
 	}
 
 	public TradeBook testStopAndReverse(String scripName, TimeFormat timeFormat, int startYear, int endYear) {

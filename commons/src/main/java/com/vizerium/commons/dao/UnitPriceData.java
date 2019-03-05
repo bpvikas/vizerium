@@ -1,4 +1,4 @@
-package com.vizerium.barabanca.dao;
+package com.vizerium.commons.dao;
 
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.vizerium.commons.calculators.MovingAverage;
+import com.vizerium.commons.dao.UnitPrice;
 
 public class UnitPriceData extends UnitPrice {
 
