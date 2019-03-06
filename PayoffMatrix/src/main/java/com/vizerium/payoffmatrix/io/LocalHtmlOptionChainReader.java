@@ -55,10 +55,10 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 			String optionChainDateString = "";
 			for (Element e : spanElements) {
 				if (e.text().contains("Underlying Index")) {
-					System.out.println(e.text());
+					logger.info(e.text());
 					underlyingPrice = e.text().substring(e.text().lastIndexOf(' ') + 1).replace(",", "");
 				} else if (e.text().contains("IST")) {
-					System.out.println(e.text());
+					logger.info(e.text());
 					optionChainDateString = e.text().substring(6, e.text().lastIndexOf(" "));
 				}
 				if (!StringUtils.isAnyBlank(underlyingPrice, optionChainDateString)) {

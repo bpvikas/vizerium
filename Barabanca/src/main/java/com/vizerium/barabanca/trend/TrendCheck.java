@@ -27,10 +27,12 @@ public class TrendCheck {
 
 	public List<PeriodTrend> getTrendByEMASlope(String scripName, LocalDateTime startDateTime, LocalDateTime endDateTime, TimeFormat timeFormat, int ma) {
 
-		updateStartAndEndDatesForLookbackPeriods(timeFormat, startDateTime, endDateTime);
-		updateStartAndEndDatesForWeekendsAndHolidays(scripName, startDateTime, endDateTime);
+		DateTimeTuple dateTimeTuple = new DateTimeTuple(startDateTime, endDateTime);
+		dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, timeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
+		dateTimeTuple = updateStartAndEndDatesForWeekendsAndHolidays(scripName, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
 
-		List<UnitPriceData> unitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName, startDateTime, endDateTime, timeFormat);
+		List<UnitPriceData> unitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime(),
+				timeFormat);
 		List<PeriodTrend> periodTrends = new ArrayList<PeriodTrend>();
 
 		for (int i = LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND - 1; i < unitPriceDataList.size(); i++) {
@@ -55,49 +57,89 @@ public class TrendCheck {
 		return null;
 	}
 
-	private void updateStartAndEndDatesForLookbackPeriods(TimeFormat timeFormat, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+	private DateTimeTuple updateStartAndEndDatesForLookbackPeriods(String scripName, TimeFormat timeFormat, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+		LocalDateTime updatedStartDateTime = null;
 		if (timeFormat.equals(TimeFormat._1MIN)) {
-			startDateTime = startDateTime.minusMinutes(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND);
+			updatedStartDateTime = startDateTime.minusMinutes(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND);
 			endDateTime = endDateTime.plusMinutes(1);
 		} else if (timeFormat.equals(TimeFormat._5MIN)) {
-			startDateTime = startDateTime.minusMinutes(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND * timeFormat.getInterval());
+			updatedStartDateTime = startDateTime.minusMinutes(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND * timeFormat.getInterval());
 			endDateTime = endDateTime.plusMinutes(1 * timeFormat.getInterval());
 		} else if (timeFormat.equals(TimeFormat._1HOUR)) {
-			startDateTime = startDateTime.minusHours(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND);
+			updatedStartDateTime = startDateTime.minusHours(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND);
 			endDateTime = endDateTime.plusHours(1);
 		} else if (timeFormat.equals(TimeFormat._1DAY)) {
-			startDateTime = startDateTime.minusDays(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND);
+			updatedStartDateTime = startDateTime.minusDays(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND);
 			endDateTime = endDateTime.plusDays(1);
 		} else if (timeFormat.equals(TimeFormat._1WEEK)) {
-			startDateTime = startDateTime.minusWeeks(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND);
+			updatedStartDateTime = startDateTime.minusWeeks(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND);
 			endDateTime = endDateTime.plusWeeks(1);
 		} else if (timeFormat.equals(TimeFormat._1MONTH)) {
-			startDateTime = startDateTime.minusMonths(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND).withDayOfMonth(1);
+			updatedStartDateTime = startDateTime.minusMonths(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND).withDayOfMonth(1);
 			endDateTime = endDateTime.plusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
 		} else {
 			throw new RuntimeException("Unable to determine timeFormat " + timeFormat);
 		}
+
+		// Need to make a recursive call to take care of a scenario where the original start Date is a Monday, 3 days back goes to Friday.
+		// Then we cannot get a trend for it, because trend needs 3 "business" days backward to calculate the trend. In this case, we were getting only
+		// one "business" day prior to Monday which was Friday.
+		while (historicalDataReader.getUnitPriceDataForRange(scripName, updatedStartDateTime, startDateTime, timeFormat).size() < LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND) {
+			DateTimeTuple dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, timeFormat, updatedStartDateTime, endDateTime);
+			updatedStartDateTime = dateTimeTuple.getStartDateTime();
+		}
+
+		return new DateTimeTuple(updatedStartDateTime, endDateTime);
 	}
 
-	private void updateStartAndEndDatesForWeekendsAndHolidays(String scripName, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+	private DateTimeTuple updateStartAndEndDatesForWeekendsAndHolidays(String scripName, LocalDateTime startDateTime, LocalDateTime endDateTime) {
 		// Calculating for Weekends and Holidays
 		if (DayOfWeek.SATURDAY.equals(startDateTime.getDayOfWeek())) {
-			startDateTime.minusDays(1);
+			startDateTime = startDateTime.minusDays(1);
 		} else if (DayOfWeek.SUNDAY.equals(startDateTime.getDayOfWeek())) {
-			startDateTime.minusDays(2);
+			startDateTime = startDateTime.minusDays(2);
 		}
 
 		if (DayOfWeek.SATURDAY.equals(endDateTime.getDayOfWeek())) {
-			endDateTime.plusDays(2);
+			endDateTime = endDateTime.plusDays(2);
 		} else if (DayOfWeek.SUNDAY.equals(endDateTime.getDayOfWeek())) {
-			endDateTime.plusDays(1);
+			endDateTime = endDateTime.plusDays(1);
 		}
 
 		while (CollectionUtils.isEmpty(historicalDataReader.getUnitPriceDataForRange(scripName, startDateTime, startDateTime, TimeFormat._1DAY))) {
-			startDateTime.minusDays(1);
+			startDateTime = startDateTime.minusDays(1);
 		}
 		while (CollectionUtils.isEmpty(historicalDataReader.getUnitPriceDataForRange(scripName, endDateTime, endDateTime, TimeFormat._1DAY))) {
-			endDateTime.plusDays(1);
+			endDateTime = endDateTime.plusDays(1);
+		}
+
+		return new DateTimeTuple(startDateTime, endDateTime);
+	}
+
+	private static class DateTimeTuple {
+		private LocalDateTime startDateTime;
+
+		private LocalDateTime endDateTime;
+
+		DateTimeTuple(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+			if (endDateTime.isBefore(startDateTime)) {
+				throw new RuntimeException("endDateTime " + endDateTime + " cannot be before startDateTime " + startDateTime);
+			}
+			this.startDateTime = startDateTime;
+			this.endDateTime = endDateTime;
+		}
+
+		public LocalDateTime getStartDateTime() {
+			return startDateTime;
+		}
+
+		public LocalDateTime getEndDateTime() {
+			return endDateTime;
+		}
+
+		@Override
+		public String toString() {
+			return startDateTime + " -> " + endDateTime;
 		}
 	}
 }

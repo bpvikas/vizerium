@@ -53,7 +53,7 @@ public class HistoricalDataReader {
 
 			ZipEntry entry = null;
 			while ((entry = localRawDataFileStream.getNextEntry()) != null) {
-				System.out.println(entry.getName());
+				logger.info(entry.getName());
 
 				if (entry.getName().contains("Consolidated/") && !entry.isDirectory()) {
 
@@ -134,7 +134,7 @@ public class HistoricalDataReader {
 
 						if (!unitPriceData.getDate().isEqual(currentParsedDate)) {
 							if (!currentParsedDate.equals(LocalDate.MIN) && firstFourTimingsOfCurrentDate.size() < 4) {
-								System.out.println("1 min data for " + currentParsedDate + " has less than 4 entries.");
+								logger.warn("1 min data for " + currentParsedDate + " has less than 4 entries.");
 							}
 
 							currentParsedDate = unitPriceData.getDate();
@@ -168,21 +168,21 @@ public class HistoricalDataReader {
 			for (Map.Entry<LocalDate, LocalTime> entry : startTimeMap.entrySet()) {
 				if (!entry.getValue().equals(LocalTime.of(9, 8)) && !entry.getValue().equals(LocalTime.of(9, 1)) && !entry.getValue().equals(LocalTime.of(9, 9))
 						&& !entry.getValue().equals(LocalTime.of(9, 16)) && !entry.getValue().equals(LocalTime.of(9, 55)) && !entry.getValue().equals(LocalTime.of(9, 56))) {
-					System.out.println(entry.getKey() + "\t" + entry.getValue() + "\t" + endTimeMap.get(entry.getKey()));
+					logger.info(entry.getKey() + "\t" + entry.getValue() + "\t" + endTimeMap.get(entry.getKey()));
 				}
 			}
 
-			System.out.println("**********************************");
+			logger.info("**********************************");
 			for (Map.Entry<LocalDate, LocalTime> entry : endTimeMap.entrySet()) {
 				if (entry.getValue().isBefore(LocalTime.of(15, 29)) || entry.getValue().isAfter(LocalTime.of(15, 34))) {
-					System.out.println(entry.getKey() + "\t" + startTimeMap.get(entry.getKey()) + "\t" + entry.getValue());
+					logger.info(entry.getKey() + "\t" + startTimeMap.get(entry.getKey()) + "\t" + entry.getValue());
 				}
 			}
 
-			System.out.println("**********************************");
-			System.out.println("No of unique first four timings : " + firstFourTimingsSet.size());
+			logger.info("**********************************");
+			logger.info("No of unique first four timings : " + firstFourTimingsSet.size());
 			for (StartTimingPattern firstFourTimings : firstFourTimingsSet) {
-				System.out.println(firstFourTimings);
+				logger.info(firstFourTimings);
 			}
 
 		} catch (IOException ioe) {
@@ -457,6 +457,10 @@ public class HistoricalDataReader {
 			throw new RuntimeException(timeFormat.getProperty() + " data file does not exist for " + scripName);
 		}
 
+		if (endDateTime.isBefore(startDateTime)) {
+			throw new RuntimeException("endDateTime " + endDateTime + " cannot be before startDateTime " + startDateTime);
+		}
+
 		NumberFormat nf = NumberFormat.getInstance();
 		nf.setMinimumIntegerDigits(2);
 		nf.setMaximumIntegerDigits(2);
@@ -490,9 +494,10 @@ public class HistoricalDataReader {
 				while (StringUtils.isNotBlank(dataLine = br.readLine())) {
 					String[] dataLineDetails = dataLine.split(",");
 					UnitPriceData unitPriceData = new UnitPriceData(dataLineDetails);
-					if (timeFormat.getInterval() > 0 && !unitPriceData.getDateTime().isBefore(startDateTime) && !unitPriceData.getDateTime().isAfter(endDateTime)) {
+					if (timeFormat.getInterval() > 0 && !TimeFormat._1DAY.equals(timeFormat) && !unitPriceData.getDateTime().isBefore(startDateTime)
+							&& !unitPriceData.getDateTime().isAfter(endDateTime)) {
 						unitPriceDataList.add(unitPriceData);
-					} else if (timeFormat.getInterval() <= 0 && !unitPriceData.getDate().isBefore(startDateTime.toLocalDate())
+					} else if ((timeFormat.getInterval() <= 0 || TimeFormat._1DAY.equals(timeFormat)) && !unitPriceData.getDate().isBefore(startDateTime.toLocalDate())
 							&& !unitPriceData.getDate().isAfter(endDateTime.toLocalDate())) {
 						unitPriceDataList.add(unitPriceData);
 					}

@@ -3,6 +3,8 @@ package com.vizerium.barabanca.trade;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import org.apache.log4j.Logger;
+
 import com.vizerium.barabanca.historical.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.trade.TradeAction;
@@ -10,6 +12,8 @@ import com.vizerium.commons.trade.TradeAction;
 public class TradeBook extends ArrayList<Trade> {
 
 	private static final long serialVersionUID = -198397680690476669L;
+
+	private static final Logger logger = Logger.getLogger(TradeBook.class);
 
 	private float payoff = Float.MIN_VALUE;
 
@@ -30,7 +34,7 @@ public class TradeBook extends ArrayList<Trade> {
 		while (i.hasNext()) {
 			Trade t = i.next();
 			if (Math.abs(t.getPayoff() / t.getExitPrice()) > 0.1f) {
-				// System.out.println(t);
+				logger.debug(t);
 			}
 		}
 	}
@@ -84,16 +88,18 @@ public class TradeBook extends ArrayList<Trade> {
 	}
 
 	public boolean addLongTrade(Trade trade) {
+		logger.debug("Going long.");
 		trade.setAction(TradeAction.LONG);
 		return add(trade);
 	}
 
 	public boolean addShortTrade(Trade trade) {
+		logger.debug("Going short.");
 		trade.setAction(TradeAction.SHORT);
 		return add(trade);
 	}
 
-	private void exitLastTrade(UnitPriceData unitPriceData) {
+	public void exitLastTrade(UnitPriceData unitPriceData) {
 		if (size() != 0) {
 			Trade currentTrade = last();
 			if ((currentTrade.getExitDateTime() != null) || (currentTrade.getExitPrice() != 0.0f)) {
@@ -101,12 +107,14 @@ public class TradeBook extends ArrayList<Trade> {
 			}
 			currentTrade.setExitDateTime(unitPriceData.getDateTime());
 			currentTrade.setExitPrice(unitPriceData.getClose());
+			logger.debug("Exiting Trade : " + currentTrade);
 		}
 	}
 
 	public void exitLongTrade(UnitPriceData unitPriceData) {
 		if (size() != 0) {
 			if (last().getAction().equals(TradeAction.LONG)) {
+				logger.debug("Closing long.");
 				exitLastTrade(unitPriceData);
 			} else {
 				throw new RuntimeException("Last trade is SHORT.");
@@ -117,6 +125,7 @@ public class TradeBook extends ArrayList<Trade> {
 	public void coverShortTrade(UnitPriceData unitPriceData) {
 		if (size() != 0) {
 			if (last().getAction().equals(TradeAction.SHORT)) {
+				logger.debug("Closing short.");
 				exitLastTrade(unitPriceData);
 			} else {
 				throw new RuntimeException("Last trade is LONG.");
@@ -126,13 +135,13 @@ public class TradeBook extends ArrayList<Trade> {
 
 	public void printStatus(TimeFormat timeFormat) {
 		if (size() > 0) {
-			System.out.println(get(0).getScripName() + " " + timeFormat.getProperty() + " " + String.valueOf(get(0).getExitDateTime().getYear()) + " " + "\t"
+			logger.info(get(0).getScripName() + " " + timeFormat.getProperty() + " " + String.valueOf(get(0).getExitDateTime().getYear()) + " " + "\t"
 					+ (isProfitable() ? "PROFIT" : "LOSS") + "\t" + getPayoff() + "\t" + size() + " trades.\n" + String.valueOf(profitTradesCount) + " profit trades fetching "
 					+ String.valueOf(profitPayoff) + " points " + profitPayoff / profitTradesCount + " per trade.\n" + String.valueOf(lossTradesCount) + " loss trades losing "
 					+ String.valueOf(lossPayoff) + " points " + lossPayoff / lossTradesCount + " per trade. \nLargest profit @ " + largestProfitTrade + "\nLargest loss @ "
 					+ largestLossTrade + ".\n");
 		} else {
-			System.out.println("No trades executed.");
+			logger.info("No trades executed.");
 		}
 	}
 }

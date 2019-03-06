@@ -3,8 +3,11 @@ package com.vizerium.barabanca.historical;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import com.vizerium.barabanca.trade.Trade;
 import com.vizerium.barabanca.trade.TradeBook;
@@ -14,16 +17,21 @@ import com.vizerium.barabanca.trend.TrendCheck;
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.trade.TradeAction;
 
-public class ClosingPricesWithTrendCheckTest {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public abstract class ClosingPricesWithTrendCheckTest {
+
+	private static final Logger logger = Logger.getLogger(ClosingPricesWithTrendCheckTest.class);
 
 	private HistoricalDataReader historicalDataReader;
-	private TrendCheck trendCheck;
+	protected TrendCheck trendCheck;
 
 	@Before
 	public void setUp() throws Exception {
 		historicalDataReader = new HistoricalDataReader();
 		trendCheck = new TrendCheck(historicalDataReader);
 	}
+
+	protected abstract List<PeriodTrend> getPeriodTrends(String scripName, int year, TimeFormat trendTimeFormat);
 
 	@Test
 	public void test01_BankNiftyHourlyChartWithClosingPricesAndTrendCheck() {
@@ -59,7 +67,7 @@ public class ClosingPricesWithTrendCheckTest {
 
 		List<UnitPriceData> unitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName, LocalDateTime.of(year, 1, 1, 6, 0),
 				LocalDateTime.of(year, 12, 31, 17, 00), timeFormat);
-		List<PeriodTrend> periodTrends = trendCheck.getTrendByEMASlope(scripName, LocalDateTime.of(year, 1, 1, 6, 0), LocalDateTime.of(year, 12, 31, 17, 00), trendTimeFormat, 13);
+		List<PeriodTrend> periodTrends = getPeriodTrends(scripName, year, trendTimeFormat);
 
 		TradeBook tradeBook = new TradeBook();
 		TradeAction currentTradeAction = null;
@@ -69,36 +77,34 @@ public class ClosingPricesWithTrendCheckTest {
 			}
 
 			if (unitPriceDataList.get(i).getClose() > unitPriceDataList.get(i - 1).getClose()) {
-				// System.out.println("For date " + unitPriceDataList.get(i).getDate() + " New close " + unitPriceDataList.get(i).getClose() + " MORE than old close "
-				// + unitPriceDataList.get(i - 1).getClose());
+				logger.debug("For date " + unitPriceDataList.get(i).getDateTime() + " New close " + unitPriceDataList.get(i).getClose() + " MORE than old close "
+						+ unitPriceDataList.get(i - 1).getClose());
 
 				Trend trend = getPriorTrend(unitPriceDataList.get(i).getDateTime(), periodTrends);
 				if (!Trend.DOWN.equals(trend) && tradeBook.isLastTradeShort() && !tradeBook.isLastTradeExited()) {
-					// System.out.println("Closing short.");
 					tradeBook.coverShortTrade(unitPriceDataList.get(i));
 				}
 				if (Trend.UP.equals(trend) && tradeBook.isLastTradeExited()) {
-					// System.out.println("Going long.");
 					currentTradeAction = TradeAction.LONG;
 					tradeBook.addLongTrade(new Trade(scripName, currentTradeAction, unitPriceDataList.get(i).getDateTime(), unitPriceDataList.get(i).getClose()));
 				}
 
 			} else {
-				// System.out.println("For date " + unitPriceDataList.get(i).getDate() + " New close " + unitPriceDataList.get(i).getClose() + " LESS than old close "
-				// + unitPriceDataList.get(i - 1).getClose());
+				logger.debug("For date " + unitPriceDataList.get(i).getDateTime() + " New close " + unitPriceDataList.get(i).getClose() + " LESS than old close "
+						+ unitPriceDataList.get(i - 1).getClose());
 				Trend trend = getPriorTrend(unitPriceDataList.get(i).getDateTime(), periodTrends);
 				if (!Trend.UP.equals(trend) && tradeBook.isLastTradeLong() && !tradeBook.isLastTradeExited()) {
-					// System.out.println("Closing long.");
 					tradeBook.exitLongTrade(unitPriceDataList.get(i));
 				}
 
 				if (Trend.DOWN.equals(trend) && tradeBook.isLastTradeExited()) {
-					// System.out.println("Going short.");
 					currentTradeAction = TradeAction.SHORT;
 					tradeBook.addShortTrade(new Trade(scripName, currentTradeAction, unitPriceDataList.get(i).getDateTime(), unitPriceDataList.get(i).getClose()));
 				}
 			}
-
+			if (i == unitPriceDataList.size() - 1 && !tradeBook.isLastTradeExited()) {
+				tradeBook.exitLastTrade(unitPriceDataList.get(i));
+			}
 		}
 		tradeBook.printAllTrades();
 		tradeBook.printStatus(timeFormat);
@@ -109,7 +115,7 @@ public class ClosingPricesWithTrendCheckTest {
 	private Trend getPriorTrend(LocalDateTime unitPriceDateTime, List<PeriodTrend> periodTrends) {
 		for (int i = 0; i < periodTrends.size() - 1; i++) {
 			if (!periodTrends.get(i).getStartDateTime().isAfter(unitPriceDateTime) && !periodTrends.get(i + 1).getStartDateTime().isBefore(unitPriceDateTime)) {
-				// System.out.println(periodTrends.get(i));
+				logger.debug(periodTrends.get(i));
 				return periodTrends.get(i).getTrend();
 			}
 		}

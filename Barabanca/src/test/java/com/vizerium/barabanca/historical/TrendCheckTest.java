@@ -3,6 +3,7 @@ package com.vizerium.barabanca.historical;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -16,6 +17,8 @@ import com.vizerium.commons.dao.UnitPriceData;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TrendCheckTest {
 
+	private static final Logger logger = Logger.getLogger(TrendCheckTest.class);
+
 	private TrendCheck unit;
 
 	@Before
@@ -27,7 +30,7 @@ public class TrendCheckTest {
 	public void testBankNiftyTrendFor2018WeeklyBy13EMASlope() {
 		List<PeriodTrend> periodTrends = unit.getTrendByEMASlope("BANKNIFTY", LocalDateTime.of(2018, 1, 1, 0, 0), LocalDateTime.of(2018, 12, 31, 23, 59), TimeFormat._1WEEK, 13);
 		for (PeriodTrend periodTrend : periodTrends) {
-			System.out.println(periodTrend);
+			logger.info(periodTrend);
 		}
 	}
 
@@ -42,12 +45,12 @@ public class TrendCheckTest {
 		for (int i = 3; i < unitPriceDataList.size(); i++) {
 			if (unitPriceDataList.get(i - 3).getMACD(13, 26) < unitPriceDataList.get(i - 2).getMACD(13, 26)
 					&& unitPriceDataList.get(i - 2).getMACD(13, 26) < unitPriceDataList.get(i - 1).getMACD(13, 26)) {
-				System.out.println(unitPriceDataList.get(i).getDateTime().toString() + " : Prior trend is " + Trend.UP.name());
+				logger.info(unitPriceDataList.get(i).getDateTime().toString() + " : Prior trend is " + Trend.UP.name());
 			} else if (unitPriceDataList.get(i - 3).getMACD(13, 26) > unitPriceDataList.get(i - 2).getMACD(13, 26)
 					&& unitPriceDataList.get(i - 2).getMACD(13, 26) > unitPriceDataList.get(i - 1).getMACD(13, 26)) {
-				System.out.println(unitPriceDataList.get(i).getDateTime().toString() + " : Prior trend is " + Trend.DOWN.name());
+				logger.info(unitPriceDataList.get(i).getDateTime().toString() + " : Prior trend is " + Trend.DOWN.name());
 			} else {
-				System.out.println(unitPriceDataList.get(i).getDateTime().toString() + " : Prior trend is " + Trend.CHOPPY.name());
+				logger.info(unitPriceDataList.get(i).getDateTime().toString() + " : Prior trend is " + Trend.CHOPPY.name());
 			}
 		}
 	}

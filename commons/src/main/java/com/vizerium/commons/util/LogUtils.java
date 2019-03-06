@@ -16,6 +16,7 @@
 
 package com.vizerium.commons.util;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -33,6 +34,15 @@ public class LogUtils {
 			FileUtils.directoryPath = commandLineParameterDirectoryPath;
 		} else {
 			System.setProperty("directoryPath", FileUtils.directoryPath);
+		}
+	}
+
+	public static void main(String[] args) {
+		File logFile = new File(FileUtils.directoryPath + "output-log-v2/testrun.log");
+		if (logFile.exists()) {
+			String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+			boolean isRenamed = logFile.renameTo(new File(FileUtils.directoryPath + "output-log-v2/testrun_" + dateString + ".log"));
+			System.out.println("TestLogFile renamed : " + isRenamed);
 		}
 	}
 }
