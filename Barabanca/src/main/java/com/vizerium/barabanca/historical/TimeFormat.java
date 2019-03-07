@@ -38,4 +38,13 @@ public enum TimeFormat {
 	public int getInterval() {
 		return interval;
 	}
+
+	public TimeFormat getHigherTimeFormat() {
+		for (int i = 0; i < values().length - 1; i++) {
+			if (values()[i].equals(this)) {
+				return values()[i + 1];
+			}
+		}
+		return null;
+	}
 }
