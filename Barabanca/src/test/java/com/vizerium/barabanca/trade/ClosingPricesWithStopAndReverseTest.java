@@ -1,7 +1,6 @@
-package com.vizerium.barabanca.historical;
+package com.vizerium.barabanca.trade;
 
-import com.vizerium.barabanca.trade.Trade;
-import com.vizerium.barabanca.trade.TradeBook;
+import com.vizerium.barabanca.historical.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.trade.TradeAction;
 
@@ -10,7 +9,7 @@ public class ClosingPricesWithStopAndReverseTest extends ClosingPricesTest {
 	protected TradeAction currentTradeAction;
 
 	@Override
-	protected void executeForCurrentPriceGreaterThanPreviousPrice(String scripName, TradeBook tradeBook, UnitPriceData unitPriceData) {
+	protected void executeForCurrentUnitGreaterThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData unitPriceData) {
 		if (TradeAction.LONG != currentTradeAction) {
 			tradeBook.coverShortTrade(unitPriceData);
 			currentTradeAction = TradeAction.LONG;
@@ -19,7 +18,7 @@ public class ClosingPricesWithStopAndReverseTest extends ClosingPricesTest {
 	}
 
 	@Override
-	protected void executeForCurrentPriceLessThanPreviousPrice(String scripName, TradeBook tradeBook, UnitPriceData unitPriceData) {
+	protected void executeForCurrentUnitLessThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData unitPriceData) {
 		if (TradeAction.SHORT != currentTradeAction) {
 			tradeBook.exitLongTrade(unitPriceData);
 			currentTradeAction = TradeAction.SHORT;
@@ -28,7 +27,12 @@ public class ClosingPricesWithStopAndReverseTest extends ClosingPricesTest {
 	}
 
 	@Override
-	protected void getAdditionalDataPriorToIteration(String scripName, int year, TimeFormat trendTimeFormat) {
+	protected void executeForCurrentUnitChoppyWithPreviousUnit(UnitPriceData current, UnitPriceData previous) {
+
+	}
+
+	@Override
+	protected void getAdditionalDataPriorToIteration(String scripName, int year, TimeFormat timeFormat) {
 		currentTradeAction = null;
 	}
 }

@@ -1,4 +1,4 @@
-package com.vizerium.barabanca.historical;
+package com.vizerium.barabanca.trend;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,9 +9,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.vizerium.barabanca.trend.PeriodTrend;
-import com.vizerium.barabanca.trend.Trend;
-import com.vizerium.barabanca.trend.TrendCheck;
+import com.vizerium.barabanca.historical.HistoricalDataReader;
+import com.vizerium.barabanca.historical.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

@@ -1,4 +1,4 @@
-package com.vizerium.barabanca.historical;
+package com.vizerium.barabanca.trade;
 
 import com.vizerium.commons.calculators.MovingAverage;
 

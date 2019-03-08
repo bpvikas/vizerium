@@ -47,4 +47,13 @@ public enum TimeFormat {
 		}
 		return null;
 	}
+
+	public TimeFormat getLowerTimeFormat() {
+		for (int i = values().length - 1; i > 0; i--) {
+			if (values()[i].equals(this)) {
+				return values()[i - 1];
+			}
+		}
+		return null;
+	}
 }

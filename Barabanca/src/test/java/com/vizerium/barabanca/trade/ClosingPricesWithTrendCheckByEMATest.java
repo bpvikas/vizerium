@@ -1,8 +1,9 @@
-package com.vizerium.barabanca.historical;
+package com.vizerium.barabanca.trade;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.vizerium.barabanca.historical.TimeFormat;
 import com.vizerium.barabanca.trend.PeriodTrend;
 import com.vizerium.commons.calculators.MovingAverage;
 
