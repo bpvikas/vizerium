@@ -32,7 +32,7 @@ public class ClosingPricesWithStopAndReverseTest extends ClosingPricesTest {
 	}
 
 	@Override
-	protected void getAdditionalDataPriorToIteration(String scripName, int year, TimeFormat timeFormat) {
+	protected void getAdditionalDataPriorToIteration(String scripName, int year, int month, TimeFormat timeFormat) {
 		currentTradeAction = null;
 	}
 }

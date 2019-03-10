@@ -42,29 +42,41 @@ public class TradeBook extends ArrayList<Trade> {
 	public float getPayoff() {
 		if (payoff == Float.MIN_VALUE) {
 			payoff = 0.0f;
-			largestLossTrade = get(0);
-			largestProfitTrade = get(0);
-			ListIterator<Trade> i = listIterator();
-			while (i.hasNext()) {
-				Trade t = i.next();
-				float p = t.getPayoff();
-				if (p > 0.0f) {
-					profitPayoff += p;
-					++profitTradesCount;
-					if (p > largestProfitTrade.getPayoff()) {
-						largestProfitTrade = t;
+			if (size() > 0) {
+				largestLossTrade = get(0);
+				largestProfitTrade = get(0);
+				ListIterator<Trade> i = listIterator();
+				while (i.hasNext()) {
+					Trade t = i.next();
+					float p = t.getPayoff();
+					if (p > 0.0f) {
+						profitPayoff += p;
+						++profitTradesCount;
+						if (p > largestProfitTrade.getPayoff()) {
+							largestProfitTrade = t;
+						}
+					} else {
+						lossPayoff += p;
+						++lossTradesCount;
+						if (p < largestLossTrade.getPayoff()) {
+							largestLossTrade = t;
+						}
 					}
-				} else {
-					lossPayoff += p;
-					++lossTradesCount;
-					if (p < largestLossTrade.getPayoff()) {
-						largestLossTrade = t;
-					}
+					payoff += p;
 				}
-				payoff += p;
 			}
 		}
 		return payoff;
+	}
+
+	public float getProfitPayoff() {
+		getPayoff();
+		return profitPayoff;
+	}
+
+	public float getLossPayoff() {
+		getPayoff();
+		return lossPayoff;
 	}
 
 	public boolean isProfitable() {
@@ -135,11 +147,11 @@ public class TradeBook extends ArrayList<Trade> {
 
 	public void printStatus(TimeFormat timeFormat) {
 		if (size() > 0) {
-			logger.info(get(0).getScripName() + " " + timeFormat.getProperty() + " " + String.valueOf(get(0).getExitDateTime().getYear()) + " " + "\t"
-					+ (isProfitable() ? "PROFIT" : "LOSS") + "\t" + getPayoff() + "\t" + size() + " trades.\n" + String.valueOf(profitTradesCount) + " profit trades fetching "
-					+ String.valueOf(profitPayoff) + " points " + profitPayoff / profitTradesCount + " per trade.\n" + String.valueOf(lossTradesCount) + " loss trades losing "
-					+ String.valueOf(lossPayoff) + " points " + lossPayoff / lossTradesCount + " per trade. \nLargest profit @ " + largestProfitTrade + "\nLargest loss @ "
-					+ largestLossTrade + ".\n");
+			logger.info(get(0).getScripName() + " " + timeFormat.getProperty() + " " + String.valueOf(get(0).getExitDateTime().getYear()) + " "
+					+ String.valueOf(get(0).getExitDateTime().getMonth().name().substring(0, 3)) + " " + "\t" + (isProfitable() ? "PROFIT" : "LOSS") + "\t" + getPayoff() + "\t"
+					+ size() + " trades.\n" + String.valueOf(profitTradesCount) + " profit trades fetching " + String.valueOf(profitPayoff) + " points "
+					+ profitPayoff / profitTradesCount + " per trade.\n" + String.valueOf(lossTradesCount) + " loss trades losing " + String.valueOf(lossPayoff) + " points "
+					+ lossPayoff / lossTradesCount + " per trade. \nLargest profit @ " + largestProfitTrade + "\nLargest loss @ " + largestLossTrade + ".\n");
 		} else {
 			logger.info("No trades executed.");
 		}

@@ -13,7 +13,7 @@ public abstract class EMACrossoverTest extends TradeStrategyTest {
 	protected abstract int getSlowMA();
 
 	@Override
-	protected void getAdditionalDataPriorToIteration(String scripName, int year, TimeFormat timeFormat) {
+	protected void getAdditionalDataPriorToIteration(String scripName, int year, int month, TimeFormat timeFormat) {
 		currentTradeAction = null;
 	}
 

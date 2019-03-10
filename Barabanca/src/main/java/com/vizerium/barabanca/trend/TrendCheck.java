@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 
+import com.vizerium.barabanca.historical.HistoricalDataDateRange;
 import com.vizerium.barabanca.historical.HistoricalDataReader;
 import com.vizerium.barabanca.historical.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
@@ -29,7 +30,7 @@ public class TrendCheck {
 
 		DateTimeTuple dateTimeTuple = new DateTimeTuple(startDateTime, endDateTime);
 		dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, timeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
-		dateTimeTuple = updateStartAndEndDatesForWeekendsAndHolidays(scripName, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
+		dateTimeTuple = updateStartAndEndDatesForWeekendsAndHolidays(scripName, timeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
 
 		List<UnitPriceData> unitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime(),
 				timeFormat);
@@ -81,6 +82,14 @@ public class TrendCheck {
 			throw new RuntimeException("Unable to determine timeFormat " + timeFormat);
 		}
 
+		// This is to check boundary conditions of historical data
+		if (startDateTime.isBefore(HistoricalDataDateRange.getStartDateTime(scripName, timeFormat))) {
+			startDateTime = HistoricalDataDateRange.getStartDateTime(scripName, timeFormat);
+		}
+		if (endDateTime.isAfter(HistoricalDataDateRange.getEndDateTime(scripName, timeFormat))) {
+			endDateTime = HistoricalDataDateRange.getEndDateTime(scripName, timeFormat);
+		}
+
 		// Need to make a recursive call to take care of a scenario where the original start Date is a Monday, 3 days back goes to Friday.
 		// Then we cannot get a trend for it, because trend needs 3 "business" days backward to calculate the trend. In this case, we were getting only
 		// one "business" day prior to Monday which was Friday.
@@ -92,7 +101,7 @@ public class TrendCheck {
 		return new DateTimeTuple(updatedStartDateTime, endDateTime);
 	}
 
-	private DateTimeTuple updateStartAndEndDatesForWeekendsAndHolidays(String scripName, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+	private DateTimeTuple updateStartAndEndDatesForWeekendsAndHolidays(String scripName, TimeFormat timeFormat, LocalDateTime startDateTime, LocalDateTime endDateTime) {
 		// Calculating for Weekends and Holidays
 		if (DayOfWeek.SATURDAY.equals(startDateTime.getDayOfWeek())) {
 			startDateTime = startDateTime.minusDays(1);
@@ -104,6 +113,14 @@ public class TrendCheck {
 			endDateTime = endDateTime.plusDays(2);
 		} else if (DayOfWeek.SUNDAY.equals(endDateTime.getDayOfWeek())) {
 			endDateTime = endDateTime.plusDays(1);
+		}
+
+		// This is to check boundary conditions of historical data
+		if (startDateTime.isBefore(HistoricalDataDateRange.getStartDateTime(scripName, timeFormat))) {
+			startDateTime = HistoricalDataDateRange.getStartDateTime(scripName, timeFormat);
+		}
+		if (endDateTime.isAfter(HistoricalDataDateRange.getEndDateTime(scripName, timeFormat))) {
+			endDateTime = HistoricalDataDateRange.getEndDateTime(scripName, timeFormat);
 		}
 
 		while (CollectionUtils.isEmpty(historicalDataReader.getUnitPriceDataForRange(scripName, startDateTime, startDateTime, TimeFormat._1DAY))) {

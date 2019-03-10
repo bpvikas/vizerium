@@ -40,9 +40,9 @@ public class HistoricalDataReader {
 
 	private File rawDataZipFile;
 
-	private static String rawDataDirectoryPath = FileUtils.directoryPath + "underlying-raw-data-v2/";
-	private static String extractedDataDirectoryPath = FileUtils.directoryPath + "underlying-raw-data-v2-extract/";
-	private static String parsedExtractedDataDirectoryPath = extractedDataDirectoryPath + "parsedData/";
+	private static final String rawDataDirectoryPath = FileUtils.directoryPath + "underlying-raw-data-v2/";
+	private static final String extractedDataDirectoryPath = FileUtils.directoryPath + "underlying-raw-data-v2-extract/";
+	private static final String parsedExtractedDataDirectoryPath = extractedDataDirectoryPath + "parsedData/";
 
 	public void extractRawData() {
 		try {
@@ -75,6 +75,11 @@ public class HistoricalDataReader {
 
 			File extractDirectory = new File(parsedExtractedDataDirectoryPath);
 			for (File extractFile : extractDirectory.listFiles()) {
+				if (extractFile.isDirectory()) {
+					for (File extractSubFile : extractFile.listFiles()) {
+						extractSubFile.delete();
+					}
+				}
 				extractFile.delete();
 			}
 
@@ -205,6 +210,7 @@ public class HistoricalDataReader {
 					String dataLine = null;
 
 					LocalDate currentParsedDate = LocalDate.MIN;
+					// TreeMap required for sorting capability, and ensures that the keys stored in it are in a natural order by design.
 					TreeMap<LocalDate, List<UnitPriceData>> currentMonthUnitPrices = new TreeMap<LocalDate, List<UnitPriceData>>();
 					List<UnitPriceData> currentDateUnitPrices = new ArrayList<UnitPriceData>();
 
@@ -250,14 +256,13 @@ public class HistoricalDataReader {
 						if (!timeFormatForScripDirectory.exists()) {
 							timeFormatForScripDirectory.mkdir();
 						}
-
 						BufferedWriter bw = new BufferedWriter(new FileWriter(extractedDataDirectoryPath + timeFormat.getProperty() + "/" + scripName + "/"
 								+ parsedExtractedDataFile.getName()));
 
 						for (LocalDate currentDate : currentMonthUnitPrices.keySet()) {
 							List<UnitPriceData> currentDateUnitPricesForIntervalCalculation = currentMonthUnitPrices.get(currentDate);
 
-							// The below if condition is for a special check on date 2009/5/18 when the 2009 election results caused an upper circuit and the NSE had to
+							// The below if (>=4) condition is for a special check on date 2009/5/18 when the 2009 election results caused an upper circuit and the NSE had to
 							// halt trading for the day within 1 minute twice.
 							if (currentDateUnitPricesForIntervalCalculation.size() >= 4) {
 								StartTimingPattern currentDateStartTimePattern = StartTimingPattern.isValid(currentDate, new LocalTime[] {
@@ -273,6 +278,7 @@ public class HistoricalDataReader {
 							for (int i = 0; i < currentDateUnitPricesForIntervalCalculation.size(); i++) {
 								if (i % timeFormat.getInterval() == 0) {
 									if (i != 0) {
+										HistoricalDataDateRange.setStartDateTime(scripName, timeFormat, currentIntervalUnitPriceData.getDateTime());
 										bw.write(currentIntervalUnitPriceData.toString());
 										bw.newLine();
 									}
@@ -282,6 +288,10 @@ public class HistoricalDataReader {
 									updateCurrentUnitPriceDataIntoCurrentIntervalUnitPriceData(currentUnitPriceData, currentIntervalUnitPriceData);
 								}
 								if (i == currentDateUnitPricesForIntervalCalculation.size() - 1) {
+									if (TimeFormat._1DAY.equals(timeFormat)) {
+										HistoricalDataDateRange.setStartDateTime(scripName, timeFormat, currentIntervalUnitPriceData.getDateTime());
+									}
+									HistoricalDataDateRange.setEndDateTime(scripName, timeFormat, currentIntervalUnitPriceData.getDateTime());
 									bw.write(currentIntervalUnitPriceData.toString());
 									if (!currentDate.equals(currentMonthUnitPrices.lastKey())) {
 										// The above if condition is so that a blank line is not created at the end of the file,
@@ -391,6 +401,7 @@ public class HistoricalDataReader {
 						for (UnitPriceData currentUnitPriceData : _1DayUnitPriceDataList) {
 							if (!(currentUnitPriceData.getDate().get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear()) == currentParsedDateWeekOfYear)) {
 								if (currentParsedDateWeekOfYear > 0) {
+									HistoricalDataDateRange.setStartDateTime(scripName, timeFormat, currentIntervalUnitPriceData.getDateTime());
 									bw.write(currentIntervalUnitPriceData.toString());
 									bw.newLine();
 								}
@@ -401,10 +412,10 @@ public class HistoricalDataReader {
 								updateCurrentUnitPriceDataIntoCurrentIntervalUnitPriceData(currentUnitPriceData, currentIntervalUnitPriceData);
 							}
 							if (_1DayUnitPriceDataList.get(_1DayUnitPriceDataList.size() - 1).equals(currentUnitPriceData)) {
+								HistoricalDataDateRange.setEndDateTime(scripName, timeFormat, currentIntervalUnitPriceData.getDateTime());
 								bw.write(currentIntervalUnitPriceData.toString());
 							}
 						}
-
 					} else if (TimeFormat._1MONTH.equals(timeFormat)) {
 						int currentMonth = 0;
 						UnitPriceData currentIntervalUnitPriceData = _1DayUnitPriceDataList.get(0);
@@ -412,6 +423,7 @@ public class HistoricalDataReader {
 						for (UnitPriceData currentUnitPriceData : _1DayUnitPriceDataList) {
 							if (!(currentUnitPriceData.getDate().getMonthValue() == currentMonth)) {
 								if (currentMonth > 0) {
+									HistoricalDataDateRange.setStartDateTime(scripName, timeFormat, currentIntervalUnitPriceData.getDateTime());
 									bw.write(currentIntervalUnitPriceData.toString());
 									bw.newLine();
 								}
@@ -422,6 +434,7 @@ public class HistoricalDataReader {
 								updateCurrentUnitPriceDataIntoCurrentIntervalUnitPriceData(currentUnitPriceData, currentIntervalUnitPriceData);
 							}
 							if (_1DayUnitPriceDataList.get(_1DayUnitPriceDataList.size() - 1).equals(currentUnitPriceData)) {
+								HistoricalDataDateRange.setEndDateTime(scripName, timeFormat, currentIntervalUnitPriceData.getDateTime());
 								bw.write(currentIntervalUnitPriceData.toString());
 							}
 						}

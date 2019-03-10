@@ -27,11 +27,11 @@ public abstract class ClosingPricesWithTrendCheckTest extends ClosingPricesTest 
 		trendCheck = new TrendCheck(historicalDataReader);
 	}
 
-	protected abstract List<PeriodTrend> getPeriodTrends(String scripName, int year, TimeFormat trendTimeFormat);
+	protected abstract List<PeriodTrend> getPeriodTrends(String scripName, int year, int month, TimeFormat trendTimeFormat);
 
 	@Override
-	protected void getAdditionalDataPriorToIteration(String scripName, int year, TimeFormat timeFormat) {
-		periodTrends = getPeriodTrends(scripName, year, timeFormat.getHigherTimeFormat());
+	protected void getAdditionalDataPriorToIteration(String scripName, int year, int month, TimeFormat timeFormat) {
+		periodTrends = getPeriodTrends(scripName, year, month, timeFormat.getHigherTimeFormat());
 	}
 
 	@Override
@@ -65,9 +65,12 @@ public abstract class ClosingPricesWithTrendCheckTest extends ClosingPricesTest 
 	private Trend getPriorTrend(LocalDateTime unitPriceDateTime, List<PeriodTrend> periodTrends) {
 		for (int i = 0; i < periodTrends.size() - 1; i++) {
 			if (!periodTrends.get(i).getStartDateTime().isAfter(unitPriceDateTime) && !periodTrends.get(i + 1).getStartDateTime().isBefore(unitPriceDateTime)) {
-				logger.debug(periodTrends.get(i));
+				logger.debug("For " + unitPriceDateTime + ", " + periodTrends.get(i));
 				return periodTrends.get(i).getTrend();
 			}
+		}
+		if (unitPriceDateTime.isAfter(periodTrends.get(periodTrends.size() - 1).getStartDateTime())) {
+			return periodTrends.get(periodTrends.size() - 1).getTrend();
 		}
 		throw new RuntimeException("Unable to determine Trend for " + unitPriceDateTime);
 	}

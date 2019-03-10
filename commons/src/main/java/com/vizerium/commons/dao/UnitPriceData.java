@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.vizerium.commons.calculators.MovingAverage;
-import com.vizerium.commons.dao.UnitPrice;
 
 public class UnitPriceData extends UnitPrice {
 
@@ -112,10 +111,6 @@ public class UnitPriceData extends UnitPrice {
 	public void setMovingAverage(MovingAverage ma, float value) {
 		this.movingAverages.add(new MovingAverageAndValue(ma, value));
 		Collections.sort(movingAverages);
-	}
-
-	public float getMACD(int ma1, int ma2) {
-		return getMovingAverage(ma1) - getMovingAverage(ma2);
 	}
 
 	@Override
