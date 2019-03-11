@@ -10,6 +10,7 @@ import com.vizerium.barabanca.historical.TimeFormat;
 import com.vizerium.barabanca.trend.PeriodTrend;
 import com.vizerium.barabanca.trend.Trend;
 import com.vizerium.barabanca.trend.TrendCheck;
+import com.vizerium.commons.calculators.MovingAverage;
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.trade.TradeAction;
 
@@ -29,31 +30,42 @@ public abstract class ClosingPricesWithTrendCheckTest extends ClosingPricesTest 
 
 	protected abstract List<PeriodTrend> getPeriodTrends(String scripName, int year, int month, TimeFormat trendTimeFormat);
 
+	protected abstract MovingAverage getMovingAverage();
+
 	@Override
 	protected void getAdditionalDataPriorToIteration(String scripName, int year, int month, TimeFormat timeFormat) {
 		periodTrends = getPeriodTrends(scripName, year, month, timeFormat.getHigherTimeFormat());
 	}
 
 	@Override
-	protected void executeForCurrentUnitGreaterThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData unitPriceData) {
-		Trend trend = getPriorTrend(unitPriceData.getDateTime(), periodTrends);
+	protected void executeForCurrentUnitLessThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
+		Trend trend = getPriorTrend(current.getDateTime(), periodTrends);
 		if (!Trend.UP.equals(trend) && tradeBook.isLastTradeLong() && !tradeBook.isLastTradeExited()) {
-			tradeBook.exitLongTrade(unitPriceData);
+			tradeBook.exitLongTrade(current);
+		}
+
+		if (current.getClose() < current.getMovingAverage(getMovingAverage().getNumber()) && tradeBook.isLastTradeLong() && !tradeBook.isLastTradeExited()) {
+			tradeBook.exitLongTrade(current);
 		}
 
 		if (Trend.DOWN.equals(trend) && tradeBook.isLastTradeExited()) {
-			tradeBook.addShortTrade(new Trade(scripName, TradeAction.SHORT, unitPriceData.getDateTime(), unitPriceData.getClose()));
+			tradeBook.addShortTrade(new Trade(scripName, TradeAction.SHORT, current.getDateTime(), current.getClose()));
 		}
 	}
 
 	@Override
-	protected void executeForCurrentUnitLessThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData unitPriceData) {
-		Trend trend = getPriorTrend(unitPriceData.getDateTime(), periodTrends);
+	protected void executeForCurrentUnitGreaterThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
+		Trend trend = getPriorTrend(current.getDateTime(), periodTrends);
 		if (!Trend.DOWN.equals(trend) && tradeBook.isLastTradeShort() && !tradeBook.isLastTradeExited()) {
-			tradeBook.coverShortTrade(unitPriceData);
+			tradeBook.coverShortTrade(current);
 		}
+
+		if (current.getClose() > current.getMovingAverage(getMovingAverage().getNumber()) && tradeBook.isLastTradeShort() && !tradeBook.isLastTradeExited()) {
+			tradeBook.coverShortTrade(current);
+		}
+
 		if (Trend.UP.equals(trend) && tradeBook.isLastTradeExited()) {
-			tradeBook.addLongTrade(new Trade(scripName, TradeAction.LONG, unitPriceData.getDateTime(), unitPriceData.getClose()));
+			tradeBook.addLongTrade(new Trade(scripName, TradeAction.LONG, current.getDateTime(), current.getClose()));
 		}
 	}
 

@@ -124,7 +124,7 @@ public class Trade {
 	}
 
 	public String printUnrealisedStatus() {
-		return "UNREALISED max_p @ " + maxUnrealisedProfitDateTime + " @ " + nf.format(maxUnrealisedProfit) + " \tmax_l @ " + maxUnrealisedLossDateTime + " @ "
+		return "Unrealised max_p @ " + maxUnrealisedProfitDateTime + " @ " + nf.format(maxUnrealisedProfit) + " \tmax_l @ " + maxUnrealisedLossDateTime + " @ "
 				+ nf.format(maxUnrealisedLoss) + "\tcurrentPL " + nf.format(currentUnrealisedPL);
 	}
 
@@ -153,7 +153,7 @@ public class Trade {
 					maxUnrealisedLossDateTime = unitPriceData.getDateTime();
 				}
 			}
-			logger.debug(printUnrealisedStatus());
+			logger.debug(unitPriceData.getDateTime() + " " + printUnrealisedStatus());
 		}
 	}
 
@@ -175,6 +175,6 @@ public class Trade {
 
 	public String toString() {
 		return action.name() + "\t" + scripName + " at " + entryDateTime + " @ " + nf.format(entryPrice) + " exited at " + exitDateTime + " @ " + nf.format(exitPrice) + "\t"
-				+ (isProfitable() ? "PROFIT" : "LOSS") + "\t" + nf.format(getPayoff()) + " \t" + printUnrealisedStatus();
+				+ (isProfitable() ? "PROFIT" : "LOSS") + "\t" + nf.format(getPayoff()) + System.lineSeparator() + printUnrealisedStatus();
 	}
 }

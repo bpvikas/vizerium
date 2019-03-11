@@ -9,20 +9,20 @@ public class ClosingPricesWithStopAndReverseTest extends ClosingPricesTest {
 	protected TradeAction currentTradeAction;
 
 	@Override
-	protected void executeForCurrentUnitGreaterThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData unitPriceData) {
+	protected void executeForCurrentUnitGreaterThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 		if (TradeAction.LONG != currentTradeAction) {
-			tradeBook.coverShortTrade(unitPriceData);
+			tradeBook.coverShortTrade(current);
 			currentTradeAction = TradeAction.LONG;
-			tradeBook.addLongTrade(new Trade(scripName, currentTradeAction, unitPriceData.getDateTime(), unitPriceData.getClose()));
+			tradeBook.addLongTrade(new Trade(scripName, currentTradeAction, current.getDateTime(), current.getClose()));
 		}
 	}
 
 	@Override
-	protected void executeForCurrentUnitLessThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData unitPriceData) {
+	protected void executeForCurrentUnitLessThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 		if (TradeAction.SHORT != currentTradeAction) {
-			tradeBook.exitLongTrade(unitPriceData);
+			tradeBook.exitLongTrade(current);
 			currentTradeAction = TradeAction.SHORT;
-			tradeBook.addShortTrade(new Trade(scripName, currentTradeAction, unitPriceData.getDateTime(), unitPriceData.getClose()));
+			tradeBook.addShortTrade(new Trade(scripName, currentTradeAction, current.getDateTime(), current.getClose()));
 		}
 	}
 

@@ -7,11 +7,8 @@ import java.util.List;
 
 import com.vizerium.barabanca.historical.TimeFormat;
 import com.vizerium.barabanca.trend.PeriodTrend;
-import com.vizerium.commons.calculators.MovingAverage;
 
 public abstract class ClosingPricesWithTrendCheckByEMATest extends ClosingPricesWithTrendCheckTest {
-
-	protected abstract MovingAverage getMovingAverage();
 
 	@Override
 	protected List<PeriodTrend> getPeriodTrends(String scripName, int year, int month, TimeFormat trendTimeFormat) {
