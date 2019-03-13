@@ -18,8 +18,8 @@ package com.vizerium.payoffmatrix.volatility;
 
 import org.junit.Assert;
 
-import com.vizerium.commons.calculators.MovingAverageCalculator;
-import com.vizerium.commons.calculators.RSICalculator;
+import com.vizerium.commons.indicators.MovingAverageCalculator;
+import com.vizerium.commons.indicators.RSICalculator;
 import com.vizerium.payoffmatrix.dao.HistoricalDataStore;
 import com.vizerium.payoffmatrix.exchange.Exchanges;
 

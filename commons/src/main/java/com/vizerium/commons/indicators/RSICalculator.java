@@ -1,4 +1,4 @@
-package com.vizerium.commons.calculators;
+package com.vizerium.commons.indicators;
 
 public class RSICalculator {
 

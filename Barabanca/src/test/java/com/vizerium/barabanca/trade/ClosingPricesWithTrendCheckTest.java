@@ -10,8 +10,8 @@ import com.vizerium.barabanca.historical.TimeFormat;
 import com.vizerium.barabanca.trend.PeriodTrend;
 import com.vizerium.barabanca.trend.Trend;
 import com.vizerium.barabanca.trend.TrendCheck;
-import com.vizerium.commons.calculators.MovingAverage;
 import com.vizerium.commons.dao.UnitPriceData;
+import com.vizerium.commons.indicators.MovingAverage;
 import com.vizerium.commons.trade.TradeAction;
 
 public abstract class ClosingPricesWithTrendCheckTest extends ClosingPricesTest {

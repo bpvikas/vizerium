@@ -19,7 +19,7 @@ package com.vizerium.payoffmatrix.dao;
 import java.time.LocalDate;
 import java.util.Arrays;
 
-import com.vizerium.commons.calculators.MovingAverageCalculator;
+import com.vizerium.commons.indicators.MovingAverageCalculator;
 import com.vizerium.payoffmatrix.historical.DayPriceData;
 import com.vizerium.payoffmatrix.volatility.BollingerBand;
 import com.vizerium.payoffmatrix.volatility.DateRange;

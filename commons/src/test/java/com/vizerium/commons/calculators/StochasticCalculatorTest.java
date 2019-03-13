@@ -14,6 +14,8 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.vizerium.commons.dao.UnitPrice;
+import com.vizerium.commons.indicators.Stochastic;
+import com.vizerium.commons.indicators.StochasticCalculator;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class StochasticCalculatorTest {

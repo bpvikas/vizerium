@@ -12,6 +12,8 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 
 	protected abstract int getSlowMA();
 
+	protected abstract int getStopLossMA();
+
 	@Override
 	protected void getAdditionalDataPriorToIteration(String scripName, int year, int month, TimeFormat timeFormat) {
 		currentTradeAction = null;
@@ -24,7 +26,7 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 
 	@Override
 	protected void executeForCurrentUnitGreaterThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
-		if (current.getClose() > current.getMovingAverage(getFastMA())) {
+		if (current.getClose() > current.getMovingAverage(getStopLossMA())) {
 			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
 				tradeBook.coverShortTrade(current);
 				currentTradeAction = null;
@@ -47,7 +49,7 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 
 	@Override
 	protected void executeForCurrentUnitLessThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
-		if (current.getClose() < current.getMovingAverage(getFastMA())) {
+		if (current.getClose() < current.getMovingAverage(getStopLossMA())) {
 			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
 				tradeBook.exitLongTrade(current);
 				currentTradeAction = null;

@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.vizerium.commons.calculators.MovingAverage;
+import com.vizerium.commons.indicators.MovingAverage;
+import com.vizerium.commons.indicators.MovingAverageAndValue;
 
 public class UnitPriceData extends UnitPrice {
 
@@ -124,36 +125,5 @@ public class UnitPriceData extends UnitPrice {
 			movingAveragesString += ("," + manf.format(movingAverageAndValue.getValue()));
 		}
 		return movingAveragesString;
-	}
-
-	class MovingAverageAndValue implements Comparable<MovingAverageAndValue> {
-		private int ma;
-		private float value;
-
-		public MovingAverageAndValue() {
-
-		}
-
-		public MovingAverageAndValue(MovingAverage ma, float value) {
-			this.ma = ma.getNumber();
-			this.value = value;
-		}
-
-		public int getMA() {
-			return ma;
-		}
-
-		public float getValue() {
-			return value;
-		}
-
-		@Override
-		public int compareTo(MovingAverageAndValue other) {
-			return (ma < other.ma) ? -1 : ((ma == other.ma) ? 0 : 1);
-		}
-
-		public String toString() {
-			return ma + "MA : " + value;
-		}
 	}
 }

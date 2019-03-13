@@ -14,6 +14,8 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.vizerium.commons.dao.UnitPrice;
+import com.vizerium.commons.indicators.StochasticMomentum;
+import com.vizerium.commons.indicators.StochasticMomentumCalculator;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class StochasticMomentumCalculatorTest {

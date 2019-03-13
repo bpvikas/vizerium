@@ -1,6 +1,6 @@
 package com.vizerium.barabanca.trade;
 
-import com.vizerium.commons.calculators.MovingAverage;
+import com.vizerium.commons.indicators.MovingAverage;
 
 public class ClosingPricesWithTrendCheckBy5EMATest extends ClosingPricesWithTrendCheckByEMATest {
 

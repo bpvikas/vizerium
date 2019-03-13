@@ -1,8 +1,8 @@
 package com.vizerium.barabanca.trade;
 
-import com.vizerium.commons.calculators.MovingAverage;
+import com.vizerium.commons.indicators.MovingAverage;
 
-public class EMA5x13CrossoverTest extends EMACrossoverTest {
+public abstract class EMA5x13CrossoverTest extends EMACrossoverTest {
 
 	@Override
 	public int getFastMA() {
@@ -13,4 +13,5 @@ public class EMA5x13CrossoverTest extends EMACrossoverTest {
 	public int getSlowMA() {
 		return MovingAverage._13.getNumber();
 	}
+
 }

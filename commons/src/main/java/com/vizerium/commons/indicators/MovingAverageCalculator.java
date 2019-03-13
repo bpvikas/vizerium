@@ -1,4 +1,4 @@
-package com.vizerium.commons.calculators;
+package com.vizerium.commons.indicators;
 
 import java.util.Arrays;
 
