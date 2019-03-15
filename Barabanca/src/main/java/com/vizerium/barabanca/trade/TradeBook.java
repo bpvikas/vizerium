@@ -100,13 +100,13 @@ public class TradeBook extends ArrayList<Trade> {
 	}
 
 	public boolean addLongTrade(Trade trade) {
-		logger.debug("Going long.");
+		logger.debug("Going long @ " + trade.getEntryPrice() + " @ " + trade.getEntryDateTime());
 		trade.setAction(TradeAction.LONG);
 		return add(trade);
 	}
 
 	public boolean addShortTrade(Trade trade) {
-		logger.debug("Going short.");
+		logger.debug("Going short @ " + trade.getEntryPrice() + " @ " + trade.getEntryDateTime());
 		trade.setAction(TradeAction.SHORT);
 		return add(trade);
 	}
@@ -118,7 +118,7 @@ public class TradeBook extends ArrayList<Trade> {
 				throw new RuntimeException("Trying to close an already closed trade.");
 			}
 			currentTrade.setExitDateTime(unitPriceData.getDateTime());
-			currentTrade.setExitPrice(unitPriceData.getClose());
+			currentTrade.setExitPrice(unitPriceData.getTradedValue());
 			logger.debug("Exiting Trade : " + currentTrade);
 		}
 	}
@@ -126,8 +126,8 @@ public class TradeBook extends ArrayList<Trade> {
 	public void exitLongTrade(UnitPriceData unitPriceData) {
 		if (size() != 0) {
 			if (last().getAction().equals(TradeAction.LONG)) {
-				logger.debug("Closing long.");
 				exitLastTrade(unitPriceData);
+				logger.debug("Closing long @ " + last().getExitPrice() + " @ " + last().getExitDateTime());
 			} else {
 				throw new RuntimeException("Last trade is SHORT.");
 			}
@@ -137,8 +137,8 @@ public class TradeBook extends ArrayList<Trade> {
 	public void coverShortTrade(UnitPriceData unitPriceData) {
 		if (size() != 0) {
 			if (last().getAction().equals(TradeAction.SHORT)) {
-				logger.debug("Closing short.");
 				exitLastTrade(unitPriceData);
+				logger.debug("Closing short @ " + last().getExitPrice() + " @ " + last().getExitDateTime());
 			} else {
 				throw new RuntimeException("Last trade is LONG.");
 			}

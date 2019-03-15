@@ -114,6 +114,13 @@ public class UnitPriceData extends UnitPrice {
 		Collections.sort(movingAverages);
 	}
 
+	/*
+	 * This method is used to determine at which value the trade has actually happened. This defaults to the Closing Price, but some traders tend to use the Open as well.
+	 */
+	public float getTradedValue() {
+		return getClose();
+	}
+
 	@Override
 	public String toString() {
 		return scripName + "," + df.format(dateTime) + "," + nf.format(open) + "," + nf.format(high) + "," + nf.format(low) + "," + nf.format(close);

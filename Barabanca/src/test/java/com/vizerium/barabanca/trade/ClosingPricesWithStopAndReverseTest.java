@@ -13,7 +13,7 @@ public class ClosingPricesWithStopAndReverseTest extends ClosingPricesTest {
 		if (TradeAction.LONG != currentTradeAction) {
 			tradeBook.coverShortTrade(current);
 			currentTradeAction = TradeAction.LONG;
-			tradeBook.addLongTrade(new Trade(scripName, currentTradeAction, current.getDateTime(), current.getClose()));
+			tradeBook.addLongTrade(new Trade(scripName, currentTradeAction, current.getDateTime(), current.getTradedValue()));
 		}
 	}
 
@@ -22,7 +22,7 @@ public class ClosingPricesWithStopAndReverseTest extends ClosingPricesTest {
 		if (TradeAction.SHORT != currentTradeAction) {
 			tradeBook.exitLongTrade(current);
 			currentTradeAction = TradeAction.SHORT;
-			tradeBook.addShortTrade(new Trade(scripName, currentTradeAction, current.getDateTime(), current.getClose()));
+			tradeBook.addShortTrade(new Trade(scripName, currentTradeAction, current.getDateTime(), current.getTradedValue()));
 		}
 	}
 

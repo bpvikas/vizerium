@@ -25,9 +25,11 @@ public class Trade {
 
 	private LocalDateTime entryDateTime;
 
-	private LocalDateTime exitDateTime;
-
 	private float entryPrice;
+
+	private float stopLoss;
+
+	private LocalDateTime exitDateTime;
 
 	private float exitPrice;
 
@@ -54,8 +56,19 @@ public class Trade {
 		this.entryPrice = entryPrice;
 	}
 
+	public Trade(String scripName, TradeAction action, LocalDateTime entryDateTime, float entryPrice, float stopLoss) {
+		this(scripName, action, entryDateTime, entryPrice);
+		this.stopLoss = stopLoss;
+	}
+
 	public Trade(String scripName, TradeAction action, LocalDateTime entryDateTime, float entryPrice, LocalDateTime exitDateTime, float exitPrice) {
 		this(scripName, action, entryDateTime, entryPrice);
+		this.exitDateTime = exitDateTime;
+		this.exitPrice = exitPrice;
+	}
+
+	public Trade(String scripName, TradeAction action, LocalDateTime entryDateTime, float entryPrice, float stopLoss, LocalDateTime exitDateTime, float exitPrice) {
+		this(scripName, action, entryDateTime, entryPrice, stopLoss);
 		this.exitDateTime = exitDateTime;
 		this.exitPrice = exitPrice;
 	}
@@ -84,12 +97,12 @@ public class Trade {
 		this.entryDateTime = entryDateTime;
 	}
 
-	public LocalDateTime getExitDateTime() {
-		return exitDateTime;
+	public float getStopLoss() {
+		return stopLoss;
 	}
 
-	public void setExitDateTime(LocalDateTime exitDateTime) {
-		this.exitDateTime = exitDateTime;
+	public void setStopLoss(float stopLoss) {
+		this.stopLoss = stopLoss;
 	}
 
 	public float getEntryPrice() {
@@ -98,6 +111,14 @@ public class Trade {
 
 	public void setEntryPrice(float entryPrice) {
 		this.entryPrice = entryPrice;
+	}
+
+	public LocalDateTime getExitDateTime() {
+		return exitDateTime;
+	}
+
+	public void setExitDateTime(LocalDateTime exitDateTime) {
+		this.exitDateTime = exitDateTime;
 	}
 
 	public float getExitPrice() {
@@ -131,7 +152,7 @@ public class Trade {
 	public void setUnrealisedStatus(UnitPriceData unitPriceData) {
 		if (exitDateTime == null || exitPrice == 0.0f) {
 			if (TradeAction.LONG.equals(action)) {
-				currentUnrealisedPL = unitPriceData.getClose() - entryPrice;
+				currentUnrealisedPL = unitPriceData.getTradedValue() - entryPrice;
 				if (currentUnrealisedPL > maxUnrealisedProfit) {
 					maxUnrealisedProfit = currentUnrealisedPL;
 					maxUnrealisedProfitDateTime = unitPriceData.getDateTime();
@@ -143,7 +164,7 @@ public class Trade {
 
 			}
 			if (TradeAction.SHORT.equals(action)) {
-				currentUnrealisedPL = entryPrice - unitPriceData.getClose();
+				currentUnrealisedPL = entryPrice - unitPriceData.getTradedValue();
 				if (currentUnrealisedPL > maxUnrealisedProfit) {
 					maxUnrealisedProfit = currentUnrealisedPL;
 					maxUnrealisedProfitDateTime = unitPriceData.getDateTime();

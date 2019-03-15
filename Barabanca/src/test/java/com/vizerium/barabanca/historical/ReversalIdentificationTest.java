@@ -3,6 +3,7 @@ package com.vizerium.barabanca.historical;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -12,6 +13,8 @@ import com.vizerium.commons.dao.UnitPriceData;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ReversalIdentificationTest {
+
+	private static final Logger logger = Logger.getLogger(ReversalIdentificationTest.class);
 
 	private HistoricalDataReader historicalDataReader;
 
@@ -48,14 +51,14 @@ public class ReversalIdentificationTest {
 		for (int i = 0; i < unitPriceDataList.size() - 2; i++) {
 
 			if (isBottom(unitPriceDataList, i) && !isTop(unitPriceDataList, i - 1)) {
-				System.out.println("Bottom @ " + unitPriceDataList.get(i + 1).getDateTime() + " @ " + unitPriceDataList.get(i + 1).getClose() + " after "
-						+ (i + 1 - previousPeakOrTrough) + " " + timeFormat.getProperty().substring(1) + "s.");
+				logger.info("Bottom @ " + unitPriceDataList.get(i + 1).getDateTime() + " @ " + unitPriceDataList.get(i + 1).getClose() + " after " + (i + 1 - previousPeakOrTrough)
+						+ " " + timeFormat.getProperty().substring(1) + "s.");
 				previousPeakOrTrough = i + 1;
 			}
 
 			if (isTop(unitPriceDataList, i) && !isBottom(unitPriceDataList, i - 1)) {
-				System.out.println("Top    @ " + unitPriceDataList.get(i + 1).getDateTime() + " @ " + unitPriceDataList.get(i + 1).getClose() + " after "
-						+ (i + 1 - previousPeakOrTrough) + " " + timeFormat.getProperty().substring(1) + "s.");
+				logger.info("Top    @ " + unitPriceDataList.get(i + 1).getDateTime() + " @ " + unitPriceDataList.get(i + 1).getClose() + " after " + (i + 1 - previousPeakOrTrough)
+						+ " " + timeFormat.getProperty().substring(1) + "s.");
 				previousPeakOrTrough = i + 1;
 			}
 		}

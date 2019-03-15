@@ -49,7 +49,7 @@ public abstract class ClosingPricesWithTrendCheckTest extends ClosingPricesTest 
 		}
 
 		if (Trend.DOWN.equals(trend) && tradeBook.isLastTradeExited()) {
-			tradeBook.addShortTrade(new Trade(scripName, TradeAction.SHORT, current.getDateTime(), current.getClose()));
+			tradeBook.addShortTrade(new Trade(scripName, TradeAction.SHORT, current.getDateTime(), current.getTradedValue()));
 		}
 	}
 
@@ -65,7 +65,7 @@ public abstract class ClosingPricesWithTrendCheckTest extends ClosingPricesTest 
 		}
 
 		if (Trend.UP.equals(trend) && tradeBook.isLastTradeExited()) {
-			tradeBook.addLongTrade(new Trade(scripName, TradeAction.LONG, current.getDateTime(), current.getClose()));
+			tradeBook.addLongTrade(new Trade(scripName, TradeAction.LONG, current.getDateTime(), current.getTradedValue()));
 		}
 	}
 

@@ -38,7 +38,7 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 				tradeBook.coverShortTrade(current);
 			}
 			currentTradeAction = TradeAction.LONG;
-			tradeBook.addLongTrade(new Trade(scripName, currentTradeAction, current.getDateTime(), previous.getClose()));
+			tradeBook.addLongTrade(new Trade(scripName, currentTradeAction, current.getDateTime(), current.getTradedValue()));
 		}
 	}
 
@@ -61,7 +61,7 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 				tradeBook.exitLongTrade(current);
 			}
 			currentTradeAction = TradeAction.SHORT;
-			tradeBook.addShortTrade(new Trade(scripName, currentTradeAction, current.getDateTime(), current.getClose()));
+			tradeBook.addShortTrade(new Trade(scripName, currentTradeAction, current.getDateTime(), current.getTradedValue()));
 		}
 	}
 

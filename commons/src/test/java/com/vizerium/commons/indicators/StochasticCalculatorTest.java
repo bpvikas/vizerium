@@ -1,4 +1,4 @@
-package com.vizerium.commons.calculators;
+package com.vizerium.commons.indicators;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,8 +14,6 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.vizerium.commons.dao.UnitPrice;
-import com.vizerium.commons.indicators.Stochastic;
-import com.vizerium.commons.indicators.StochasticCalculator;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class StochasticCalculatorTest {
@@ -29,7 +27,7 @@ public class StochasticCalculatorTest {
 
 	@Test
 	public void testCalculate01_Success() {
-		List<UnitPrice> ohlcData = createOHLCData(21);
+		List<UnitPrice> ohlcData = getOHLCData(21);
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
@@ -41,7 +39,7 @@ public class StochasticCalculatorTest {
 
 	@Test
 	public void testCalculate02_SizeLessThanLookback() {
-		List<UnitPrice> ohlcData = createOHLCData(10);
+		List<UnitPrice> ohlcData = getOHLCData(10);
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
@@ -53,7 +51,7 @@ public class StochasticCalculatorTest {
 
 	@Test
 	public void testCalculate03_SizeBetweenLookbackAndFirstMA() {
-		List<UnitPrice> ohlcData = createOHLCData(15);
+		List<UnitPrice> ohlcData = getOHLCData(15);
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
@@ -65,7 +63,7 @@ public class StochasticCalculatorTest {
 
 	@Test
 	public void testCalculate04_SizeBetweenFirstMAAndSecondMA() {
-		List<UnitPrice> ohlcData = createOHLCData(17);
+		List<UnitPrice> ohlcData = getOHLCData(17);
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
@@ -77,7 +75,7 @@ public class StochasticCalculatorTest {
 
 	@Test
 	public void testCalculate05_SizeGreaterThanSecondMA() {
-		List<UnitPrice> ohlcData = createOHLCData(19);
+		List<UnitPrice> ohlcData = getOHLCData(19);
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
@@ -89,7 +87,7 @@ public class StochasticCalculatorTest {
 
 	@Test
 	public void testCalculate11_Success() {
-		List<UnitPrice> ohlcData = createOHLCData2(24);
+		List<UnitPrice> ohlcData = getOHLCData2(24);
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
@@ -101,7 +99,7 @@ public class StochasticCalculatorTest {
 
 	@Test
 	public void testCalculate12_SizeLessThanLookback() {
-		List<UnitPrice> ohlcData = createOHLCData2(10);
+		List<UnitPrice> ohlcData = getOHLCData2(10);
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
@@ -113,7 +111,7 @@ public class StochasticCalculatorTest {
 
 	@Test
 	public void testCalculate13_SizeBetweenLookbackAndFirstMA() {
-		List<UnitPrice> ohlcData = createOHLCData2(15);
+		List<UnitPrice> ohlcData = getOHLCData2(15);
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
@@ -125,7 +123,7 @@ public class StochasticCalculatorTest {
 
 	@Test
 	public void testCalculate14_SizeBetweenFirstMAAndSecondMA() {
-		List<UnitPrice> ohlcData = createOHLCData2(17);
+		List<UnitPrice> ohlcData = getOHLCData2(17);
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
@@ -137,7 +135,7 @@ public class StochasticCalculatorTest {
 
 	@Test
 	public void testCalculate15_SizeGreaterThanSecondMA() {
-		List<UnitPrice> ohlcData = createOHLCData2(19);
+		List<UnitPrice> ohlcData = getOHLCData2(19);
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
@@ -147,7 +145,7 @@ public class StochasticCalculatorTest {
 		Assert.assertEquals(78.11173f, sc.getSlowPercentD(), 0.0001f);
 	}
 
-	private List<UnitPrice> createOHLCData(int count) {
+	private List<UnitPrice> getOHLCData(int count) {
 
 		List<UnitPrice> ohlcData = new ArrayList<UnitPrice>();
 		for (float i = 1; i <= count; i++) {
@@ -183,7 +181,7 @@ public class StochasticCalculatorTest {
 		// @formatter:on
 	}
 
-	private List<UnitPrice> createOHLCData2(int count) {
+	private List<UnitPrice> getOHLCData2(int count) {
 
 		List<UnitPrice> ohlcData2 = new ArrayList<UnitPrice>();
 		try {
