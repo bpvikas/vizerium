@@ -6,11 +6,14 @@ import com.vizerium.commons.dao.UnitPrice;
 
 public class DirectionalSystemCalculator {
 
-	public DirectionalSystem calculate(List<UnitPrice> unitPrices) {
+	public DirectionalSystem calculate(List<? extends UnitPrice> unitPrices) {
 		return calculate(unitPrices, new DirectionalSystem());
 	}
 
-	public DirectionalSystem calculate(List<UnitPrice> unitPrices, DirectionalSystem dms) {
-		return null;
+	public DirectionalSystem calculate(List<? extends UnitPrice> unitPrices, DirectionalSystem ds) {
+
+		float atr = AverageTrueRangeCalculator.calculate(unitPrices);
+		ds.setAtr(atr);
+		return ds;
 	}
 }

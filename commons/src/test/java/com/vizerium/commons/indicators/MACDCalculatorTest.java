@@ -18,6 +18,8 @@ import com.vizerium.commons.dao.UnitPriceData;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MACDCalculatorTest {
 
+	private float delta = 0.0001f;
+
 	private MACDCalculator unit;
 
 	@Before
@@ -31,9 +33,9 @@ public class MACDCalculatorTest {
 		MACD macd = unit.calculate(ohlcData);
 		System.out.println(macd);
 
-		Assert.assertEquals(58.1289f, macd.getValue(), 0.0001f);
-		Assert.assertEquals(76.72547778f, macd.getSignalValue(), 0.0001f);
-		Assert.assertEquals(-18.59657778f, macd.getHistogramLength(), 0.0001f);
+		Assert.assertEquals(58.1289f, macd.getValue(), delta);
+		Assert.assertEquals(76.72547778f, macd.getSignalValue(), delta);
+		Assert.assertEquals(-18.59657778f, macd.getHistogramLength(), delta);
 	}
 
 	@Test
@@ -43,9 +45,9 @@ public class MACDCalculatorTest {
 		MACD macd = unit.calculate(ohlcData);
 		System.out.println(macd);
 
-		Assert.assertEquals(104.7676f, macd.getValue(), 0.0001f);
-		Assert.assertEquals(Float.NaN, macd.getSignalValue(), 0.0001f);
-		Assert.assertEquals(Float.NaN, macd.getHistogramLength(), 0.0001f);
+		Assert.assertEquals(104.7676f, macd.getValue(), delta);
+		Assert.assertEquals(Float.NaN, macd.getSignalValue(), delta);
+		Assert.assertEquals(Float.NaN, macd.getHistogramLength(), delta);
 	}
 
 	@Test
@@ -55,9 +57,9 @@ public class MACDCalculatorTest {
 		MACD macd = unit.calculate(ohlcData);
 		System.out.println(macd);
 
-		Assert.assertEquals(10.916f, macd.getValue(), 0.0001f);
-		Assert.assertEquals(-2.477022222f, macd.getSignalValue(), 0.0001f);
-		Assert.assertEquals(13.39302222f, macd.getHistogramLength(), 0.0001f);
+		Assert.assertEquals(10.916f, macd.getValue(), delta);
+		Assert.assertEquals(-2.477022222f, macd.getSignalValue(), delta);
+		Assert.assertEquals(13.39302222f, macd.getHistogramLength(), delta);
 	}
 
 	private List<UnitPriceData> getOHLCData(int count) {

@@ -9,7 +9,7 @@ public interface StochasticCalculatorBase {
 	/*
 	 * ll - lowest low. This method returns the lowest low among the elements between the start and end position.
 	 */
-	public default float ll(List<UnitPrice> p, int start, int end) {
+	public default float ll(List<? extends UnitPrice> p, int start, int end) {
 		float ll = Float.MAX_VALUE;
 		for (int i = start; i <= end; i++) {
 			if (p.get(i).getLow() < ll) {
@@ -22,7 +22,7 @@ public interface StochasticCalculatorBase {
 	/*
 	 * hh - highest high. This method returns the highest high among the elements between the start and end position.
 	 */
-	public default float hh(List<UnitPrice> p, int start, int end) {
+	public default float hh(List<? extends UnitPrice> p, int start, int end) {
 		float hh = Float.MIN_VALUE;
 		for (int i = start; i <= end; i++) {
 			if (p.get(i).getHigh() > hh) {

@@ -2,6 +2,10 @@ package com.vizerium.commons.indicators;
 
 public class DirectionalSystem {
 
+	private float dm;
+
+	private float atr;
+
 	private float plusDI;
 
 	private float minusDI;
@@ -9,6 +13,8 @@ public class DirectionalSystem {
 	private float smoothedPlusDI;
 
 	private float smoothedMinusDI;
+
+	private float dx;
 
 	private float adx;
 
@@ -23,6 +29,22 @@ public class DirectionalSystem {
 	public DirectionalSystem() {
 		this.smoothingPeriod = DEFAULT_SMOOTHING_PERIOD_COUNT;
 		this.smoothingMAType = DEFAULT_SMOOTHING_MA_TYPE;
+	}
+
+	public float getDM() {
+		return dm;
+	}
+
+	public void setDM(float dm) {
+		this.dm = dm;
+	}
+
+	public float getAtr() {
+		return atr;
+	}
+
+	public void setAtr(float atr) {
+		this.atr = atr;
 	}
 
 	public float getPlusDI() {
@@ -55,6 +77,14 @@ public class DirectionalSystem {
 
 	public void setSmoothedMinusDI(float smoothedMinusDI) {
 		this.smoothedMinusDI = smoothedMinusDI;
+	}
+
+	public float getDx() {
+		return dx;
+	}
+
+	public void setDx(float dx) {
+		this.dx = dx;
 	}
 
 	public float getAdx() {

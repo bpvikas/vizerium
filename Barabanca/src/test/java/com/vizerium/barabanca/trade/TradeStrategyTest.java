@@ -48,23 +48,23 @@ public abstract class TradeStrategyTest {
 
 	@Test
 	public void test01_BankNiftyHourlyChart() {
-		testMultiYearTradeStrategies("BANKNIFTY", TimeFormat._1HOUR, 2011, 2019);
-		testMultiMonthTradeStrategies("BANKNIFTY", TimeFormat._1HOUR, 2011, 1, 2019, 2);
+//		testMultiYearTradeStrategies("BANKNIFTY", TimeFormat._1HOUR, 2011, 2019);
+		testMultiMonthTradeStrategies("BANKNIFTY", TimeFormat._1HOUR, 2018, 8, 2018, 9);
 	}
 
-	@Test
+//	@Test
 	public void test02_BankNiftyDailyChart() {
 		testMultiYearTradeStrategies("BANKNIFTY", TimeFormat._1DAY, 2011, 2019);
 		testMultiMonthTradeStrategies("BANKNIFTY", TimeFormat._1DAY, 2011, 1, 2019, 2);
 	}
 
-	@Test
+//	@Test
 	public void test03_NiftyHourlyChart() {
 		testMultiYearTradeStrategies("NIFTY", TimeFormat._1HOUR, 2011, 2019);
 		testMultiMonthTradeStrategies("NIFTY", TimeFormat._1HOUR, 2011, 1, 2019, 2);
 	}
 
-	@Test
+//	@Test
 	public void test04_NiftyDailyChart() {
 		testMultiYearTradeStrategies("NIFTY", TimeFormat._1DAY, 2011, 2019);
 		testMultiMonthTradeStrategies("NIFTY", TimeFormat._1DAY, 2011, 1, 2019, 2);

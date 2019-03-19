@@ -15,6 +15,8 @@ import com.vizerium.commons.dao.UnitPrice;
 
 public class DirectionalSystemCalculatorTest {
 
+	private float delta = 0.0001f;
+
 	private DirectionalSystemCalculator unit;
 
 	@Before
@@ -27,6 +29,12 @@ public class DirectionalSystemCalculatorTest {
 		List<UnitPrice> ohlcData = getOHLCData(21);
 		DirectionalSystem dms = unit.calculate(ohlcData);
 		System.out.println(dms);
+
+		Assert.assertEquals(58.1289f, dms.getPlusDI(), delta);
+		Assert.assertEquals(76.72547778f, dms.getMinusDI(), delta);
+		Assert.assertEquals(-18.59657778f, dms.getSmoothedPlusDI(), delta);
+		Assert.assertEquals(58.1289f, dms.getSmoothedMinusDI(), delta);
+		Assert.assertEquals(76.72547778f, dms.getAdx(), delta);
 	}
 
 	private List<UnitPrice> getOHLCData(int count) {
@@ -51,5 +59,4 @@ public class DirectionalSystemCalculatorTest {
 		}
 		return ohlcData2;
 	}
-
 }

@@ -18,6 +18,9 @@ import com.vizerium.commons.dao.UnitPrice;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class StochasticMomentumCalculatorTest {
 
+	private float delta = 0.0001f;
+	private float delta2 = 0.001f;
+
 	private StochasticMomentumCalculator unit;
 
 	@Before
@@ -30,8 +33,8 @@ public class StochasticMomentumCalculatorTest {
 		List<UnitPrice> ohlcData = createOHLCData(24);
 		StochasticMomentum sm = unit.calculate(ohlcData);
 		System.out.println(sm);
-		Assert.assertEquals(52.68817f, sm.getSmi(), 0.0001f);
-		Assert.assertEquals(56.24652277f, sm.getSignal(), 0.0001f);
+		Assert.assertEquals(52.68817f, sm.getSmi(), delta);
+		Assert.assertEquals(56.24652277f, sm.getSignal(), delta);
 	}
 
 	@Test
@@ -48,7 +51,7 @@ public class StochasticMomentumCalculatorTest {
 		List<UnitPrice> ohlcData = createOHLCData(19);
 		StochasticMomentum sm = unit.calculate(ohlcData);
 		System.out.println(sm);
-		Assert.assertEquals(56.41026f, sm.getSmi(), 0.0001f);
+		Assert.assertEquals(56.41026f, sm.getSmi(), delta);
 		Assert.assertEquals(0.0f, sm.getSignal(), 0.0f);
 	}
 
@@ -57,8 +60,8 @@ public class StochasticMomentumCalculatorTest {
 		List<UnitPrice> ohlcData = createOHLCData(25);
 		StochasticMomentum sm = unit.calculate(ohlcData);
 		System.out.println(sm);
-		Assert.assertEquals(52.08333f, sm.getSmi(), 0.0001f);
-		Assert.assertEquals(55.39425005f, sm.getSignal(), 0.0001f);
+		Assert.assertEquals(52.08333f, sm.getSmi(), delta);
+		Assert.assertEquals(55.39425005f, sm.getSignal(), delta);
 	}
 
 	@Test
@@ -66,8 +69,8 @@ public class StochasticMomentumCalculatorTest {
 		List<UnitPrice> ohlcData = createOHLCData2(28);
 		StochasticMomentum sm = unit.calculate(ohlcData);
 		System.out.println(sm);
-		Assert.assertEquals(58.91251f, sm.getSmi(), 0.001f);
-		Assert.assertEquals(45.43347904f, sm.getSignal(), 0.001f);
+		Assert.assertEquals(58.91251f, sm.getSmi(), delta2);
+		Assert.assertEquals(45.43347904f, sm.getSignal(), delta2);
 	}
 
 	@Test
@@ -84,7 +87,7 @@ public class StochasticMomentumCalculatorTest {
 		List<UnitPrice> ohlcData = createOHLCData2(19);
 		StochasticMomentum sm = unit.calculate(ohlcData);
 		System.out.println(sm);
-		Assert.assertEquals(55.92881f, sm.getSmi(), 0.001f);
+		Assert.assertEquals(55.92881f, sm.getSmi(), delta2);
 		Assert.assertEquals(0.0f, sm.getSignal(), 0.0f);
 	}
 
@@ -93,8 +96,8 @@ public class StochasticMomentumCalculatorTest {
 		List<UnitPrice> ohlcData = createOHLCData2(25);
 		StochasticMomentum sm = unit.calculate(ohlcData);
 		System.out.println(sm);
-		Assert.assertEquals(50.81508f, sm.getSmi(), 0.001f);
-		Assert.assertEquals(45.40705908f, sm.getSignal(), 0.001f);
+		Assert.assertEquals(50.81508f, sm.getSmi(), delta2);
+		Assert.assertEquals(45.40705908f, sm.getSignal(), delta2);
 	}
 
 	private List<UnitPrice> createOHLCData(int count) {

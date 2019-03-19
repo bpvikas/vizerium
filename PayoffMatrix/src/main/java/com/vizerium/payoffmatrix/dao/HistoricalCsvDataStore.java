@@ -32,6 +32,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Logger;
 
 import com.vizerium.commons.io.FileUtils;
+import com.vizerium.commons.util.NumberFormats;
 import com.vizerium.payoffmatrix.historical.DayPriceData;
 import com.vizerium.payoffmatrix.volatility.DateRange;
 
@@ -41,13 +42,7 @@ public class HistoricalCsvDataStore implements HistoricalDataStore {
 
 	private String underlyingName;
 
-	private static NumberFormat numberformat = NumberFormat.getInstance();
-
-	static {
-		numberformat.setMinimumFractionDigits(2);
-		numberformat.setMaximumFractionDigits(2);
-		numberformat.setGroupingUsed(true);
-	}
+	private static NumberFormat numberformat = NumberFormats.getForPrice();
 
 	public HistoricalCsvDataStore() {
 

@@ -11,24 +11,15 @@ import java.util.List;
 
 import com.vizerium.commons.indicators.MovingAverage;
 import com.vizerium.commons.indicators.MovingAverageAndValue;
+import com.vizerium.commons.util.NumberFormats;
 
 public class UnitPriceData extends UnitPrice {
 
 	private static DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd,HH:mm");
 
-	private static NumberFormat nf = NumberFormat.getInstance();
-	static {
-		nf.setMinimumFractionDigits(2);
-		nf.setMaximumFractionDigits(2);
-		nf.setGroupingUsed(false);
-	}
+	private static NumberFormat nf = NumberFormats.getForPrice();
 
-	private static NumberFormat manf = NumberFormat.getInstance();
-	static {
-		manf.setMinimumFractionDigits(4);
-		manf.setMaximumFractionDigits(4);
-		manf.setGroupingUsed(false);
-	}
+	private static NumberFormat manf = NumberFormats.getForMovingAverage();
 
 	private String scripName;
 

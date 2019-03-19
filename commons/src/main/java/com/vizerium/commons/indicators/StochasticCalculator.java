@@ -6,7 +6,7 @@ import com.vizerium.commons.dao.UnitPrice;
 
 public class StochasticCalculator implements StochasticCalculatorBase {
 
-	public Stochastic calculate(List<UnitPrice> unitPrices, int lookbackPeriod) {
+	public Stochastic calculate(List<? extends UnitPrice> unitPrices, int lookbackPeriod) {
 
 		// @formatter:off
 		// No of elements required to calculate the 

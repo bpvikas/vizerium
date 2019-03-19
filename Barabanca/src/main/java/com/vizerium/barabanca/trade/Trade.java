@@ -7,17 +7,13 @@ import org.apache.log4j.Logger;
 
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.trade.TradeAction;
+import com.vizerium.commons.util.NumberFormats;
 
 public class Trade {
 
 	private static final Logger logger = Logger.getLogger(Trade.class);
 
-	private static NumberFormat nf = NumberFormat.getInstance();
-	static {
-		nf.setMaximumFractionDigits(2);
-		nf.setMinimumFractionDigits(2);
-		nf.setGroupingUsed(false);
-	}
+	private static NumberFormat nf = NumberFormats.getForPrice();
 
 	private String scripName;
 
@@ -27,11 +23,13 @@ public class Trade {
 
 	private float entryPrice;
 
-	private float stopLoss;
+	private float entryStopLoss;
 
 	private LocalDateTime exitDateTime;
 
 	private float exitPrice;
+
+	private float exitStopLoss;
 
 	private float payoff = Float.MIN_VALUE;
 
@@ -58,7 +56,7 @@ public class Trade {
 
 	public Trade(String scripName, TradeAction action, LocalDateTime entryDateTime, float entryPrice, float stopLoss) {
 		this(scripName, action, entryDateTime, entryPrice);
-		this.stopLoss = stopLoss;
+		this.entryStopLoss = stopLoss;
 	}
 
 	public Trade(String scripName, TradeAction action, LocalDateTime entryDateTime, float entryPrice, LocalDateTime exitDateTime, float exitPrice) {
@@ -97,20 +95,20 @@ public class Trade {
 		this.entryDateTime = entryDateTime;
 	}
 
-	public float getStopLoss() {
-		return stopLoss;
-	}
-
-	public void setStopLoss(float stopLoss) {
-		this.stopLoss = stopLoss;
-	}
-
 	public float getEntryPrice() {
 		return entryPrice;
 	}
 
 	public void setEntryPrice(float entryPrice) {
 		this.entryPrice = entryPrice;
+	}
+
+	public float getEntryStopLoss() {
+		return entryStopLoss;
+	}
+
+	public void setEntryStopLoss(float entryStopLoss) {
+		this.entryStopLoss = entryStopLoss;
 	}
 
 	public LocalDateTime getExitDateTime() {
@@ -127,6 +125,14 @@ public class Trade {
 
 	public void setExitPrice(float exitPrice) {
 		this.exitPrice = exitPrice;
+	}
+
+	public float getExitStopLoss() {
+		return exitStopLoss;
+	}
+
+	public void setExitStopLoss(float exitStopLoss) {
+		this.exitStopLoss = exitStopLoss;
 	}
 
 	public float getPayoff() {

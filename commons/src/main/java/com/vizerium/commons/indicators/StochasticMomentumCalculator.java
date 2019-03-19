@@ -29,11 +29,11 @@ public class StochasticMomentumCalculator implements StochasticCalculatorBase {
 	// https://tradingqna.com/t/need-formula-for-stochastic-momentum-index-indicator/43201
 	// Above URL explains the same formula in text format
 
-	public StochasticMomentum calculate(List<UnitPrice> unitPrices) {
+	public StochasticMomentum calculate(List<? extends UnitPrice> unitPrices) {
 		return calculate(unitPrices, new StochasticMomentum());
 	}
 
-	public StochasticMomentum calculate(List<UnitPrice> unitPrices, StochasticMomentum sm) {
+	public StochasticMomentum calculate(List<? extends UnitPrice> unitPrices, StochasticMomentum sm) {
 
 		int lbpk = sm.getPercentKLookbackPeriod();
 		int ma1 = sm.getMaPeriodCountForFirstSmoothingK();
@@ -63,7 +63,7 @@ public class StochasticMomentumCalculator implements StochasticCalculatorBase {
 		}
 	}
 
-	private float calculateSMI(List<UnitPrice> unitPrices, int size, int lbpk, int ma1, int ma2, MovingAverageType matype) {
+	private float calculateSMI(List<? extends UnitPrice> unitPrices, int size, int lbpk, int ma1, int ma2, MovingAverageType matype) {
 		float[] smoothCmdArr = new float[ma2];
 		float[] smoothHldArr = new float[ma2];
 		for (int j = 0; j < ma2; j++) {

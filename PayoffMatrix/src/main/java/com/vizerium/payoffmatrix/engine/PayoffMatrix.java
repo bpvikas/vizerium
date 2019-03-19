@@ -18,6 +18,8 @@ package com.vizerium.payoffmatrix.engine;
 
 import java.text.NumberFormat;
 
+import com.vizerium.commons.util.NumberFormats;
+
 public class PayoffMatrix {
 
 	private Payoff[] payoffs;
@@ -87,20 +89,12 @@ public class PayoffMatrix {
 	}
 
 	public String getRiskRewardRatioAsString() {
-		NumberFormat nf = NumberFormat.getInstance();
-		nf.setMinimumFractionDigits(2);
-		nf.setMaximumFractionDigits(2);
-		nf.setGroupingUsed(false);
-
+		NumberFormat nf = NumberFormats.getForPrice();
 		return "1:" + nf.format(1 / riskRewardRatio);
 	}
 
 	public String getProfitProbabilityAsString() {
-		NumberFormat nf = NumberFormat.getInstance();
-		nf.setMinimumFractionDigits(2);
-		nf.setMaximumFractionDigits(2);
-		nf.setGroupingUsed(false);
-
+		NumberFormat nf = NumberFormats.getForPrice();
 		return nf.format(profitProbability * 100) + "%";
 	}
 

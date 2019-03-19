@@ -18,6 +18,8 @@ import com.vizerium.commons.dao.UnitPrice;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class StochasticCalculatorTest {
 
+	private float delta = 0.0001f;
+
 	private StochasticCalculator unit;
 
 	@Before
@@ -31,10 +33,10 @@ public class StochasticCalculatorTest {
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
-		Assert.assertEquals(79.41176f, sc.getFastPercentK(), 0.0001f);
-		Assert.assertEquals(79.80603f, sc.getFastPercentD(), 0.0001f);
-		Assert.assertEquals(79.80603f, sc.getSlowPercentK(), 0.0001f);
-		Assert.assertEquals(80.22602f, sc.getSlowPercentD(), 0.0001f);
+		Assert.assertEquals(79.41176f, sc.getFastPercentK(), delta);
+		Assert.assertEquals(79.80603f, sc.getFastPercentD(), delta);
+		Assert.assertEquals(79.80603f, sc.getSlowPercentK(), delta);
+		Assert.assertEquals(80.22602f, sc.getSlowPercentD(), delta);
 	}
 
 	@Test
@@ -55,7 +57,7 @@ public class StochasticCalculatorTest {
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
-		Assert.assertEquals(82.14286f, sc.getFastPercentK(), 0.0001f);
+		Assert.assertEquals(82.14286f, sc.getFastPercentK(), delta);
 		Assert.assertEquals(0.0f, sc.getFastPercentD(), 0.0f);
 		Assert.assertEquals(0.0f, sc.getSlowPercentK(), 0.0f);
 		Assert.assertEquals(0.0f, sc.getSlowPercentD(), 0.0f);
@@ -67,9 +69,9 @@ public class StochasticCalculatorTest {
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
-		Assert.assertEquals(81.11111f, sc.getFastPercentK(), 0.0001f);
-		Assert.assertEquals(81.62105f, sc.getFastPercentD(), 0.0001f);
-		Assert.assertEquals(81.62105f, sc.getSlowPercentK(), 0.0001f);
+		Assert.assertEquals(81.11111f, sc.getFastPercentK(), delta);
+		Assert.assertEquals(81.62105f, sc.getFastPercentD(), delta);
+		Assert.assertEquals(81.62105f, sc.getSlowPercentK(), delta);
 		Assert.assertEquals(0.0f, sc.getSlowPercentD(), 0.0f);
 	}
 
@@ -79,10 +81,10 @@ public class StochasticCalculatorTest {
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
-		Assert.assertEquals(80.20833f, sc.getFastPercentK(), 0.0001f);
-		Assert.assertEquals(80.65487f, sc.getFastPercentD(), 0.0001f);
-		Assert.assertEquals(80.65487f, sc.getSlowPercentK(), 0.0001f);
-		Assert.assertEquals(81.13258f, sc.getSlowPercentD(), 0.0001f);
+		Assert.assertEquals(80.20833f, sc.getFastPercentK(), delta);
+		Assert.assertEquals(80.65487f, sc.getFastPercentD(), delta);
+		Assert.assertEquals(80.65487f, sc.getSlowPercentK(), delta);
+		Assert.assertEquals(81.13258f, sc.getSlowPercentD(), delta);
 	}
 
 	@Test
@@ -91,10 +93,10 @@ public class StochasticCalculatorTest {
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
-		Assert.assertEquals(88.87155f, sc.getFastPercentK(), 0.0001f);
-		Assert.assertEquals(90.30913f, sc.getFastPercentD(), 0.0001f);
-		Assert.assertEquals(90.30913f, sc.getSlowPercentK(), 0.0001f);
-		Assert.assertEquals(79.31948f, sc.getSlowPercentD(), 0.0001f);
+		Assert.assertEquals(88.87155f, sc.getFastPercentK(), delta);
+		Assert.assertEquals(90.30913f, sc.getFastPercentD(), delta);
+		Assert.assertEquals(90.30913f, sc.getSlowPercentK(), delta);
+		Assert.assertEquals(79.31948f, sc.getSlowPercentD(), delta);
 	}
 
 	@Test
@@ -115,7 +117,7 @@ public class StochasticCalculatorTest {
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
-		Assert.assertEquals(67.19764f, sc.getFastPercentK(), 0.0001f);
+		Assert.assertEquals(67.19764f, sc.getFastPercentK(), delta);
 		Assert.assertEquals(0.0f, sc.getFastPercentD(), 0.0f);
 		Assert.assertEquals(0.0f, sc.getSlowPercentK(), 0.0f);
 		Assert.assertEquals(0.0f, sc.getSlowPercentD(), 0.0f);
@@ -127,9 +129,9 @@ public class StochasticCalculatorTest {
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
-		Assert.assertEquals(82.50781f, sc.getFastPercentK(), 0.0001f);
-		Assert.assertEquals(77.04576f, sc.getFastPercentD(), 0.0001f);
-		Assert.assertEquals(77.04576f, sc.getSlowPercentK(), 0.0001f);
+		Assert.assertEquals(82.50781f, sc.getFastPercentK(), delta);
+		Assert.assertEquals(77.04576f, sc.getFastPercentD(), delta);
+		Assert.assertEquals(77.04576f, sc.getSlowPercentK(), delta);
 		Assert.assertEquals(0.0f, sc.getSlowPercentD(), 0.0f);
 	}
 
@@ -139,17 +141,17 @@ public class StochasticCalculatorTest {
 		Stochastic sc = unit.calculate(ohlcData, 14);
 		System.out.println(sc);
 
-		Assert.assertEquals(79.89300f, sc.getFastPercentK(), 0.0001f);
-		Assert.assertEquals(78.38823f, sc.getFastPercentD(), 0.0001f);
-		Assert.assertEquals(78.38823f, sc.getSlowPercentK(), 0.0001f);
-		Assert.assertEquals(78.11173f, sc.getSlowPercentD(), 0.0001f);
+		Assert.assertEquals(79.89300f, sc.getFastPercentK(), delta);
+		Assert.assertEquals(78.38823f, sc.getFastPercentD(), delta);
+		Assert.assertEquals(78.38823f, sc.getSlowPercentK(), delta);
+		Assert.assertEquals(78.11173f, sc.getSlowPercentD(), delta);
 	}
 
 	private List<UnitPrice> getOHLCData(int count) {
 
 		List<UnitPrice> ohlcData = new ArrayList<UnitPrice>();
-		for (float i = 1; i <= count; i++) {
-			float j = 100 * i;
+		for (int i = 1; i <= count; i++) {
+			int j = 100 * i;
 			ohlcData.add(new UnitPrice(j * 0.8f, j * 1.2f, j * 0.6f, j * 1.0f));
 		}
 		return ohlcData;
