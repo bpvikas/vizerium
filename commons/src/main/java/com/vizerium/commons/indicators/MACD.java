@@ -3,69 +3,111 @@ package com.vizerium.commons.indicators;
 public class MACD {
 
 	// The default value for the fast MA for the MACD.
-	private static final int DEFAULT_FAST_MA = 13;
+	private static final int DEFAULT_FAST_MA = 12;
 
 	// The default value for the slow MA for the MACD.
 	private static final int DEFAULT_SLOW_MA = 26;
 
-	private static final MovingAverageType DEFAULT_SMOOTHING_MA_TYPE = MovingAverageType.SIMPLE;
+	private static final MovingAverageType DEFAULT_FAST_SLOW_MA_TYPE = MovingAverageType.EXPONENTIAL;
+
+	private static final MovingAverageType DEFAULT_SMOOTHING_MA_TYPE = MovingAverageType.EXPONENTIAL;
 
 	private static final int DEFAULT_SMOOTHING_PERIOD_COUNT = 9;
 
-	private MovingAverageAndValue fastMA;
+	private int fastMA;
 
-	private MovingAverageAndValue slowMA;
+	private int slowMA;
+
+	private MovingAverageType fastSlowMAType;
 
 	private MovingAverageType smoothingMAType;
 
 	private int smoothingPeriod;
 
-	private float signalValue = Float.NaN;
+	private float[] fastMAValues;
+
+	private float[] slowMAValues;
+
+	private float[] differenceMAValues;
+
+	private float[] signalValues;
+
+	private float[] histogramValues;
 
 	public MACD() {
-		this.fastMA = new MovingAverageAndValue(MovingAverage.getMAByNumber(DEFAULT_FAST_MA), 0.0f);
-		this.slowMA = new MovingAverageAndValue(MovingAverage.getMAByNumber(DEFAULT_SLOW_MA), 0.0f);
+		this.fastMA = DEFAULT_FAST_MA;
+		this.slowMA = DEFAULT_SLOW_MA;
+		this.fastSlowMAType = DEFAULT_FAST_SLOW_MA_TYPE;
 		this.smoothingMAType = DEFAULT_SMOOTHING_MA_TYPE;
 		this.smoothingPeriod = DEFAULT_SMOOTHING_PERIOD_COUNT;
 	}
 
-	public MACD(int fastMANumber, int slowMANumber, MovingAverageType maType, int smoothingPeriod) {
-		this.fastMA = new MovingAverageAndValue(MovingAverage.getMAByNumber(fastMANumber), 0.0f);
-		this.slowMA = new MovingAverageAndValue(MovingAverage.getMAByNumber(slowMANumber), 0.0f);
-		this.smoothingMAType = maType;
+	public MACD(int fastMA, int slowMA, MovingAverageType fastSlowMAType, MovingAverageType smoothingMAType, int smoothingPeriod) {
+		this.fastMA = fastMA;
+		this.slowMA = slowMA;
+		this.fastSlowMAType = fastSlowMAType;
+		this.smoothingMAType = smoothingMAType;
 		this.smoothingPeriod = smoothingPeriod;
 	}
 
-	public MovingAverageAndValue getFastMA() {
+	public int getFastMA() {
 		return fastMA;
 	}
 
-	public void setFastMA(MovingAverageAndValue fastMA) {
+	public void setFastMA(int fastMA) {
 		this.fastMA = fastMA;
 	}
 
-	public MovingAverageAndValue getSlowMA() {
+	public int getSlowMA() {
 		return slowMA;
 	}
 
-	public void setSlowMA(MovingAverageAndValue slowMA) {
+	public void setSlowMA(int slowMA) {
 		this.slowMA = slowMA;
 	}
 
-	public float getValue() {
-		return fastMA.getValue() - slowMA.getValue();
+	public float[] getFastMAValues() {
+		return fastMAValues;
 	}
 
-	public float getSignalValue() {
-		return signalValue;
+	public void setFastMAValues(float[] fastMAValues) {
+		this.fastMAValues = fastMAValues;
 	}
 
-	public void setSignalValue(float signalValue) {
-		this.signalValue = signalValue;
+	public float[] getSlowMAValues() {
+		return slowMAValues;
 	}
 
-	public float getHistogramLength() {
-		return (signalValue != Float.NaN) ? getValue() - signalValue : Float.NaN;
+	public void setSlowMAValues(float[] slowMAValues) {
+		this.slowMAValues = slowMAValues;
+	}
+
+	public float[] getDifferenceMAValues() {
+		return differenceMAValues;
+	}
+
+	public void setDifferenceMAValues(float[] differenceMAValues) {
+		this.differenceMAValues = differenceMAValues;
+	}
+
+	public float[] getSignalValues() {
+		return signalValues;
+	}
+
+	public void setSignalValues(float[] signalValues) {
+		this.signalValues = signalValues;
+	}
+
+	public float[] getHistogramValues() {
+		return histogramValues;
+	}
+
+	public void setHistogramValues(float[] histogramValues) {
+		this.histogramValues = histogramValues;
+	}
+
+	public MovingAverageType getFastSlowMAType() {
+		return fastSlowMAType;
 	}
 
 	public MovingAverageType getSmoothingMAType() {
@@ -76,8 +118,8 @@ public class MACD {
 		return smoothingPeriod;
 	}
 
+	@Override
 	public String toString() {
-		return "MACD[" + fastMA.getMA() + "," + slowMA.getMA() + "," + smoothingPeriod + "," + smoothingMAType.toString() + " -> " + getValue() + ", signal " + signalValue
-				+ ", histogram " + getHistogramLength() + "]";
+		return "MACD[" + fastMA + fastSlowMAType.toString() + "," + slowMA + fastSlowMAType.toString() + "," + smoothingPeriod + "," + smoothingMAType.toString() + "]";
 	}
 }

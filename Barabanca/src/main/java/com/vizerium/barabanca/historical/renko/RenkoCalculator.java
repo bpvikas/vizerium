@@ -25,12 +25,27 @@ public class RenkoCalculator {
 		PriceRange[] priceRanges = getPriceRanges(unitPriceDataList, renko.getBrickSize());
 
 		RenkoRange renkoRange = new RenkoRange();
+		renkoRange.setStart(priceRanges[0].getLow());
+		renkoRange.setEnd(priceRanges[priceRanges.length - 1].getHigh());
 		for (UnitPriceData unitPriceData : unitPriceDataList) {
 			float close = unitPriceData.getClose();
 			PriceRange priceRange = getPriceRange(priceRanges, close);
-			
-			
-			
+			if (renkoRange.isEmpty()) {
+				Renko renkoToAdd = renko.clone();
+				renko.setStartDate(unitPriceData.getDateTime());
+
+				// This is under the assumption that the first trade is positive.
+				renko.setStartPrice(priceRange.getLow());
+				renko.setEndPrice(priceRange.getHigh());
+				renkoRange.add(renkoToAdd);
+			} else {
+				Renko lastRenko = renkoRange.last();
+				if (!lastRenko.isPriceWithinRange(close)) {
+
+				}
+
+			}
+
 		}
 		return renkoRange.toArray(new Renko[renkoRange.size()]);
 	}
@@ -64,6 +79,11 @@ public class RenkoCalculator {
 			priceRanges.add(new PriceRange(currentPrice, currentPrice + brickSize));
 			currentPrice = currentPrice + brickSize;
 		}
+
+		if (priceRanges.isEmpty()) {
+			throw new RuntimeException("Unable to determine price Ranges for Renko calculations.");
+		}
+
 		return priceRanges.toArray(new PriceRange[priceRanges.size()]);
 	}
 }

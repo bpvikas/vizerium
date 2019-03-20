@@ -42,7 +42,7 @@ public class TradeBook extends ArrayList<Trade> {
 	public float getPayoff() {
 		if (payoff == Float.MIN_VALUE) {
 			payoff = 0.0f;
-			if (size() > 0) {
+			if (!isEmpty()) {
 				largestLossTrade = get(0);
 				largestProfitTrade = get(0);
 				ListIterator<Trade> i = listIterator();
@@ -84,15 +84,15 @@ public class TradeBook extends ArrayList<Trade> {
 	}
 
 	public boolean isLastTradeExited() {
-		return (size() > 0) ? (last().getExitDateTime() != null) || (last().getExitPrice() != 0.0f) : true;
+		return (!isEmpty()) ? (last().getExitDateTime() != null) || (last().getExitPrice() != 0.0f) : true;
 	}
 
 	public boolean isLastTradeLong() {
-		return (size() > 0 && TradeAction.LONG.equals(last().getAction())) ? true : false;
+		return (!isEmpty() && TradeAction.LONG.equals(last().getAction())) ? true : false;
 	}
 
 	public boolean isLastTradeShort() {
-		return (size() > 0 && TradeAction.SHORT.equals(last().getAction())) ? true : false;
+		return (!isEmpty() && TradeAction.SHORT.equals(last().getAction())) ? true : false;
 	}
 
 	public Trade last() {
@@ -112,7 +112,7 @@ public class TradeBook extends ArrayList<Trade> {
 	}
 
 	public void exitLastTrade(UnitPriceData unitPriceData) {
-		if (size() != 0) {
+		if (!isEmpty()) {
 			Trade currentTrade = last();
 			if ((currentTrade.getExitDateTime() != null) || (currentTrade.getExitPrice() != 0.0f)) {
 				throw new RuntimeException("Trying to close an already closed trade.");
@@ -124,7 +124,7 @@ public class TradeBook extends ArrayList<Trade> {
 	}
 
 	public void exitLongTrade(UnitPriceData unitPriceData) {
-		if (size() != 0) {
+		if (!isEmpty()) {
 			if (last().getAction().equals(TradeAction.LONG)) {
 				exitLastTrade(unitPriceData);
 				logger.debug("Closing long @ " + last().getExitPrice() + " @ " + last().getExitDateTime());
@@ -135,7 +135,7 @@ public class TradeBook extends ArrayList<Trade> {
 	}
 
 	public void coverShortTrade(UnitPriceData unitPriceData) {
-		if (size() != 0) {
+		if (!isEmpty()) {
 			if (last().getAction().equals(TradeAction.SHORT)) {
 				exitLastTrade(unitPriceData);
 				logger.debug("Closing short @ " + last().getExitPrice() + " @ " + last().getExitDateTime());
@@ -146,7 +146,7 @@ public class TradeBook extends ArrayList<Trade> {
 	}
 
 	public void printStatus(TimeFormat timeFormat) {
-		if (size() > 0) {
+		if (!isEmpty()) {
 			logger.info(get(0).getScripName() + " " + timeFormat.getProperty() + " " + String.valueOf(get(0).getExitDateTime().getYear()) + " "
 					+ String.valueOf(get(0).getExitDateTime().getMonth().name().substring(0, 3)) + " " + "\t" + (isProfitable() ? "PROFIT" : "LOSS") + "\t" + getPayoff() + "\t"
 					+ size() + " trades.\n" + String.valueOf(profitTradesCount) + " profit trades fetching " + String.valueOf(profitPayoff) + " points "

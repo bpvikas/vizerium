@@ -7,79 +7,116 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.vizerium.commons.dao.UnitPriceData;
+import com.vizerium.commons.dao.UnitPrice;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MACDCalculatorTest {
 
-	private float delta = 0.0001f;
+	private float delta = 0.01f;
 
 	private MACDCalculator unit;
+
+	private List<UnitPrice> unitPrices;
 
 	@Before
 	public void setUp() throws Exception {
 		unit = new MACDCalculator();
+		unitPrices = new ArrayList<UnitPrice>();
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		unit = null;
+		unitPrices = null;
 	}
 
 	@Test
 	public void testCalculate01_Success() {
-		List<UnitPriceData> ohlcData = getOHLCData(40);
-		MACD macd = unit.calculate(ohlcData);
-		System.out.println(macd);
-
-		Assert.assertEquals(58.1289f, macd.getValue(), delta);
-		Assert.assertEquals(76.72547778f, macd.getSignalValue(), delta);
-		Assert.assertEquals(-18.59657778f, macd.getHistogramLength(), delta);
+		testMACDCalculations(108);
 	}
 
 	@Test
-	public void testCalculate12_SizeLessThanSmoothingPeriod() {
-
-		List<UnitPriceData> ohlcData = getOHLCData(5);
-		MACD macd = unit.calculate(ohlcData);
-		System.out.println(macd);
-
-		Assert.assertEquals(104.7676f, macd.getValue(), delta);
-		Assert.assertEquals(Float.NaN, macd.getSignalValue(), delta);
-		Assert.assertEquals(Float.NaN, macd.getHistogramLength(), delta);
+	public void testCalculate02_SizeLessThanFastMA() {
+		testMACDCalculations(8);
 	}
 
 	@Test
-	public void testCalculate12_SizeMoreThanSmoothingPeriod() {
-
-		List<UnitPriceData> ohlcData = getOHLCData(51);
-		MACD macd = unit.calculate(ohlcData);
-		System.out.println(macd);
-
-		Assert.assertEquals(10.916f, macd.getValue(), delta);
-		Assert.assertEquals(-2.477022222f, macd.getSignalValue(), delta);
-		Assert.assertEquals(13.39302222f, macd.getHistogramLength(), delta);
+	public void testCalculate03_SizeGreaterThanFastMALessThanSlowMA() {
+		testMACDCalculations(18);
 	}
 
-	private List<UnitPriceData> getOHLCData(int count) {
+	@Test
+	public void testCalculate04_SizeGreaterThanSlowMALessThanSignal() {
+		testMACDCalculations(28);
+	}
 
-		List<UnitPriceData> ohlcData = new ArrayList<UnitPriceData>();
+	@Test
+	public void testCalculate05_SizeGreaterThanSignal() {
+		testMACDCalculations(58);
+	}
+
+	private void testMACDCalculations(int count) {
+		float[][] macdValues = getOHLCDataAndMACDValues(count);
+		MACD macd = unit.calculate(unitPrices);
+		assertArrays(macd, macdValues, count);
+	}
+
+	private void assertArrays(MACD macd, float[][] macdValues, int count) {
+
+		float[] fastMA = macd.getFastMAValues();
+		float[] slowMA = macd.getSlowMAValues();
+		float[] differenceMA = macd.getDifferenceMAValues();
+		float[] signalMA = macd.getSignalValues();
+		float[] histogramMA = macd.getHistogramValues();
+
+		for (int i = 0; i < count; i++) {
+			Assert.assertEquals(macdValues[1][i], fastMA[i], delta);
+			Assert.assertEquals(macdValues[2][i], slowMA[i], delta);
+			Assert.assertEquals(macdValues[3][i], differenceMA[i], delta);
+			Assert.assertEquals(macdValues[4][i], signalMA[i], delta);
+			Assert.assertEquals(macdValues[5][i], histogramMA[i], delta);
+		}
+	}
+
+	private float[][] getOHLCDataAndMACDValues(int count) {
+
+		float[] closingPrices = new float[count];
+		float[] fastMA = new float[count];
+		float[] slowMA = new float[count];
+		float[] differenceMA = new float[count];
+		float[] signalMA = new float[count];
+		float[] histogramMA = new float[count];
+
 		try {
 			File testDataFile = new File("src/test/resources/testData_macd_calculation.csv");
 
 			BufferedReader br = new BufferedReader(new FileReader(testDataFile));
-			String dataLine;
+			String dataLine = br.readLine(); // The br.readLine() here is to read off the header line.
 			int i = 0;
-			while ((dataLine = br.readLine()) != null && i++ < count) {
+			while ((dataLine = br.readLine()) != null && i < count) {
 				String[] dataLineDetails = dataLine.split(",");
-				ohlcData.add(new UnitPriceData(dataLineDetails));
+				unitPrices.add(new UnitPrice(Float.parseFloat(dataLineDetails[3]), Float.parseFloat(dataLineDetails[4]), Float.parseFloat(dataLineDetails[5]), Float
+						.parseFloat(dataLineDetails[6])));
+				closingPrices[i] = Float.parseFloat(dataLineDetails[6]);
+				fastMA[i] = Float.parseFloat(dataLineDetails[7]);
+				slowMA[i] = Float.parseFloat(dataLineDetails[8]);
+				differenceMA[i] = Float.parseFloat(dataLineDetails[9]);
+				signalMA[i] = Float.parseFloat(dataLineDetails[10]);
+				histogramMA[i] = Float.parseFloat(dataLineDetails[11]);
+				i++;
 			}
 			br.close();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 			Assert.fail(ioe.getMessage());
 		}
-		return ohlcData;
+		return new float[][] { closingPrices, fastMA, slowMA, differenceMA, signalMA, histogramMA };
 	}
 }

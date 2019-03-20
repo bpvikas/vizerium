@@ -1,8 +1,10 @@
 package com.vizerium.barabanca.historical.renko;
 
+import java.time.LocalDateTime;
+
 import com.vizerium.barabanca.historical.TimeFormat;
 
-public class Renko {
+public class Renko implements Cloneable {
 
 	private float brickSize;
 
@@ -10,9 +12,9 @@ public class Renko {
 
 	private float endPrice;
 
-	private float startDate;
+	private LocalDateTime startDate;
 
-	private float endDate;
+	private LocalDateTime endDate;
 
 	private TimeFormat timeFormat;
 
@@ -46,19 +48,19 @@ public class Renko {
 		this.endPrice = endPrice;
 	}
 
-	public float getStartDate() {
+	public LocalDateTime getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(float startDate) {
+	public void setStartDate(LocalDateTime startDate) {
 		this.startDate = startDate;
 	}
 
-	public float getEndDate() {
+	public LocalDateTime getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(float endDate) {
+	public void setEndDate(LocalDateTime endDate) {
 		this.endDate = endDate;
 	}
 
@@ -84,5 +86,22 @@ public class Renko {
 
 	public boolean isDown() {
 		return !isUp();
+	}
+
+	public boolean isPriceWithinRange(float price) {
+		return (isUp()) ? ((startPrice > price && price > endPrice) ? true : false) : ((startPrice <= price && price <= endPrice) ? true : false);
+	}
+
+	@Override
+	public Renko clone() {
+		Renko other = new Renko();
+		other.brickSize = this.brickSize;
+		other.startPrice = this.startPrice;
+		other.endPrice = this.endPrice;
+		other.startDate = this.startDate;
+		other.endDate = this.endDate;
+		other.timeFormat = this.timeFormat;
+		other.scripName = this.scripName;
+		return other;
 	}
 }

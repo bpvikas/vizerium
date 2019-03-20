@@ -27,7 +27,10 @@ public class AverageTrueRangeCalculator {
 			for (int i = 1; i < size; i++) {
 				trueRangeArr[i - 1] = getTrueRange(unitPrices.get(i).getHigh(), unitPrices.get(i).getLow(), unitPrices.get(i - 1).getClose());
 			}
-			return MovingAverageCalculator.calculateArrayMA(smoothingMAType, trueRangeArr, smoothingPeriod);
+			float[] smoothAtrArr = MovingAverageCalculator.calculateArrayMA(smoothingMAType, trueRangeArr, smoothingPeriod);
+			float[] smoothAtrArrShifted = new float[size];
+			System.arraycopy(smoothAtrArr, 0, smoothAtrArrShifted, 1, smoothAtrArr.length);
+			return smoothAtrArrShifted;
 		}
 	}
 

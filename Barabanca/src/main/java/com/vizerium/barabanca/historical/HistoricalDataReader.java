@@ -350,7 +350,7 @@ public class HistoricalDataReader {
 
 	private void calculateExponentialMovingAverage(FloatArrayList closingPrices, UnitPriceData unitPriceData) {
 		float[] closingPricesArray = closingPrices.toArray();
-		for (int ma : MovingAverage.getAllValidMAValuesSorted()) {
+		for (int ma : MovingAverage.getAllStandardMAValuesSorted()) {
 			float ema = MovingAverageCalculator.calculateEMA(closingPricesArray, ma);
 			unitPriceData.setMovingAverage(MovingAverage.getMAByNumber(ma), ema);
 		}

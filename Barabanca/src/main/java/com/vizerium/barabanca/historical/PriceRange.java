@@ -1,5 +1,7 @@
 package com.vizerium.barabanca.historical;
 
+import java.util.Objects;
+
 public class PriceRange {
 
 	private float low;
@@ -24,6 +26,26 @@ public class PriceRange {
 
 	public boolean isPriceWithinRange(float price) {
 		return price >= low && price < high;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(low, high);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		PriceRange other = (PriceRange) obj;
+		return Objects.equals(low, other.low) && Objects.equals(high, other.high);
 	}
 
 	@Override

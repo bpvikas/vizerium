@@ -18,7 +18,7 @@ public enum MovingAverage {
 		return Integer.parseInt(name().substring(1));
 	}
 
-	public static int[] getAllValidMAValuesSorted() {
+	public static int[] getAllStandardMAValuesSorted() {
 		int i = 0;
 		int[] allValues = new int[values().length];
 		for (MovingAverage ma : values()) {
