@@ -9,10 +9,13 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import com.vizerium.commons.dao.UnitPrice;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DirectionalSystemCalculatorTest {
 
 	private float delta = 0.0001f;

@@ -15,7 +15,7 @@ public class RenkoRange extends ArrayList<Renko> {
 	}
 
 	public boolean isLastRenkoClosed() {
-		return (size() > 0) ? ((last().getEndDate() != null) ? true : false) : true;
+		return (size() > 0) ? ((last().getEndDateTime() != null) ? true : false) : true;
 	}
 
 	public float getStart() {
@@ -33,5 +33,4 @@ public class RenkoRange extends ArrayList<Renko> {
 	public void setEnd(float end) {
 		this.end = end;
 	}
-
 }

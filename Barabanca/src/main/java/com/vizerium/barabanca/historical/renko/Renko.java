@@ -1,8 +1,10 @@
 package com.vizerium.barabanca.historical.renko;
 
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 
 import com.vizerium.barabanca.historical.TimeFormat;
+import com.vizerium.commons.util.NumberFormats;
 
 public class Renko implements Cloneable {
 
@@ -12,13 +14,15 @@ public class Renko implements Cloneable {
 
 	private float endPrice;
 
-	private LocalDateTime startDate;
+	private LocalDateTime startDateTime;
 
-	private LocalDateTime endDate;
+	private LocalDateTime endDateTime;
 
 	private TimeFormat timeFormat;
 
 	private String scripName;
+
+	private boolean smoothPriceRange;
 
 	public Renko() {
 
@@ -48,20 +52,20 @@ public class Renko implements Cloneable {
 		this.endPrice = endPrice;
 	}
 
-	public LocalDateTime getStartDate() {
-		return startDate;
+	public LocalDateTime getStartDateTime() {
+		return startDateTime;
 	}
 
-	public void setStartDate(LocalDateTime startDate) {
-		this.startDate = startDate;
+	public void setStartDateTime(LocalDateTime startDate) {
+		this.startDateTime = startDate;
 	}
 
-	public LocalDateTime getEndDate() {
-		return endDate;
+	public LocalDateTime getEndDateTime() {
+		return endDateTime;
 	}
 
-	public void setEndDate(LocalDateTime endDate) {
-		this.endDate = endDate;
+	public void setEndDateTime(LocalDateTime endDate) {
+		this.endDateTime = endDate;
 	}
 
 	public TimeFormat getTimeFormat() {
@@ -80,8 +84,16 @@ public class Renko implements Cloneable {
 		this.scripName = scripName;
 	}
 
+	public boolean isSmoothPriceRange() {
+		return smoothPriceRange;
+	}
+
+	public void setSmoothPriceRange(boolean smoothPriceRange) {
+		this.smoothPriceRange = smoothPriceRange;
+	}
+
 	public boolean isUp() {
-		return startPrice > endPrice;
+		return startPrice < endPrice;
 	}
 
 	public boolean isDown() {
@@ -89,7 +101,7 @@ public class Renko implements Cloneable {
 	}
 
 	public boolean isPriceWithinRange(float price) {
-		return (isUp()) ? ((startPrice > price && price > endPrice) ? true : false) : ((startPrice <= price && price <= endPrice) ? true : false);
+		return (isUp()) ? ((startPrice < price && price < endPrice) ? true : false) : ((startPrice >= price && price >= endPrice) ? true : false);
 	}
 
 	@Override
@@ -98,10 +110,17 @@ public class Renko implements Cloneable {
 		other.brickSize = this.brickSize;
 		other.startPrice = this.startPrice;
 		other.endPrice = this.endPrice;
-		other.startDate = this.startDate;
-		other.endDate = this.endDate;
+		other.startDateTime = this.startDateTime;
+		other.endDateTime = this.endDateTime;
 		other.timeFormat = this.timeFormat;
 		other.scripName = this.scripName;
 		return other;
+	}
+
+	@Override
+	public String toString() {
+		NumberFormat pnf = NumberFormats.getForPrice();
+		return "Renko[" + scripName + "," + pnf.format(brickSize) + "," + (isUp() ? "Up" : "Down") + "\tstart " + startDateTime + "@" + pnf.format(startPrice) + "\t\tend "
+				+ endDateTime + "@" + pnf.format(endPrice) + "]";
 	}
 }
