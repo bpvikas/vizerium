@@ -2,112 +2,61 @@ package com.vizerium.commons.indicators;
 
 public class DirectionalSystem {
 
-	private float dm;
+	private float[] smoothedPlusDI;
 
-	private float atr;
+	private float[] smoothedMinusDI;
 
-	private float plusDI;
+	private float[] adx;
 
-	private float minusDI;
+	private int smoothingPeriod;
 
-	private float smoothedPlusDI;
+	private MovingAverageType movingAverageType;
 
-	private float smoothedMinusDI;
-
-	private float dx;
-
-	private float adx;
-
-	private float smoothingPeriod;
-
-	private MovingAverageType smoothingMAType;
-
-	private static final MovingAverageType DEFAULT_SMOOTHING_MA_TYPE = MovingAverageType.SIMPLE;
-
-	private static final int DEFAULT_SMOOTHING_PERIOD_COUNT = 13;
+	private static final int DEFAULT_SMOOTHING_PERIOD_COUNT = 14;
+	private static final MovingAverageType DEFAULT_SMOOTHING_MA_TYPE = MovingAverageType.WELLESWILDER;
 
 	public DirectionalSystem() {
 		this.smoothingPeriod = DEFAULT_SMOOTHING_PERIOD_COUNT;
-		this.smoothingMAType = DEFAULT_SMOOTHING_MA_TYPE;
+		this.movingAverageType = DEFAULT_SMOOTHING_MA_TYPE;
 	}
 
-	public float getDM() {
-		return dm;
-	}
-
-	public void setDM(float dm) {
-		this.dm = dm;
-	}
-
-	public float getAtr() {
-		return atr;
-	}
-
-	public void setAtr(float atr) {
-		this.atr = atr;
-	}
-
-	public float getPlusDI() {
-		return plusDI;
-	}
-
-	public void setPlusDI(float plusDI) {
-		this.plusDI = plusDI;
-	}
-
-	public float getMinusDI() {
-		return minusDI;
-	}
-
-	public void setMinusDI(float minusDI) {
-		this.minusDI = minusDI;
-	}
-
-	public float getSmoothedPlusDI() {
+	public float[] getSmoothedPlusDI() {
 		return smoothedPlusDI;
 	}
 
-	public void setSmoothedPlusDI(float smoothedPlusDI) {
-		this.smoothedPlusDI = smoothedPlusDI;
+	public void setSmoothedPlusDI(float[] smoothedPlusDIArray) {
+		this.smoothedPlusDI = smoothedPlusDIArray;
 	}
 
-	public float getSmoothedMinusDI() {
+	public float[] getSmoothedMinusDI() {
 		return smoothedMinusDI;
 	}
 
-	public void setSmoothedMinusDI(float smoothedMinusDI) {
+	public void setSmoothedMinusDI(float[] smoothedMinusDI) {
 		this.smoothedMinusDI = smoothedMinusDI;
 	}
 
-	public float getDx() {
-		return dx;
-	}
-
-	public void setDx(float dx) {
-		this.dx = dx;
-	}
-
-	public float getAdx() {
+	public float[] getAdx() {
 		return adx;
 	}
 
-	public void setAdx(float adx) {
+	public void setAdx(float[] adx) {
 		this.adx = adx;
 	}
 
-	public float getSmoothingPeriod() {
+	public int getSmoothingPeriod() {
 		return smoothingPeriod;
 	}
 
-	public void setSmoothingPeriod(float smoothingPeriod) {
+	public void setSmoothingPeriod(int smoothingPeriod) {
 		this.smoothingPeriod = smoothingPeriod;
 	}
 
-	public MovingAverageType getSmoothingMAType() {
-		return smoothingMAType;
+	public MovingAverageType getMovingAverageType() {
+		return movingAverageType;
 	}
 
-	public void setSmoothingMAType(MovingAverageType smoothingMAType) {
-		this.smoothingMAType = smoothingMAType;
+	public void setMovingAverageType(MovingAverageType movingAverageType) {
+		this.movingAverageType = movingAverageType;
 	}
 }

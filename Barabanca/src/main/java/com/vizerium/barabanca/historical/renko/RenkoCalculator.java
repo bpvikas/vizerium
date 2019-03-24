@@ -13,15 +13,15 @@ public class RenkoCalculator {
 
 	private static final Logger logger = Logger.getLogger(RenkoCalculator.class);
 
-	public Renko[] calculate(List<UnitPriceData> unitPriceDataList, Renko renko) {
-
-		Renko[] renkoRange = getRenkoRange(unitPriceDataList, renko);
-		return renkoRange;
+	public RenkoRange calculate(List<UnitPriceData> unitPriceDataList, Renko renko) {
+		return getRenkoRange(unitPriceDataList, renko);
 	}
 
-	private Renko[] getRenkoRange(List<UnitPriceData> unitPriceDataList, Renko renko) {
+	private RenkoRange getRenkoRange(List<UnitPriceData> unitPriceDataList, Renko renko) {
 		if (renko.getBrickSize() <= 0.0f) {
-			renko.setBrickSize(AverageTrueRangeCalculator.calculate(unitPriceDataList));
+			AverageTrueRangeCalculator atrCalculator = new AverageTrueRangeCalculator();
+			float[] averageTrueRange = atrCalculator.calculateAverageTrueRange(unitPriceDataList);
+			renko.setBrickSize(averageTrueRange[averageTrueRange.length - 1]);
 			logger.info("Auto calculated Renko brick size " + renko.getScripName() + " " + renko.getTimeFormat() + " " + renko.getBrickSize());
 		}
 		PriceRange[] priceRanges = getPriceRanges(unitPriceDataList, renko.getBrickSize(), renko.isSmoothPriceRange());
@@ -68,7 +68,7 @@ public class RenkoCalculator {
 		}
 		logger.debug("RenkoRange Size : " + renkoRange.size());
 		renkoRange.forEach(logger::debug);
-		return renkoRange.toArray(new Renko[renkoRange.size()]);
+		return renkoRange;
 	}
 
 	private void deleteLastOpenRenko(RenkoRange renkoRange) {

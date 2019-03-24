@@ -2,11 +2,12 @@ package com.vizerium.barabanca.historical.renko;
 
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import com.vizerium.barabanca.historical.TimeFormat;
 import com.vizerium.commons.util.NumberFormats;
 
-public class Renko implements Cloneable {
+public class Renko implements Cloneable, Comparable<Renko> {
 
 	private float brickSize;
 
@@ -104,6 +105,14 @@ public class Renko implements Cloneable {
 		return (isUp()) ? ((startPrice < price && price < endPrice) ? true : false) : ((startPrice >= price && price >= endPrice) ? true : false);
 	}
 
+	public float getHigherPrice() {
+		return Math.max(startPrice, endPrice);
+	}
+
+	public float getLowerPrice() {
+		return Math.min(startPrice, endPrice);
+	}
+
 	@Override
 	public Renko clone() {
 		Renko other = new Renko();
@@ -118,9 +127,36 @@ public class Renko implements Cloneable {
 	}
 
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Renko other = (Renko) obj;
+		return Objects.equals(brickSize, other.brickSize) && Objects.equals(startPrice, other.startPrice) && Objects.equals(endPrice, other.endPrice)
+				&& Objects.equals(startDateTime, other.startDateTime) && Objects.equals(endDateTime, other.endDateTime) && Objects.equals(timeFormat, other.timeFormat)
+				&& Objects.equals(scripName, other.scripName);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(brickSize, startPrice, endPrice, startDateTime, endDateTime, timeFormat, scripName);
+	}
+
+	@Override
 	public String toString() {
 		NumberFormat pnf = NumberFormats.getForPrice();
 		return "Renko[" + scripName + "," + pnf.format(brickSize) + "," + (isUp() ? "Up" : "Down") + "\tstart " + startDateTime + "@" + pnf.format(startPrice) + "\t\tend "
 				+ endDateTime + "@" + pnf.format(endPrice) + "]";
+	}
+
+	@Override
+	public int compareTo(Renko o) {
+		return startDateTime.compareTo(o.startDateTime);
 	}
 }

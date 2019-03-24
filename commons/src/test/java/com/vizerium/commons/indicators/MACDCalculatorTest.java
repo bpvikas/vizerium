@@ -19,7 +19,7 @@ import com.vizerium.commons.dao.UnitPrice;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MACDCalculatorTest {
 
-	private float delta = 0.01f;
+	private static final float delta = 0.01f;
 
 	private MACDCalculator unit;
 

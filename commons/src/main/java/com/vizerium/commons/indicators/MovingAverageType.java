@@ -1,7 +1,7 @@
 package com.vizerium.commons.indicators;
 
 public enum MovingAverageType {
-	SIMPLE, EXPONENTIAL;
+	SIMPLE, EXPONENTIAL, WELLESWILDER;
 
 	@Override
 	public String toString() {

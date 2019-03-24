@@ -19,12 +19,15 @@ import com.vizerium.commons.dao.UnitPrice;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AverageTrueRangeCalculatorTest {
 
-	private float delta = 0.0007f;
+	private static final float delta = 0.0007f;
+
+	private AverageTrueRangeCalculator unit;
 
 	private List<UnitPrice> unitPrices;
 
 	@Before
 	public void setUp() throws Exception {
+		unit = new AverageTrueRangeCalculator();
 		unitPrices = new ArrayList<UnitPrice>();
 	}
 
@@ -50,12 +53,11 @@ public class AverageTrueRangeCalculatorTest {
 
 	private void testAtrCalculations(int count) {
 		float[] expectedSmoothedAtrValues = getOHLCDataAndATRValues(count);
-		float[] actualSmoothedAtrValues = AverageTrueRangeCalculator.calculateArray(unitPrices);
+		float[] actualSmoothedAtrValues = unit.calculateAverageTrueRange(unitPrices);
 		assertArrays(expectedSmoothedAtrValues, actualSmoothedAtrValues, count);
 	}
 
 	private void assertArrays(float[] expectedSmoothedAtrValues, float[] actualSmoothedAtrValues, int count) {
-
 		for (int i = 0; i < count; i++) {
 			Assert.assertEquals(expectedSmoothedAtrValues[i], actualSmoothedAtrValues[i], delta);
 		}
@@ -74,7 +76,7 @@ public class AverageTrueRangeCalculatorTest {
 				String[] dataLineDetails = dataLine.split(",");
 				unitPrices.add(new UnitPrice(Float.parseFloat(dataLineDetails[3]), Float.parseFloat(dataLineDetails[4]), Float.parseFloat(dataLineDetails[5]), Float
 						.parseFloat(dataLineDetails[6])));
-				smoothedAtr[i] = Float.parseFloat(dataLineDetails[8]);
+				smoothedAtr[i] = Float.parseFloat(dataLineDetails[9]);
 				i++;
 			}
 			br.close();

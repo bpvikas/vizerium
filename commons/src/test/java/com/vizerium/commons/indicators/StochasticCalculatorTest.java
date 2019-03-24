@@ -18,7 +18,7 @@ import com.vizerium.commons.dao.UnitPrice;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class StochasticCalculatorTest {
 
-	private float delta = 0.0001f;
+	private static final float delta = 0.0001f;
 
 	private StochasticCalculator unit;
 
