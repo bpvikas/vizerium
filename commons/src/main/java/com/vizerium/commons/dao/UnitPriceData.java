@@ -8,24 +8,28 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
+import com.vizerium.commons.indicators.Indicator;
+import com.vizerium.commons.indicators.Indicators;
 import com.vizerium.commons.indicators.MovingAverage;
 import com.vizerium.commons.indicators.MovingAverageAndValue;
 import com.vizerium.commons.util.NumberFormats;
 
 public class UnitPriceData extends UnitPrice {
 
-	private static DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd,HH:mm");
+	private static final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd,HH:mm");
 
-	private static NumberFormat nf = NumberFormats.getForPrice();
-
-	private static NumberFormat manf = NumberFormats.getForMovingAverage();
+	private static final NumberFormat manf = NumberFormats.getForMovingAverage();
 
 	private String scripName;
 
 	private LocalDateTime dateTime;
 
 	private List<MovingAverageAndValue> movingAverages = new ArrayList<MovingAverageAndValue>(MovingAverage.values().length);
+
+	private Map<Indicators, Indicator> indicators = new TreeMap<Indicators, Indicator>();
 
 	public UnitPriceData() {
 
@@ -110,6 +114,22 @@ public class UnitPriceData extends UnitPrice {
 	 */
 	public float getTradedValue() {
 		return getClose();
+	}
+
+	public Indicator getIndicator(Indicators indicatorName) {
+		return indicators.get(indicatorName);
+	}
+
+	public void addIndicator(Indicators indicatorName, Indicator indicatorValue) {
+		indicators.put(indicatorName, indicatorValue);
+	}
+
+	public Map<Indicators, Indicator> getIndicators() {
+		return indicators;
+	}
+
+	public void setIndicators(Map<Indicators, Indicator> indicators) {
+		this.indicators = indicators;
 	}
 
 	@Override

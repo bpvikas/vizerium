@@ -1,6 +1,6 @@
 package com.vizerium.commons.indicators;
 
-public class DirectionalSystem {
+public class DirectionalSystem implements Indicator {
 
 	private float[] smoothedPlusDI;
 
@@ -58,5 +58,10 @@ public class DirectionalSystem {
 
 	public void setMovingAverageType(MovingAverageType movingAverageType) {
 		this.movingAverageType = movingAverageType;
+	}
+
+	@Override
+	public float[] getUnitPriceIndicator(int position) {
+		return new float[] { smoothingPeriod, smoothedPlusDI[position], smoothedMinusDI[position], adx[position] };
 	}
 }

@@ -1,35 +1,71 @@
 package com.vizerium.commons.indicators;
 
+import java.util.Arrays;
+
 public class RSICalculator {
 
-	public static float calculateRSI(float[] closingPrices, int numberOfPeriods) {
-		float initialTotalGain = 0.0f;
-		float initialTotalLoss = 0.0f;
+	private static final int AVERAGE_GAIN_LOSS_CALCULATION_START = 1;
 
-		for (int i = 1; i <= numberOfPeriods; i++) {
-			float currentClose = closingPrices[i];
-			float previousClose = closingPrices[i - 1];
-			if (currentClose >= previousClose) {
-				initialTotalGain += (currentClose - previousClose);
-			} else {
-				initialTotalLoss += (previousClose - currentClose);
-			}
-		}
-
-		float averageGain = initialTotalGain / numberOfPeriods;
-		float averageLoss = initialTotalLoss / numberOfPeriods;
-
-		for (int i = numberOfPeriods + 1; i < closingPrices.length; i++) {
-			float currentClose = closingPrices[i];
-			float previousClose = closingPrices[i - 1];
-
-			averageGain = (averageGain * (numberOfPeriods - 1) + ((currentClose >= previousClose) ? (currentClose - previousClose) : 0)) / numberOfPeriods;
-			averageLoss = (averageLoss * (numberOfPeriods - 1) + ((currentClose >= previousClose) ? 0 : (previousClose - currentClose))) / numberOfPeriods;
-		}
-
-		float rs = averageGain / averageLoss;
-		float rsi = 100.0f - (100.0f / (1.0f + rs));
-		return rsi;
+	public RSI calculate(float[] closingPrices) {
+		return calculate(closingPrices, new RSI());
 	}
 
+	public RSI calculate(float[] closingPrices, RSI rsi) {
+		int lookbackPeriod = rsi.getLookbackPeriod();
+		if (closingPrices.length <= lookbackPeriod) {
+			rsi.setValues(new float[closingPrices.length]);
+			return rsi;
+		} else {
+
+			float[] currentGain = calculateCurrentGain(closingPrices);
+			float[] currentLoss = calculateCurrentLoss(closingPrices);
+
+			float[] averageGain = calculateAverageGainLoss(currentGain, rsi);
+			float[] averageLoss = calculateAverageGainLoss(currentLoss, rsi);
+
+			float[] rsiValues = calculateRSIValues(averageGain, averageLoss);
+			rsi.setValues(rsiValues);
+			return rsi;
+		}
+	}
+
+	private float[] calculateCurrentGain(float[] closingPrices) {
+		float[] currentGain = new float[closingPrices.length];
+		for (int i = AVERAGE_GAIN_LOSS_CALCULATION_START; i < closingPrices.length; i++) {
+			float diff = closingPrices[i] - closingPrices[i - 1];
+			currentGain[i] = (diff > 0) ? diff : 0;
+		}
+		return currentGain;
+	}
+
+	private float[] calculateCurrentLoss(float[] closingPrices) {
+		float[] currentLoss = new float[closingPrices.length];
+		for (int i = AVERAGE_GAIN_LOSS_CALCULATION_START; i < closingPrices.length; i++) {
+			float diff = closingPrices[i - 1] - closingPrices[i];
+			currentLoss[i] = (diff > 0) ? diff : 0;
+		}
+		return currentLoss;
+	}
+
+	private float[] calculateAverageGainLoss(float[] currentGainLoss, RSI rsi) {
+		float[] calculableCurrentGainLoss = Arrays.copyOfRange(currentGainLoss, AVERAGE_GAIN_LOSS_CALCULATION_START, currentGainLoss.length);
+		float[] averageGainLoss = MovingAverageCalculator.calculateArrayMA(rsi.getMaType(), calculableCurrentGainLoss, rsi.getLookbackPeriod());
+
+		float[] averageGainLossShifted = new float[currentGainLoss.length];
+		System.arraycopy(averageGainLoss, 0, averageGainLossShifted, AVERAGE_GAIN_LOSS_CALCULATION_START, averageGainLoss.length);
+		return averageGainLossShifted;
+	}
+
+	private float[] calculateRSIValues(float[] averageGain, float[] averageLoss) {
+		float[] rsiValues = new float[averageGain.length];
+		for (int i = 0; i < averageGain.length; i++) {
+			if (averageLoss[i] == 0.0f) {
+				rsiValues[i] = 0.0f;
+			} else {
+				float rs = averageGain[i] / averageLoss[i];
+				rsiValues[i] = 100.0f - (100.0f / (1.0f + rs));
+			}
+		}
+		return rsiValues;
+	}
 }

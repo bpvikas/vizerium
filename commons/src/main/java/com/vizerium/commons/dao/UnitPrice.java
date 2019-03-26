@@ -1,6 +1,12 @@
 package com.vizerium.commons.dao;
 
+import java.text.NumberFormat;
+
+import com.vizerium.commons.util.NumberFormats;
+
 public class UnitPrice {
+
+	protected static final NumberFormat nf = NumberFormats.getForPrice();
 
 	protected float open;
 
@@ -53,4 +59,8 @@ public class UnitPrice {
 		this.close = close;
 	}
 
+	@Override
+	public String toString() {
+		return nf.format(open) + "," + nf.format(high) + "," + nf.format(low) + "," + nf.format(close);
+	}
 }

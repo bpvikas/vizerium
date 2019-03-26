@@ -1,5 +1,6 @@
 package com.vizerium.commons.indicators;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.vizerium.commons.dao.UnitPrice;
@@ -34,57 +35,68 @@ public class StochasticMomentumCalculator implements StochasticCalculatorBase {
 	}
 
 	public StochasticMomentum calculate(List<? extends UnitPrice> unitPrices, StochasticMomentum sm) {
-
 		int lbpk = sm.getPercentKLookbackPeriod();
 		int ma1 = sm.getMaPeriodCountForFirstSmoothingK();
 		int ma2 = sm.getMaPeriodCountForDoubleSmoothingK();
-		MovingAverageType matype = sm.getMaTypeForCalculatingDFromK();
+		MovingAverageType maType = sm.getMaTypeForCalculatingDFromK();
 		int lbpd = sm.getPercentDLookbackPeriod();
 
 		int size = unitPrices.size();
-
-		if (size < lbpk + ma1 + ma2 - 1 - 1) {
-			return sm;
-		} else if (size >= lbpk + ma1 + ma2 - 1 - 1 && size < lbpk + ma1 + ma2 - 1 - 1 + lbpd) {
-
-			sm.setSmi(calculateSMI(unitPrices, size, lbpk, ma1, ma2, matype));
-			return sm;
-
-		} else if (size >= lbpk + ma1 + ma2 - 1 - 1 + lbpd) {
-			float[] smiArr = new float[lbpd];
-			for (int i = 0; i < lbpd; i++) {
-				smiArr[i] = calculateSMI(unitPrices, size - lbpd + i + 1, lbpk, ma1, ma2, matype);
-			}
-			sm.setSmi(smiArr[lbpd - 1]);
-			sm.setSignal(MovingAverageCalculator.calculateMA(matype, smiArr, lbpd));
-			return sm;
+		if (size < lbpk) {
+			sm.setSmiArray(new float[unitPrices.size()]);
+			sm.setSignalArray(new float[unitPrices.size()]);
 		} else {
-			throw new RuntimeException("Error while calculating stochastic momentum for unitPrices size : " + size);
-		}
-	}
-
-	private float calculateSMI(List<? extends UnitPrice> unitPrices, int size, int lbpk, int ma1, int ma2, MovingAverageType matype) {
-		float[] smoothCmdArr = new float[ma2];
-		float[] smoothHldArr = new float[ma2];
-		for (int j = 0; j < ma2; j++) {
-			float[] cmdArr = new float[ma1]; // cmd -> close median difference
-			float[] hldArr = new float[ma1]; // hld -> high low difference
-			for (int i = 0; i < ma1; i++) {
-				float cc = unitPrices.get(size - ma1 - ma2 + i + j + 1).getClose();
-				float hh = hh(unitPrices, size - ma1 - ma2 + i + j - lbpk + 1 + 1, size - ma1 - ma2 + i + j + 1);
-				float ll = ll(unitPrices, size - ma1 - ma2 + i + j - lbpk + 1 + 1, size - ma1 - ma2 + i + j + 1);
-				float median = (hh + ll) / 2.0f;
-				cmdArr[i] = cc - median;
-				hldArr[i] = hh - ll;
+			float[] closeArray = new float[size];
+			for (int i = 0; i < size; i++) {
+				closeArray[i] = unitPrices.get(i).getClose();
 			}
-			smoothCmdArr[j] = MovingAverageCalculator.calculateMA(matype, cmdArr, ma1);
-			smoothHldArr[j] = MovingAverageCalculator.calculateMA(matype, hldArr, ma1);
+
+			float[] hhArray = new float[size - lbpk + 1];
+			float[] llArray = new float[size - lbpk + 1];
+			float[] medianArray = new float[size - lbpk + 1];
+			float[] cmdArray = new float[size - lbpk + 1]; // cmd -> close median difference
+			float[] hldArray = new float[size - lbpk + 1]; // hld -> high low difference
+			for (int i = lbpk - 1; i < size; i++) {
+				hhArray[i - lbpk + 1] = hh(unitPrices, i - lbpk + 1, i);
+				llArray[i - lbpk + 1] = ll(unitPrices, i - lbpk + 1, i);
+				medianArray[i - lbpk + 1] = (hhArray[i - lbpk + 1] + llArray[i - lbpk + 1]) / 2.0f;
+				cmdArray[i - lbpk + 1] = closeArray[i] - medianArray[i - lbpk + 1];
+				hldArray[i - lbpk + 1] = hhArray[i - lbpk + 1] - llArray[i - lbpk + 1];
+			}
+
+			float[] smiArrayShifted = new float[size];
+			float[] signalArrayShifted = new float[size];
+
+			if (size > lbpk - 1 + ma1 - 1) {
+				float[] smoothCmdArray = MovingAverageCalculator.calculateArrayMA(maType, cmdArray, ma1);
+				float[] smoothHldArray = MovingAverageCalculator.calculateArrayMA(maType, hldArray, ma1);
+
+				float[] calculableSmoothCmdArray = Arrays.copyOfRange(smoothCmdArray, ma1 - 1, smoothCmdArray.length);
+				float[] doubleSmoothCmdArray = MovingAverageCalculator.calculateArrayMA(maType, calculableSmoothCmdArray, ma2);
+
+				float[] calculableSmoothHldArray = Arrays.copyOfRange(smoothHldArray, ma1 - 1, smoothHldArray.length);
+				float[] doubleSmoothHldArray = MovingAverageCalculator.calculateArrayMA(maType, calculableSmoothHldArray, ma2);
+
+				float[] doubleSmoothHld2Array = new float[doubleSmoothHldArray.length];
+				for (int i = 0; i < doubleSmoothHldArray.length; i++) {
+					doubleSmoothHld2Array[i] = doubleSmoothHldArray[i] / 2.0f;
+				}
+
+				float[] smiArray = new float[doubleSmoothHld2Array.length - ma2 + 1];
+				for (int i = ma2 - 1; i < doubleSmoothHld2Array.length; i++) {
+					smiArray[i - ma2 + 1] = 100.0f * doubleSmoothCmdArray[i] / doubleSmoothHld2Array[i];
+				}
+
+				float[] signalArray = MovingAverageCalculator.calculateArrayMA(maType, smiArray, lbpd);
+				int destPos = lbpk - 1 + ma1 - 1 + ma1 - 1;
+				smiArrayShifted = new float[smiArray.length + destPos];
+				System.arraycopy(smiArray, 0, smiArrayShifted, destPos, smiArray.length);
+				signalArrayShifted = new float[signalArray.length + destPos];
+				System.arraycopy(signalArray, 0, signalArrayShifted, destPos, signalArray.length);
+			}
+			sm.setSmiArray(smiArrayShifted);
+			sm.setSignalArray(signalArrayShifted);
 		}
-		float doubleSmoothCmd = MovingAverageCalculator.calculateMA(matype, smoothCmdArr, ma2);
-		float doubleSmoothHld2 = MovingAverageCalculator.calculateMA(matype, smoothHldArr, ma2) / 2;
-
-		float smi = 100 * (doubleSmoothCmd / doubleSmoothHld2);
-		return smi;
-
+		return sm;
 	}
 }

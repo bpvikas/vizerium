@@ -1,6 +1,6 @@
 package com.vizerium.commons.indicators;
 
-public class StochasticMomentum {
+public class StochasticMomentum implements Indicator {
 
 	// The default value for the look back period for the Stochastic Momentum indicator.
 	public static final int DEFAULT_STOCHASTIC_MOMENTUM_LOOK_BACK_PERIOD = 10;
@@ -17,9 +17,9 @@ public class StochasticMomentum {
 
 	private int percentDLookbackPeriod;
 
-	private float smi;
+	private float[] smiArray;
 
-	private float signal;
+	private float[] signalArray;
 
 	public StochasticMomentum() {
 		this.percentKLookbackPeriod = DEFAULT_STOCHASTIC_MOMENTUM_LOOK_BACK_PERIOD;
@@ -43,20 +43,20 @@ public class StochasticMomentum {
 		this.maTypeForCalculatingDFromK = maTypeForCalculatingDFromK;
 	}
 
-	public float getSmi() {
-		return smi;
+	public float[] getSmiArray() {
+		return smiArray;
 	}
 
-	public void setSmi(float smi) {
-		this.smi = smi;
+	public void setSmiArray(float[] smiArray) {
+		this.smiArray = smiArray;
 	}
 
-	public float getSignal() {
-		return signal;
+	public float[] getSignalArray() {
+		return signalArray;
 	}
 
-	public void setSignal(float signal) {
-		this.signal = signal;
+	public void setSignalArray(float[] signalArray) {
+		this.signalArray = signalArray;
 	}
 
 	public int getPercentKLookbackPeriod() {
@@ -86,7 +86,12 @@ public class StochasticMomentum {
 	@Override
 	public String toString() {
 		return "StochasticMomentum [" + percentKLookbackPeriod + ", " + maPeriodCountForFirstSmoothingK + ", " + maPeriodCountForDoubleSmoothingK + ", " + percentDLookbackPeriod
-				+ ", " + maTypeForCalculatingDFromK.toString() + ", smi=" + smi + ", signal=" + signal + "]";
+				+ ", " + maTypeForCalculatingDFromK.toString() + "]";
 	}
 
+	@Override
+	public float[] getUnitPriceIndicator(int position) {
+		return new float[] { percentKLookbackPeriod, maPeriodCountForFirstSmoothingK, maPeriodCountForDoubleSmoothingK, percentDLookbackPeriod, smiArray[position],
+				signalArray[position] };
+	}
 }

@@ -1,6 +1,6 @@
 package com.vizerium.commons.indicators;
 
-public class MACD {
+public class MACD implements Indicator {
 
 	// The default value for the fast MA for the MACD.
 	private static final int DEFAULT_FAST_MA = 12;
@@ -119,7 +119,14 @@ public class MACD {
 	}
 
 	@Override
+	public float[] getUnitPriceIndicator(int position) {
+		return new float[] { smoothingPeriod, fastMA, fastMAValues[position], slowMA, slowMAValues[position], differenceMAValues[position], signalValues[position],
+				histogramValues[position] };
+	}
+
+	@Override
 	public String toString() {
 		return "MACD[" + fastMA + fastSlowMAType.toString() + "," + slowMA + fastSlowMAType.toString() + "," + smoothingPeriod + "," + smoothingMAType.toString() + "]";
 	}
+
 }

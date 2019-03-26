@@ -1,21 +1,19 @@
 package com.vizerium.commons.indicators;
 
-public class Stochastic {
+public class Stochastic implements Indicator {
 
 	// The default value for the look back period for the Stochastic indicator.
 	public static final int DEFAULT_STOCHASTIC_LOOK_BACK_PERIOD = 14;
 	private static final int DEFAULT_MA_PERIOD_COUNT = 3;
-	private static final MovingAverageType DEFAULT_MA_TYPE = MovingAverageType.SIMPLE;
+	private static final MovingAverageType DEFAULT_MA_TYPE = MovingAverageType.EXPONENTIAL;
 
 	private int lookbackPeriod;
 
-	private float fastPercentD;
+	private float[] fastPercentKArray;
 
-	private float fastPercentK;
+	private float[] slowPercentKArray;
 
-	private float slowPercentD;
-
-	private float slowPercentK;
+	private float[] slowPercentDArray;
 
 	private int maPeriodCountForCalculatingDFromK;
 
@@ -59,36 +57,42 @@ public class Stochastic {
 		return lookbackPeriod;
 	}
 
-	public float getFastPercentD() {
-		return fastPercentD;
+	public float[] getFastPercentKArray() {
+		return fastPercentKArray;
 	}
 
-	public float getFastPercentK() {
-		return fastPercentK;
+	public void setFastPercentKArray(float[] fastPercentKArray) {
+		this.fastPercentKArray = fastPercentKArray;
 	}
 
-	public float getSlowPercentD() {
-		return slowPercentD;
+	public float[] getSlowPercentKArray() {
+		return slowPercentKArray;
 	}
 
-	public float getSlowPercentK() {
-		return slowPercentK;
+	public void setSlowPercentKArray(float[] slowPercentKArray) {
+		this.slowPercentKArray = slowPercentKArray;
 	}
 
-	void setFastPercentD(float fastPercentD) {
-		this.fastPercentD = fastPercentD;
+	/*
+	 * As per the Stochastic calculations, the slow %K is the fast%D array while double smoothing.
+	 */
+	public float[] getFastPercentDArray() {
+		return getSlowPercentKArray();
 	}
 
-	void setFastPercentK(float fastPercentK) {
-		this.fastPercentK = fastPercentK;
+	/*
+	 * As per the Stochastic calculations, the slow %K is the fast%D array while double smoothing.
+	 */
+	public void setFastPercentDArray(float[] slowPercentKArray) {
+		setSlowPercentKArray(slowPercentKArray);
 	}
 
-	void setSlowPercentD(float slowPercentD) {
-		this.slowPercentD = slowPercentD;
+	public float[] getSlowPercentDArray() {
+		return slowPercentDArray;
 	}
 
-	void setSlowPercentK(float slowPercentK) {
-		this.slowPercentK = slowPercentK;
+	public void setSlowPercentDArray(float[] slowPercentDArray) {
+		this.slowPercentDArray = slowPercentDArray;
 	}
 
 	public int getMaPeriodCountForCalculatingDFromK() {
@@ -108,8 +112,8 @@ public class Stochastic {
 	}
 
 	@Override
-	public String toString() {
-		return "Stochastic [lookbackPeriod=" + lookbackPeriod + ", fast %K=" + fastPercentK + ", fast %D=" + fastPercentD + ", slow %K=" + slowPercentK + ", slow %D="
-				+ slowPercentD + "]";
+	public float[] getUnitPriceIndicator(int position) {
+		return new float[] { lookbackPeriod, maPeriodCountForCalculatingSlowFromFast, maPeriodCountForCalculatingDFromK, fastPercentKArray[position], slowPercentKArray[position],
+				slowPercentKArray[position], slowPercentDArray[position] };
 	}
 }

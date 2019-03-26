@@ -48,7 +48,8 @@ public abstract class CsvHistoricalDataVolatilityCalculatorTest {
 		float bollingerBandHigh = bollingerBand.getHigh();
 		float bollingerBandLow = bollingerBand.getLow();
 		System.out.println(bollingerBand);
-		float rsi = RSICalculator.calculateRSI(historicalClosingPrices, 14);
+		float[] rsiValues = new RSICalculator().calculate(historicalClosingPrices).getValues();
+		float rsi = rsiValues[rsiValues.length - 1];
 
 		int upperEndVolatilityViolations = 0, lowerEndVolatilityViolations = 0, upperEndBollingerViolations = 0, lowerEndBollingerViolations = 0;
 		float[] closingPrices = historicalDataStore.readHistoricalClosingPrices(futureDateRange);

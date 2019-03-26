@@ -34,6 +34,19 @@ public class TrendCheckTest {
 
 	@Test
 	public void testBankNiftyTrendFor2018DecInHourlyByMACDHistogramSlope() {
-		// TODO: This needs to be fixed.
+		List<PeriodTrend> periodTrends = unit.getTrendByMACDHistogramSlope("BANKNIFTY", LocalDateTime.of(2018, 12, 1, 0, 0), LocalDateTime.of(2018, 12, 31, 23, 59),
+				TimeFormat._1HOUR);
+		for (PeriodTrend periodTrend : periodTrends) {
+			logger.info(periodTrend);
+		}
+	}
+
+	@Test
+	public void testBankNiftyTrendFor2018DecInHourlyByDirectionalSystemAndADX() {
+		List<PeriodTrend> periodTrends = unit.getTrendByDirectionalSystemAndADX("BANKNIFTY", LocalDateTime.of(2018, 12, 1, 0, 0), LocalDateTime.of(2018, 12, 31, 23, 59),
+				TimeFormat._1HOUR);
+		for (PeriodTrend periodTrend : periodTrends) {
+			logger.info(periodTrend);
+		}
 	}
 }

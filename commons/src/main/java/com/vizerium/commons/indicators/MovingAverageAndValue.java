@@ -1,6 +1,6 @@
 package com.vizerium.commons.indicators;
 
-public class MovingAverageAndValue implements Comparable<MovingAverageAndValue> {
+public class MovingAverageAndValue implements Comparable<MovingAverageAndValue>, Indicator {
 	private int ma;
 	private float value;
 
@@ -28,5 +28,10 @@ public class MovingAverageAndValue implements Comparable<MovingAverageAndValue> 
 
 	public String toString() {
 		return ma + "MA : " + value;
+	}
+
+	@Override
+	public float[] getUnitPriceIndicator(int position) {
+		return new float[] { ma, value };
 	}
 }

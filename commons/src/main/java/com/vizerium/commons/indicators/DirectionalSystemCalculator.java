@@ -32,33 +32,34 @@ public class DirectionalSystemCalculator {
 	}
 
 	private float[] getPlusDM(List<? extends UnitPrice> unitPrices) {
-		float[] plusDM = new float[unitPrices.size()];
-		// This starts from i=1 as plusDM[0] defaults to 0.0f
-		for (int i = DIRECTIONAL_MOVEMENT_CALCULATION_START; i < unitPrices.size(); i++) {
-			float highDiff = unitPrices.get(i).getHigh() - unitPrices.get(i - 1).getHigh();
-			float lowDiff = unitPrices.get(i - 1).getLow() - unitPrices.get(i).getLow();
-			if (highDiff > lowDiff && highDiff > 0) {
-				plusDM[i] = highDiff;
-			} else {
-				plusDM[i] = 0.0f;
-			}
-		}
-		return plusDM;
+		return getDM(unitPrices, true);
 	}
 
 	private float[] getMinusDM(List<? extends UnitPrice> unitPrices) {
-		float[] minusDM = new float[unitPrices.size()];
+		return getDM(unitPrices, false);
+	}
+
+	private float[] getDM(List<? extends UnitPrice> unitPrices, boolean high) {
+		float[] dm = new float[unitPrices.size()];
 		// This starts from i=1 as minusDM[0] defaults to 0.0f
 		for (int i = DIRECTIONAL_MOVEMENT_CALCULATION_START; i < unitPrices.size(); i++) {
 			float highDiff = unitPrices.get(i).getHigh() - unitPrices.get(i - 1).getHigh();
 			float lowDiff = unitPrices.get(i - 1).getLow() - unitPrices.get(i).getLow();
-			if (lowDiff > highDiff && lowDiff > 0) {
-				minusDM[i] = lowDiff;
+			float a, b;
+			if (high) {
+				a = highDiff;
+				b = lowDiff;
 			} else {
-				minusDM[i] = 0.0f;
+				a = lowDiff;
+				b = highDiff;
+			}
+			if (a > b && a > 0) {
+				dm[i] = a;
+			} else {
+				dm[i] = 0.0f;
 			}
 		}
-		return minusDM;
+		return dm;
 	}
 
 	private float[] getAverageTrueRange(List<? extends UnitPrice> unitPrices) {
@@ -67,45 +68,40 @@ public class DirectionalSystemCalculator {
 	}
 
 	private float[] getSmoothedPlusDM(float[] plusDM, DirectionalSystem ds) {
-		float[] calculablePlusDM = Arrays.copyOfRange(plusDM, DIRECTIONAL_MOVEMENT_CALCULATION_START, plusDM.length);
-		float[] smoothedPlusDM = MovingAverageCalculator.calculateArrayMA(ds.getMovingAverageType(), calculablePlusDM, ds.getSmoothingPeriod());
-
-		float[] smoothedPlusDMShifted = new float[plusDM.length];
-		System.arraycopy(smoothedPlusDM, 0, smoothedPlusDMShifted, DIRECTIONAL_MOVEMENT_CALCULATION_START, smoothedPlusDM.length);
-		return smoothedPlusDMShifted;
+		return getSmoothedDM(plusDM, ds);
 	}
 
 	private float[] getSmoothedMinusDM(float[] minusDM, DirectionalSystem ds) {
-		float[] calculableMinusDM = Arrays.copyOfRange(minusDM, DIRECTIONAL_MOVEMENT_CALCULATION_START, minusDM.length);
-		float[] smoothedMinusDM = MovingAverageCalculator.calculateArrayMA(ds.getMovingAverageType(), calculableMinusDM, ds.getSmoothingPeriod());
+		return getSmoothedDM(minusDM, ds);
+	}
 
-		float[] smoothedMinusDMShifted = new float[minusDM.length];
-		System.arraycopy(smoothedMinusDM, 0, smoothedMinusDMShifted, DIRECTIONAL_MOVEMENT_CALCULATION_START, smoothedMinusDM.length);
-		return smoothedMinusDMShifted;
+	private float[] getSmoothedDM(float[] dm, DirectionalSystem ds) {
+		float[] calculableDM = Arrays.copyOfRange(dm, DIRECTIONAL_MOVEMENT_CALCULATION_START, dm.length);
+		float[] smoothedDM = MovingAverageCalculator.calculateArrayMA(ds.getMovingAverageType(), calculableDM, ds.getSmoothingPeriod());
+
+		float[] smoothedDMShifted = new float[dm.length];
+		System.arraycopy(smoothedDM, 0, smoothedDMShifted, DIRECTIONAL_MOVEMENT_CALCULATION_START, smoothedDM.length);
+		return smoothedDMShifted;
 	}
 
 	private float[] getSmoothedPlusDI(float[] smoothedPlusDM, float[] atr) {
-		float[] smoothedPlusDI = new float[smoothedPlusDM.length];
-		for (int i = 0; i < smoothedPlusDM.length; i++) {
-			if (atr[i] == 0.0f) {
-				smoothedPlusDI[i] = 0.0f;
-			} else {
-				smoothedPlusDI[i] = 100 * smoothedPlusDM[i] / atr[i];
-			}
-		}
-		return smoothedPlusDI;
+		return getSmoothedDI(smoothedPlusDM, atr);
 	}
 
 	private float[] getSmoothedMinusDI(float[] smoothedMinusDM, float[] atr) {
-		float[] smoothedMinusDI = new float[smoothedMinusDM.length];
-		for (int i = 0; i < smoothedMinusDM.length; i++) {
+		return getSmoothedDI(smoothedMinusDM, atr);
+	}
+
+	private float[] getSmoothedDI(float[] smoothedDM, float[] atr) {
+		float[] smoothedDI = new float[smoothedDM.length];
+		for (int i = 0; i < smoothedDM.length; i++) {
 			if (atr[i] == 0.0f) {
-				smoothedMinusDI[i] = 0.0f;
+				smoothedDI[i] = 0.0f;
 			} else {
-				smoothedMinusDI[i] = 100 * smoothedMinusDM[i] / atr[i];
+				smoothedDI[i] = 100 * smoothedDM[i] / atr[i];
 			}
 		}
-		return smoothedMinusDI;
+		return smoothedDI;
 	}
 
 	private float[] getDx(float[] smoothedPlusDI, float[] smoothedMinusDI) {

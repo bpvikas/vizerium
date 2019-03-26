@@ -42,7 +42,7 @@ public class HistoricalCsvDataStore implements HistoricalDataStore {
 
 	private String underlyingName;
 
-	private static NumberFormat numberformat = NumberFormats.getForPrice();
+	private static final NumberFormat numberformat = NumberFormats.getForPrice();
 
 	public HistoricalCsvDataStore() {
 

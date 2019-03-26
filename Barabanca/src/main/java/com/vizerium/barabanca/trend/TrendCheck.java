@@ -12,6 +12,10 @@ import com.vizerium.barabanca.historical.HistoricalDataDateRange;
 import com.vizerium.barabanca.historical.HistoricalDataReader;
 import com.vizerium.barabanca.historical.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
+import com.vizerium.commons.indicators.DirectionalSystem;
+import com.vizerium.commons.indicators.DirectionalSystemCalculator;
+import com.vizerium.commons.indicators.MACD;
+import com.vizerium.commons.indicators.MACDCalculator;
 
 public class TrendCheck {
 
@@ -27,7 +31,6 @@ public class TrendCheck {
 	}
 
 	public List<PeriodTrend> getTrendByEMASlope(String scripName, LocalDateTime startDateTime, LocalDateTime endDateTime, TimeFormat timeFormat, int ma) {
-
 		DateTimeTuple dateTimeTuple = new DateTimeTuple(startDateTime, endDateTime);
 		dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, timeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
 		dateTimeTuple = updateStartAndEndDatesForWeekendsAndHolidays(scripName, timeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
@@ -48,14 +51,44 @@ public class TrendCheck {
 		return periodTrends;
 	}
 
-	public List<PeriodTrend> getTrendByMACDHistogramSlope() {
+	public List<PeriodTrend> getTrendByMACDHistogramSlope(String scripName, LocalDateTime startDateTime, LocalDateTime endDateTime, TimeFormat timeFormat) {
+		DateTimeTuple dateTimeTuple = new DateTimeTuple(startDateTime, endDateTime);
+		dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, timeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
+		dateTimeTuple = updateStartAndEndDatesForWeekendsAndHolidays(scripName, timeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
 
-		return null;
+		List<UnitPriceData> unitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime(),
+				timeFormat);
+		List<PeriodTrend> periodTrends = new ArrayList<PeriodTrend>();
+
+		MACDCalculator macdCalculator = new MACDCalculator();
+		MACD macd = macdCalculator.calculate(unitPriceDataList);
+		for (int i = 1; i < unitPriceDataList.size(); i++) {
+			if (macd.getHistogramValues()[i] > macd.getHistogramValues()[i - 1]) {
+				periodTrends.add(new PeriodTrend(unitPriceDataList.get(i).getDateTime(), timeFormat, Trend.UP));
+			} else if (macd.getHistogramValues()[i] < macd.getHistogramValues()[i - 1]) {
+				periodTrends.add(new PeriodTrend(unitPriceDataList.get(i).getDateTime(), timeFormat, Trend.DOWN));
+			} else {
+				periodTrends.add(new PeriodTrend(unitPriceDataList.get(i).getDateTime(), timeFormat, Trend.CHOPPY));
+			}
+		}
+		return periodTrends;
 	}
 
-	public List<PeriodTrend> getTrendByDirectionalSystemAndADX() {
+	public List<PeriodTrend> getTrendByDirectionalSystemAndADX(String scripName, LocalDateTime startDateTime, LocalDateTime endDateTime, TimeFormat timeFormat) {
+		DateTimeTuple dateTimeTuple = new DateTimeTuple(startDateTime, endDateTime);
+		dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, timeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
+		dateTimeTuple = updateStartAndEndDatesForWeekendsAndHolidays(scripName, timeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
 
-		return null;
+		List<UnitPriceData> unitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime(),
+				timeFormat);
+		List<PeriodTrend> periodTrends = new ArrayList<PeriodTrend>();
+
+		DirectionalSystemCalculator dsCalculator = new DirectionalSystemCalculator();
+		DirectionalSystem ds = dsCalculator.calculate(unitPriceDataList);
+
+		// TODO: Need to read Alexander Elder's book to determine exact rules for trend being, up, down or choppy
+
+		return periodTrends;
 	}
 
 	private DateTimeTuple updateStartAndEndDatesForLookbackPeriods(String scripName, TimeFormat timeFormat, LocalDateTime startDateTime, LocalDateTime endDateTime) {
