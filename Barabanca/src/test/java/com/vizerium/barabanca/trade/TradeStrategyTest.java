@@ -80,8 +80,8 @@ public abstract class TradeStrategyTest {
 
 	protected void testAndReportTradeStrategy(String scripName, TimeFormat timeFormat, int startYear, int startMonth, int endYear, int endMonth) {
 		TradeBook tradeBook = testTradeStrategy(scripName, timeFormat, startYear, startMonth, endYear, endMonth);
-		printReport(tradeBook, timeFormat, TimeFormat._1YEAR);
-		printReport(tradeBook, timeFormat, TimeFormat._1MONTH);
+		printReport(tradeBook, timeFormat, TimeFormat._1YEAR, startYear, startMonth);
+		printReport(tradeBook, timeFormat, TimeFormat._1MONTH, startYear, startMonth);
 	}
 
 	protected TradeBook testTradeStrategy(String scripName, TimeFormat timeFormat, int startYear, int startMonth, int endYear, int endMonth) {
@@ -144,18 +144,15 @@ public abstract class TradeStrategyTest {
 		}
 	}
 
-	protected void printReport(TradeBook tradeBook, TimeFormat timeFormat, TimeFormat reportTimeFormat) {
+	protected void printReport(TradeBook tradeBook, TimeFormat timeFormat, TimeFormat reportTimeFormat, int startYear, int startMonth) {
 		StringBuilder p = new StringBuilder(), l = new StringBuilder(), t = new StringBuilder();
-		int startYear = -1, startMonth = -1;
 
 		if (TimeFormat._1YEAR.equals(reportTimeFormat)) {
 			int currentYear = startYear;
 			TradeBook currentDurationTradeBook = new TradeBook();
 			for (Trade trade : tradeBook) {
 				if (trade.getExitDateTime().getYear() != currentYear) {
-					if (currentYear != startYear) {
-						updatePLT(currentDurationTradeBook, p, l, t);
-					}
+					updatePLT(currentDurationTradeBook, p, l, t);
 					currentDurationTradeBook = new TradeBook();
 					currentYear = trade.getExitDateTime().getYear();
 				}
@@ -168,8 +165,14 @@ public abstract class TradeStrategyTest {
 			TradeBook currentDurationTradeBook = new TradeBook();
 			for (Trade trade : tradeBook) {
 				if (trade.getExitDateTime().getYear() != currentYear || trade.getExitDateTime().getMonthValue() != currentMonth) {
-					if (currentYear != startYear && currentMonth != startMonth) {
-						updatePLT(currentDurationTradeBook, p, l, t);
+					updatePLT(currentDurationTradeBook, p, l, t);
+					while (!isAdjacentMonth(trade.getExitDateTime().getYear(), trade.getExitDateTime().getMonthValue(), currentYear, currentMonth)) {
+						// The above while condition checks for those months where no trades took place at all.
+						// While a similar case can be added for the years, usually there is at least one trade that is placed in a year.
+						updatePLT(new TradeBook(), p, l, t);
+						LocalDateTime nextMonth = getNextMonth(currentYear, currentMonth);
+						currentYear = nextMonth.getYear();
+						currentMonth = nextMonth.getMonthValue();
 					}
 					currentDurationTradeBook = new TradeBook();
 					currentYear = trade.getExitDateTime().getYear();
@@ -190,8 +193,25 @@ public abstract class TradeStrategyTest {
 	}
 
 	protected void updatePLT(TradeBook currentDurationTradeBook, StringBuilder p, StringBuilder l, StringBuilder t) {
+		if (currentDurationTradeBook.size() == 0) {
+			logger.debug("Updating PLT for no trades here.");
+		} else {
+			logger.debug("Updating PLT for " + currentDurationTradeBook.last().getEntryDateTime() + " -> " + currentDurationTradeBook.last().getExitDateTime());
+		}
 		p.append(currentDurationTradeBook.getProfitPayoff()).append(",");
 		l.append(currentDurationTradeBook.getLossPayoff()).append(",");
 		t.append(currentDurationTradeBook.getPayoff()).append(",");
+	}
+
+	private boolean isAdjacentMonth(int currentYear, int currentMonth, int previousYear, int previousMonth) {
+		if (currentYear == previousYear) {
+			return currentMonth - previousMonth == 1;
+		} else {
+			return currentMonth - previousMonth == -11;
+		}
+	}
+
+	private LocalDateTime getNextMonth(int previousYear, int previousMonth) {
+		return LocalDateTime.of(previousYear, previousMonth, 1, 6, 0).plusMonths(1);
 	}
 }

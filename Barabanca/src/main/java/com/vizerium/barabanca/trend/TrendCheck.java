@@ -92,7 +92,8 @@ public class TrendCheck {
 
 	private List<UnitPriceData> getUnitPriceDataListTrendTimeFormat(String scripName, TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataList, int lookbackPeriod) {
 		DateTimeTuple dateTimeTuple = new DateTimeTuple(unitPriceDataList.get(0).getDateTime(), unitPriceDataList.get(unitPriceDataList.size() - 1).getDateTime());
-		dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, trendTimeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime(), lookbackPeriod);
+		dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, trendTimeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getStartDateTime(),
+				dateTimeTuple.getEndDateTime(), lookbackPeriod);
 		dateTimeTuple = updateStartAndEndDatesForWeekendsAndHolidays(scripName, trendTimeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
 
 		List<UnitPriceData> unitPriceDataListTrendTimeFormat = historicalDataReader.getUnitPriceDataForRange(scripName, dateTimeTuple.getStartDateTime(),
@@ -101,26 +102,25 @@ public class TrendCheck {
 		return unitPriceDataListTrendTimeFormat;
 	}
 
-	private DateTimeTuple updateStartAndEndDatesForLookbackPeriods(String scripName, TimeFormat trendTimeFormat, LocalDateTime startDateTime, LocalDateTime endDateTime,
-			int lookbackPeriod) {
-		LocalDateTime updatedStartDateTime = null;
+	private DateTimeTuple updateStartAndEndDatesForLookbackPeriods(String scripName, TimeFormat trendTimeFormat, LocalDateTime originalStartDateTime, LocalDateTime startDateTime,
+			LocalDateTime endDateTime, int lookbackPeriod) {
 		if (trendTimeFormat.equals(TimeFormat._1MIN)) {
-			updatedStartDateTime = startDateTime.minusMinutes(lookbackPeriod);
+			startDateTime = startDateTime.minusMinutes(lookbackPeriod);
 			endDateTime = endDateTime.plusMinutes(1);
 		} else if (trendTimeFormat.equals(TimeFormat._5MIN)) {
-			updatedStartDateTime = startDateTime.minusMinutes(lookbackPeriod * trendTimeFormat.getInterval());
+			startDateTime = startDateTime.minusMinutes(lookbackPeriod * trendTimeFormat.getInterval());
 			endDateTime = endDateTime.plusMinutes(1 * trendTimeFormat.getInterval());
 		} else if (trendTimeFormat.equals(TimeFormat._1HOUR)) {
-			updatedStartDateTime = startDateTime.minusHours(lookbackPeriod);
+			startDateTime = startDateTime.minusHours(lookbackPeriod);
 			endDateTime = endDateTime.plusHours(1);
 		} else if (trendTimeFormat.equals(TimeFormat._1DAY)) {
-			updatedStartDateTime = startDateTime.minusDays(lookbackPeriod);
+			startDateTime = startDateTime.minusDays(lookbackPeriod);
 			endDateTime = endDateTime.plusDays(1);
 		} else if (trendTimeFormat.equals(TimeFormat._1WEEK)) {
-			updatedStartDateTime = startDateTime.minusWeeks(lookbackPeriod);
+			startDateTime = startDateTime.minusWeeks(lookbackPeriod);
 			endDateTime = endDateTime.plusWeeks(1);
 		} else if (trendTimeFormat.equals(TimeFormat._1MONTH)) {
-			updatedStartDateTime = startDateTime.minusMonths(lookbackPeriod).withDayOfMonth(1);
+			startDateTime = startDateTime.minusMonths(lookbackPeriod).withDayOfMonth(1);
 			endDateTime = endDateTime.plusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
 		} else {
 			throw new RuntimeException("Unable to determine timeFormat " + trendTimeFormat);
@@ -137,12 +137,12 @@ public class TrendCheck {
 		// Need to make a recursive call to take care of a scenario where the original start Date is a Monday, 3 days back goes to Friday.
 		// Then we cannot get a trend for it, because trend needs 3 "business" days backward to calculate the trend. In this case, we were getting only
 		// one "business" day prior to Monday which was Friday.
-		while (historicalDataReader.getUnitPriceDataForRange(scripName, updatedStartDateTime, startDateTime, trendTimeFormat).size() < lookbackPeriod) {
-			DateTimeTuple dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, trendTimeFormat, updatedStartDateTime, endDateTime, lookbackPeriod);
-			updatedStartDateTime = dateTimeTuple.getStartDateTime();
+		while (historicalDataReader.getUnitPriceDataForRange(scripName, startDateTime, originalStartDateTime, trendTimeFormat).size() < lookbackPeriod) {
+			DateTimeTuple dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, trendTimeFormat, originalStartDateTime, startDateTime, endDateTime, lookbackPeriod);
+			startDateTime = dateTimeTuple.getStartDateTime();
 		}
 
-		return new DateTimeTuple(updatedStartDateTime, endDateTime);
+		return new DateTimeTuple(startDateTime, endDateTime);
 	}
 
 	private DateTimeTuple updateStartAndEndDatesForWeekendsAndHolidays(String scripName, TimeFormat trendTimeFormat, LocalDateTime startDateTime, LocalDateTime endDateTime) {
@@ -167,6 +167,7 @@ public class TrendCheck {
 			endDateTime = HistoricalDataDateRange.getEndDateTime(scripName, trendTimeFormat);
 		}
 
+		// This is to take care of the holidays, if there is no entry for the currentDate (size = 0), then move a day back.
 		while (CollectionUtils.isEmpty(historicalDataReader.getUnitPriceDataForRange(scripName, startDateTime, startDateTime, TimeFormat._1DAY))) {
 			startDateTime = startDateTime.minusDays(1);
 		}
