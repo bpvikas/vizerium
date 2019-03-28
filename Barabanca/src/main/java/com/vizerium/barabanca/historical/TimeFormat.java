@@ -1,7 +1,7 @@
 package com.vizerium.barabanca.historical;
 
 public enum TimeFormat {
-	_1MIN(1), _5MIN(5), _1HOUR(60), _1DAY(1440), _1WEEK(-1), _1MONTH(-1);
+	_1MIN(1), _5MIN(5), _1HOUR(60), _1DAY(1440), _1WEEK(-1), _1MONTH(-1), _1YEAR(-1);
 
 	private int interval;
 
@@ -18,6 +18,8 @@ public enum TimeFormat {
 			return _1WEEK;
 		} else if ("1month".equalsIgnoreCase(propertyOrInterval.trim())) {
 			return _1MONTH;
+		} else if ("1year".equalsIgnoreCase(propertyOrInterval.trim())) {
+			return _1YEAR;
 		} else {
 			throw new RuntimeException("Unable to determine time format. " + propertyOrInterval);
 		}
@@ -61,5 +63,4 @@ public enum TimeFormat {
 	public String toString() {
 		return getProperty();
 	}
-
 }

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import com.vizerium.commons.indicators.Indicator;
@@ -131,6 +132,28 @@ public class UnitPriceData extends UnitPrice {
 	public void setIndicators(Map<Indicators, Indicator> indicators) {
 		this.indicators = indicators;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		UnitPriceData other = (UnitPriceData) obj;
+		return Objects.equals(scripName, other.scripName) && Objects.equals(dateTime, other.dateTime) && Objects.equals(open, other.open) && Objects.equals(high, other.high)
+				&& Objects.equals(low, other.low) && Objects.equals(close, other.close);
+
+	};
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(scripName, dateTime, open, high, low, close);
+	};
 
 	@Override
 	public String toString() {

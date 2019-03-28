@@ -1,6 +1,7 @@
 package com.vizerium.commons.dao;
 
 import java.text.NumberFormat;
+import java.util.Objects;
 
 import com.vizerium.commons.util.NumberFormats;
 
@@ -58,6 +59,27 @@ public class UnitPrice {
 	public void setClose(float close) {
 		this.close = close;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		UnitPrice other = (UnitPrice) obj;
+		return Objects.equals(open, other.open) && Objects.equals(high, other.high) && Objects.equals(low, other.low) && Objects.equals(close, other.close);
+
+	};
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(open, high, low, close);
+	};
 
 	@Override
 	public String toString() {

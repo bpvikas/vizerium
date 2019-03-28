@@ -30,111 +30,122 @@ public class TrendCheck {
 		this.historicalDataReader = historicalDataReader;
 	}
 
-	public List<PeriodTrend> getTrendByEMASlope(String scripName, LocalDateTime startDateTime, LocalDateTime endDateTime, TimeFormat timeFormat, int ma) {
-		DateTimeTuple dateTimeTuple = new DateTimeTuple(startDateTime, endDateTime);
-		dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, timeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
-		dateTimeTuple = updateStartAndEndDatesForWeekendsAndHolidays(scripName, timeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
+	public List<PeriodTrend> getTrendByEMASlope(String scripName, TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataListCurrentTimeFormat, int ma) {
 
-		List<UnitPriceData> unitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime(),
-				timeFormat);
+		List<UnitPriceData> expandedUnitPriceDataList = getUnitPriceDataListTrendTimeFormat(scripName, trendTimeFormat, unitPriceDataListCurrentTimeFormat,
+				LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND);
 		List<PeriodTrend> periodTrends = new ArrayList<PeriodTrend>();
 
-		for (int i = LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND - 1; i < unitPriceDataList.size(); i++) {
-			if (unitPriceDataList.get(i - 2).getMovingAverage(ma) < unitPriceDataList.get(i - 1).getMovingAverage(ma)) {
-				periodTrends.add(new PeriodTrend(unitPriceDataList.get(i).getDateTime(), timeFormat, Trend.UP));
-			} else if (unitPriceDataList.get(i - 2).getMovingAverage(ma) > unitPriceDataList.get(i - 1).getMovingAverage(ma)) {
-				periodTrends.add(new PeriodTrend(unitPriceDataList.get(i).getDateTime(), timeFormat, Trend.DOWN));
+		for (int i = LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND - 1; i < expandedUnitPriceDataList.size(); i++) {
+			if (expandedUnitPriceDataList.get(i - 2).getMovingAverage(ma) < expandedUnitPriceDataList.get(i - 1).getMovingAverage(ma)) {
+				periodTrends.add(new PeriodTrend(expandedUnitPriceDataList.get(i).getDateTime(), trendTimeFormat, Trend.UP));
+			} else if (expandedUnitPriceDataList.get(i - 2).getMovingAverage(ma) > expandedUnitPriceDataList.get(i - 1).getMovingAverage(ma)) {
+				periodTrends.add(new PeriodTrend(expandedUnitPriceDataList.get(i).getDateTime(), trendTimeFormat, Trend.DOWN));
 			} else {
-				periodTrends.add(new PeriodTrend(unitPriceDataList.get(i).getDateTime(), timeFormat, Trend.CHOPPY));
+				periodTrends.add(new PeriodTrend(expandedUnitPriceDataList.get(i).getDateTime(), trendTimeFormat, Trend.CHOPPY));
 			}
 		}
 		return periodTrends;
 	}
 
-	public List<PeriodTrend> getTrendByMACDHistogramSlope(String scripName, LocalDateTime startDateTime, LocalDateTime endDateTime, TimeFormat timeFormat) {
-		DateTimeTuple dateTimeTuple = new DateTimeTuple(startDateTime, endDateTime);
-		dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, timeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
-		dateTimeTuple = updateStartAndEndDatesForWeekendsAndHolidays(scripName, timeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
+	public List<PeriodTrend> getTrendByMACDHistogramSlope(String scripName, TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataList, MACD macdInput) {
 
-		List<UnitPriceData> unitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime(),
-				timeFormat);
+		// The value for the lookbackPeriod needs to be a sum of the slower MA and the smoothing period so that we can get the calculations correct.
+		int lookbackPeriodForMACDHistogramCalculations = macdInput.getSlowMA() + macdInput.getSmoothingPeriod();
+
+		List<UnitPriceData> expandedUnitPriceDataList = getUnitPriceDataListTrendTimeFormat(scripName, trendTimeFormat, unitPriceDataList,
+				lookbackPeriodForMACDHistogramCalculations);
 		List<PeriodTrend> periodTrends = new ArrayList<PeriodTrend>();
 
 		MACDCalculator macdCalculator = new MACDCalculator();
-		MACD macd = macdCalculator.calculate(unitPriceDataList);
-		for (int i = 1; i < unitPriceDataList.size(); i++) {
+		MACD macd = macdCalculator.calculate(expandedUnitPriceDataList, macdInput);
+		for (int i = 1; i < expandedUnitPriceDataList.size(); i++) {
 			if (macd.getHistogramValues()[i] > macd.getHistogramValues()[i - 1]) {
-				periodTrends.add(new PeriodTrend(unitPriceDataList.get(i).getDateTime(), timeFormat, Trend.UP));
+				periodTrends.add(new PeriodTrend(expandedUnitPriceDataList.get(i).getDateTime(), trendTimeFormat, Trend.UP));
 			} else if (macd.getHistogramValues()[i] < macd.getHistogramValues()[i - 1]) {
-				periodTrends.add(new PeriodTrend(unitPriceDataList.get(i).getDateTime(), timeFormat, Trend.DOWN));
+				periodTrends.add(new PeriodTrend(expandedUnitPriceDataList.get(i).getDateTime(), trendTimeFormat, Trend.DOWN));
 			} else {
-				periodTrends.add(new PeriodTrend(unitPriceDataList.get(i).getDateTime(), timeFormat, Trend.CHOPPY));
+				periodTrends.add(new PeriodTrend(expandedUnitPriceDataList.get(i).getDateTime(), trendTimeFormat, Trend.CHOPPY));
 			}
 		}
 		return periodTrends;
 	}
 
-	public List<PeriodTrend> getTrendByDirectionalSystemAndADX(String scripName, LocalDateTime startDateTime, LocalDateTime endDateTime, TimeFormat timeFormat) {
-		DateTimeTuple dateTimeTuple = new DateTimeTuple(startDateTime, endDateTime);
-		dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, timeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
-		dateTimeTuple = updateStartAndEndDatesForWeekendsAndHolidays(scripName, timeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
+	public List<PeriodTrend> getTrendByDirectionalSystemAndADX(String scripName, TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataList, DirectionalSystem dsInput) {
 
-		List<UnitPriceData> unitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime(),
-				timeFormat);
+		// The value for the lookbackPeriod needs to be a sum of the first smoothing (to get +DI -DI) and the smoothing smoothing period (to get ADX) and 1 (to get the initial true
+		// range) so that we can get the calculations correct.
+		int lookbackPeriodForDirectionalSystemCalculations = DirectionalSystemCalculator.DIRECTIONAL_MOVEMENT_CALCULATION_START + dsInput.getSmoothingPeriod()
+				+ dsInput.getSmoothingPeriod();
+
+		List<UnitPriceData> expandedUnitPriceDataList = getUnitPriceDataListTrendTimeFormat(scripName, trendTimeFormat, unitPriceDataList,
+				lookbackPeriodForDirectionalSystemCalculations);
 		List<PeriodTrend> periodTrends = new ArrayList<PeriodTrend>();
 
 		DirectionalSystemCalculator dsCalculator = new DirectionalSystemCalculator();
-		DirectionalSystem ds = dsCalculator.calculate(unitPriceDataList);
+		DirectionalSystem ds = dsCalculator.calculate(expandedUnitPriceDataList, dsInput);
 
 		// TODO: Need to read Alexander Elder's book to determine exact rules for trend being, up, down or choppy
 
 		return periodTrends;
 	}
 
-	private DateTimeTuple updateStartAndEndDatesForLookbackPeriods(String scripName, TimeFormat timeFormat, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+	private List<UnitPriceData> getUnitPriceDataListTrendTimeFormat(String scripName, TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataList, int lookbackPeriod) {
+		DateTimeTuple dateTimeTuple = new DateTimeTuple(unitPriceDataList.get(0).getDateTime(), unitPriceDataList.get(unitPriceDataList.size() - 1).getDateTime());
+		dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, trendTimeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime(), lookbackPeriod);
+		dateTimeTuple = updateStartAndEndDatesForWeekendsAndHolidays(scripName, trendTimeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getEndDateTime());
+
+		List<UnitPriceData> unitPriceDataListTrendTimeFormat = historicalDataReader.getUnitPriceDataForRange(scripName, dateTimeTuple.getStartDateTime(),
+				dateTimeTuple.getEndDateTime(), trendTimeFormat);
+
+		return unitPriceDataListTrendTimeFormat;
+	}
+
+	private DateTimeTuple updateStartAndEndDatesForLookbackPeriods(String scripName, TimeFormat trendTimeFormat, LocalDateTime startDateTime, LocalDateTime endDateTime,
+			int lookbackPeriod) {
 		LocalDateTime updatedStartDateTime = null;
-		if (timeFormat.equals(TimeFormat._1MIN)) {
-			updatedStartDateTime = startDateTime.minusMinutes(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND);
+		if (trendTimeFormat.equals(TimeFormat._1MIN)) {
+			updatedStartDateTime = startDateTime.minusMinutes(lookbackPeriod);
 			endDateTime = endDateTime.plusMinutes(1);
-		} else if (timeFormat.equals(TimeFormat._5MIN)) {
-			updatedStartDateTime = startDateTime.minusMinutes(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND * timeFormat.getInterval());
-			endDateTime = endDateTime.plusMinutes(1 * timeFormat.getInterval());
-		} else if (timeFormat.equals(TimeFormat._1HOUR)) {
-			updatedStartDateTime = startDateTime.minusHours(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND);
+		} else if (trendTimeFormat.equals(TimeFormat._5MIN)) {
+			updatedStartDateTime = startDateTime.minusMinutes(lookbackPeriod * trendTimeFormat.getInterval());
+			endDateTime = endDateTime.plusMinutes(1 * trendTimeFormat.getInterval());
+		} else if (trendTimeFormat.equals(TimeFormat._1HOUR)) {
+			updatedStartDateTime = startDateTime.minusHours(lookbackPeriod);
 			endDateTime = endDateTime.plusHours(1);
-		} else if (timeFormat.equals(TimeFormat._1DAY)) {
-			updatedStartDateTime = startDateTime.minusDays(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND);
+		} else if (trendTimeFormat.equals(TimeFormat._1DAY)) {
+			updatedStartDateTime = startDateTime.minusDays(lookbackPeriod);
 			endDateTime = endDateTime.plusDays(1);
-		} else if (timeFormat.equals(TimeFormat._1WEEK)) {
-			updatedStartDateTime = startDateTime.minusWeeks(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND);
+		} else if (trendTimeFormat.equals(TimeFormat._1WEEK)) {
+			updatedStartDateTime = startDateTime.minusWeeks(lookbackPeriod);
 			endDateTime = endDateTime.plusWeeks(1);
-		} else if (timeFormat.equals(TimeFormat._1MONTH)) {
-			updatedStartDateTime = startDateTime.minusMonths(LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND).withDayOfMonth(1);
+		} else if (trendTimeFormat.equals(TimeFormat._1MONTH)) {
+			updatedStartDateTime = startDateTime.minusMonths(lookbackPeriod).withDayOfMonth(1);
 			endDateTime = endDateTime.plusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
 		} else {
-			throw new RuntimeException("Unable to determine timeFormat " + timeFormat);
+			throw new RuntimeException("Unable to determine timeFormat " + trendTimeFormat);
 		}
 
 		// This is to check boundary conditions of historical data
-		if (startDateTime.isBefore(HistoricalDataDateRange.getStartDateTime(scripName, timeFormat))) {
-			startDateTime = HistoricalDataDateRange.getStartDateTime(scripName, timeFormat);
+		if (startDateTime.isBefore(HistoricalDataDateRange.getStartDateTime(scripName, trendTimeFormat))) {
+			startDateTime = HistoricalDataDateRange.getStartDateTime(scripName, trendTimeFormat);
 		}
-		if (endDateTime.isAfter(HistoricalDataDateRange.getEndDateTime(scripName, timeFormat))) {
-			endDateTime = HistoricalDataDateRange.getEndDateTime(scripName, timeFormat);
+		if (endDateTime.isAfter(HistoricalDataDateRange.getEndDateTime(scripName, trendTimeFormat))) {
+			endDateTime = HistoricalDataDateRange.getEndDateTime(scripName, trendTimeFormat);
 		}
 
 		// Need to make a recursive call to take care of a scenario where the original start Date is a Monday, 3 days back goes to Friday.
 		// Then we cannot get a trend for it, because trend needs 3 "business" days backward to calculate the trend. In this case, we were getting only
 		// one "business" day prior to Monday which was Friday.
-		while (historicalDataReader.getUnitPriceDataForRange(scripName, updatedStartDateTime, startDateTime, timeFormat).size() < LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND) {
-			DateTimeTuple dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, timeFormat, updatedStartDateTime, endDateTime);
+		while (historicalDataReader.getUnitPriceDataForRange(scripName, updatedStartDateTime, startDateTime, trendTimeFormat).size() < lookbackPeriod) {
+			DateTimeTuple dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, trendTimeFormat, updatedStartDateTime, endDateTime, lookbackPeriod);
 			updatedStartDateTime = dateTimeTuple.getStartDateTime();
 		}
 
 		return new DateTimeTuple(updatedStartDateTime, endDateTime);
 	}
 
-	private DateTimeTuple updateStartAndEndDatesForWeekendsAndHolidays(String scripName, TimeFormat timeFormat, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+	private DateTimeTuple updateStartAndEndDatesForWeekendsAndHolidays(String scripName, TimeFormat trendTimeFormat, LocalDateTime startDateTime, LocalDateTime endDateTime) {
 		// Calculating for Weekends and Holidays
 		if (DayOfWeek.SATURDAY.equals(startDateTime.getDayOfWeek())) {
 			startDateTime = startDateTime.minusDays(1);
@@ -149,11 +160,11 @@ public class TrendCheck {
 		}
 
 		// This is to check boundary conditions of historical data
-		if (startDateTime.isBefore(HistoricalDataDateRange.getStartDateTime(scripName, timeFormat))) {
-			startDateTime = HistoricalDataDateRange.getStartDateTime(scripName, timeFormat);
+		if (startDateTime.isBefore(HistoricalDataDateRange.getStartDateTime(scripName, trendTimeFormat))) {
+			startDateTime = HistoricalDataDateRange.getStartDateTime(scripName, trendTimeFormat);
 		}
-		if (endDateTime.isAfter(HistoricalDataDateRange.getEndDateTime(scripName, timeFormat))) {
-			endDateTime = HistoricalDataDateRange.getEndDateTime(scripName, timeFormat);
+		if (endDateTime.isAfter(HistoricalDataDateRange.getEndDateTime(scripName, trendTimeFormat))) {
+			endDateTime = HistoricalDataDateRange.getEndDateTime(scripName, trendTimeFormat);
 		}
 
 		while (CollectionUtils.isEmpty(historicalDataReader.getUnitPriceDataForRange(scripName, startDateTime, startDateTime, TimeFormat._1DAY))) {

@@ -14,7 +14,7 @@ import com.vizerium.commons.dao.UnitPriceData;
 /*
  * @deprecated 
  * @see com.vizerium.barabanca.historical.renko.RenkoCalculator#calculate, 
- * which smoothens the data in an industry-standard way, viz. Renko.
+ * which smoothes the data in an industry-standard way, viz. Renko.
  */
 
 @Deprecated

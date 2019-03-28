@@ -1,12 +1,14 @@
 package com.vizerium.barabanca.trade;
 
+import java.util.List;
+
 import com.vizerium.barabanca.historical.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 
 public class MACDTradesTest extends TradeStrategyTest {
 
 	@Override
-	protected void getAdditionalDataPriorToIteration(String scripName, int year, int month, TimeFormat timeFormat) {
+	protected void getAdditionalDataPriorToIteration(String scripName, TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
 		// TODO Auto-generated method stub
 
 	}

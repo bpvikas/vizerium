@@ -37,7 +37,7 @@ public abstract class TradeStrategyTest {
 			File csvOutputFile = new File(FileUtils.directoryPath + "output-log-v2/testrun.csv");
 			bw = new BufferedWriter(new FileWriter(csvOutputFile));
 		} catch (IOException e) {
-			throw new RuntimeException("Error while creating CSV file for writing P L T results.");
+			throw new RuntimeException("Error while creating CSV file for writing P L T results.", e);
 		}
 	}
 
@@ -48,88 +48,59 @@ public abstract class TradeStrategyTest {
 
 	@Test
 	public void test01_BankNiftyHourlyChart() {
-//		testMultiYearTradeStrategies("BANKNIFTY", TimeFormat._1HOUR, 2011, 2019);
-		testMultiMonthTradeStrategies("BANKNIFTY", TimeFormat._1HOUR, 2018, 8, 2018, 9);
+		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._1HOUR, 2011, 1, 2019, 2);
 	}
 
-//	@Test
+	@Test
 	public void test02_BankNiftyDailyChart() {
-		testMultiYearTradeStrategies("BANKNIFTY", TimeFormat._1DAY, 2011, 2019);
-		testMultiMonthTradeStrategies("BANKNIFTY", TimeFormat._1DAY, 2011, 1, 2019, 2);
+		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._1DAY, 2011, 1, 2019, 2);
 	}
 
-//	@Test
+	@Test
 	public void test03_NiftyHourlyChart() {
-		testMultiYearTradeStrategies("NIFTY", TimeFormat._1HOUR, 2011, 2019);
-		testMultiMonthTradeStrategies("NIFTY", TimeFormat._1HOUR, 2011, 1, 2019, 2);
+		testAndReportTradeStrategy("NIFTY", TimeFormat._1HOUR, 2011, 1, 2019, 2);
 	}
 
-//	@Test
+	@Test
 	public void test04_NiftyDailyChart() {
-		testMultiYearTradeStrategies("NIFTY", TimeFormat._1DAY, 2011, 2019);
-		testMultiMonthTradeStrategies("NIFTY", TimeFormat._1DAY, 2011, 1, 2019, 2);
+		testAndReportTradeStrategy("NIFTY", TimeFormat._1DAY, 2011, 1, 2019, 2);
 	}
 
-	public TradeBook testMultiYearTradeStrategies(String scripName, TimeFormat timeFormat, int startYear, int endYear) {
-		String p = "", l = "", t = "";
-		TradeBook tradeBook = new TradeBook();
-		for (int year = startYear; year <= endYear; year++) {
-			TradeBook currentYearTradeBook = testCurrentYearTradeStrategy(scripName, timeFormat, year);
-			p += (String.valueOf(currentYearTradeBook.getProfitPayoff()) + ",");
-			l += (String.valueOf(currentYearTradeBook.getLossPayoff()) + ",");
-			t += (String.valueOf(currentYearTradeBook.getPayoff()) + ",");
-			tradeBook.addAll(currentYearTradeBook);
+	protected abstract void getAdditionalDataPriorToIteration(String scripName, TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList);
+
+	protected abstract boolean testForCurrentUnitGreaterThanPreviousUnit(UnitPriceData current, UnitPriceData previous);
+
+	protected abstract void executeForCurrentUnitGreaterThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous);
+
+	protected abstract boolean testForCurrentUnitLessThanPreviousUnit(UnitPriceData current, UnitPriceData previous);
+
+	protected abstract void executeForCurrentUnitLessThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous);
+
+	protected abstract void executeForCurrentUnitChoppyWithPreviousUnit(UnitPriceData current, UnitPriceData previous);
+
+	protected void testAndReportTradeStrategy(String scripName, TimeFormat timeFormat, int startYear, int startMonth, int endYear, int endMonth) {
+		TradeBook tradeBook = testTradeStrategy(scripName, timeFormat, startYear, startMonth, endYear, endMonth);
+		printReport(tradeBook, timeFormat, TimeFormat._1YEAR);
+		printReport(tradeBook, timeFormat, TimeFormat._1MONTH);
+	}
+
+	protected TradeBook testTradeStrategy(String scripName, TimeFormat timeFormat, int startYear, int startMonth, int endYear, int endMonth) {
+		if (startMonth < 0 || startMonth > 12) {
+			startMonth = 1;
 		}
-		try {
-			bw.write(p + System.lineSeparator() + l + System.lineSeparator() + t + System.lineSeparator());
-		} catch (IOException ioe) {
-			logger.error("Error while writing P L T results to CSV file.", ioe);
+		if (endMonth < 0 || endMonth > 12) {
+			endMonth = 12;
 		}
-		tradeBook.printAllTrades();
-		tradeBook.printStatus(timeFormat);
-		return tradeBook;
+
+		int lastDateOfMonth = LocalDate.of(endYear, endMonth, 1).with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth();
+		List<UnitPriceData> unitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName, LocalDateTime.of(startYear, startMonth, 1, 6, 0),
+				LocalDateTime.of(endYear, endMonth, lastDateOfMonth, 21, 00), timeFormat);
+
+		return testTradeStrategy(scripName, timeFormat, unitPriceDataList);
 	}
 
-	public TradeBook testMultiMonthTradeStrategies(String scripName, TimeFormat timeFormat, int startYear, int startMonth, int endYear, int endMonth) {
-		String p = "", l = "", t = "";
-		TradeBook tradeBook = new TradeBook();
-		for (int year = startYear; year <= endYear; year++) {
-			for (int month = ((year == startYear) ? startMonth : 1); month <= ((year == endYear) ? endMonth : 12); month++) {
-				TradeBook currentMonthTradeBook = testCurrentMonthTradeStrategy(scripName, timeFormat, year, month);
-				p += (String.valueOf(currentMonthTradeBook.getProfitPayoff()) + ",");
-				l += (String.valueOf(currentMonthTradeBook.getLossPayoff()) + ",");
-				t += (String.valueOf(currentMonthTradeBook.getPayoff()) + ",");
-				tradeBook.addAll(currentMonthTradeBook);
-			}
-		}
-		try {
-			bw.write(p + System.lineSeparator() + l + System.lineSeparator() + t + System.lineSeparator());
-		} catch (IOException ioe) {
-			logger.error("Error while writing P L T results to CSV file.", ioe);
-		}
-		tradeBook.printAllTrades();
-		tradeBook.printStatus(timeFormat);
-		return tradeBook;
-	}
-
-	public TradeBook testCurrentYearTradeStrategy(String scripName, TimeFormat timeFormat, int year) {
-		List<UnitPriceData> unitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName, LocalDateTime.of(year, 1, 1, 6, 0),
-				LocalDateTime.of(year, 12, 31, 21, 00), timeFormat);
-
-		return testCurrentPeriodTradeStrategy(scripName, timeFormat, year, -1, unitPriceDataList);
-	}
-
-	public TradeBook testCurrentMonthTradeStrategy(String scripName, TimeFormat timeFormat, int year, int month) {
-
-		int lastDateOfMonth = LocalDate.of(year, month, 1).with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth();
-		List<UnitPriceData> unitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName, LocalDateTime.of(year, month, 1, 6, 0),
-				LocalDateTime.of(year, month, lastDateOfMonth, 21, 00), timeFormat);
-
-		return testCurrentPeriodTradeStrategy(scripName, timeFormat, year, month, unitPriceDataList);
-	}
-
-	public TradeBook testCurrentPeriodTradeStrategy(String scripName, TimeFormat timeFormat, int year, int month, List<UnitPriceData> unitPriceDataList) {
-		getAdditionalDataPriorToIteration(scripName, year, month, timeFormat);
+	protected TradeBook testTradeStrategy(String scripName, TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
+		getAdditionalDataPriorToIteration(scripName, timeFormat, unitPriceDataList);
 
 		TradeBook tradeBook = new TradeBook();
 		for (int i = 1; i < unitPriceDataList.size(); i++) {
@@ -173,15 +144,54 @@ public abstract class TradeStrategyTest {
 		}
 	}
 
-	protected abstract void getAdditionalDataPriorToIteration(String scripName, int year, int month, TimeFormat timeFormat);
+	protected void printReport(TradeBook tradeBook, TimeFormat timeFormat, TimeFormat reportTimeFormat) {
+		StringBuilder p = new StringBuilder(), l = new StringBuilder(), t = new StringBuilder();
+		int startYear = -1, startMonth = -1;
 
-	protected abstract boolean testForCurrentUnitGreaterThanPreviousUnit(UnitPriceData current, UnitPriceData previous);
+		if (TimeFormat._1YEAR.equals(reportTimeFormat)) {
+			int currentYear = startYear;
+			TradeBook currentDurationTradeBook = new TradeBook();
+			for (Trade trade : tradeBook) {
+				if (trade.getExitDateTime().getYear() != currentYear) {
+					if (currentYear != startYear) {
+						updatePLT(currentDurationTradeBook, p, l, t);
+					}
+					currentDurationTradeBook = new TradeBook();
+					currentYear = trade.getExitDateTime().getYear();
+				}
+				currentDurationTradeBook.add(trade);
+			}
+			updatePLT(currentDurationTradeBook, p, l, t);
+		} else if (TimeFormat._1MONTH.equals(reportTimeFormat)) {
+			int currentYear = startYear;
+			int currentMonth = startMonth;
+			TradeBook currentDurationTradeBook = new TradeBook();
+			for (Trade trade : tradeBook) {
+				if (trade.getExitDateTime().getYear() != currentYear || trade.getExitDateTime().getMonthValue() != currentMonth) {
+					if (currentYear != startYear && currentMonth != startMonth) {
+						updatePLT(currentDurationTradeBook, p, l, t);
+					}
+					currentDurationTradeBook = new TradeBook();
+					currentYear = trade.getExitDateTime().getYear();
+					currentMonth = trade.getExitDateTime().getMonthValue();
+				}
+				currentDurationTradeBook.add(trade);
+			}
+			updatePLT(currentDurationTradeBook, p, l, t);
+		}
+		try {
+			bw.write(p.toString() + System.lineSeparator() + l.toString() + System.lineSeparator() + t.toString() + System.lineSeparator());
+		} catch (IOException ioe) {
+			logger.error("Error while writing P L T results to CSV file.", ioe);
+		}
 
-	protected abstract void executeForCurrentUnitGreaterThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous);
+		tradeBook.printAllTrades();
+		tradeBook.printStatus(timeFormat);
+	}
 
-	protected abstract boolean testForCurrentUnitLessThanPreviousUnit(UnitPriceData current, UnitPriceData previous);
-
-	protected abstract void executeForCurrentUnitLessThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous);
-
-	protected abstract void executeForCurrentUnitChoppyWithPreviousUnit(UnitPriceData current, UnitPriceData previous);
+	protected void updatePLT(TradeBook currentDurationTradeBook, StringBuilder p, StringBuilder l, StringBuilder t) {
+		p.append(currentDurationTradeBook.getProfitPayoff()).append(",");
+		l.append(currentDurationTradeBook.getLossPayoff()).append(",");
+		t.append(currentDurationTradeBook.getPayoff()).append(",");
+	}
 }

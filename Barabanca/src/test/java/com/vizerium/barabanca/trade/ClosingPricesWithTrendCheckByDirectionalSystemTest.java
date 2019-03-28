@@ -6,26 +6,22 @@ import com.vizerium.barabanca.historical.TimeFormat;
 import com.vizerium.barabanca.trend.PeriodTrend;
 import com.vizerium.barabanca.trend.Trend;
 import com.vizerium.commons.dao.UnitPriceData;
-import com.vizerium.commons.indicators.MovingAverage;
+import com.vizerium.commons.indicators.DirectionalSystem;
 import com.vizerium.commons.trade.TradeAction;
 
-public abstract class ClosingPricesWithTrendCheckByEMATest extends ClosingPricesWithTrendCheckTest {
+public abstract class ClosingPricesWithTrendCheckByDirectionalSystemTest extends ClosingPricesWithTrendCheckTest {
 
-	protected abstract MovingAverage getMovingAverage();
+	protected abstract DirectionalSystem getDirectionalSystem();
 
 	@Override
 	protected List<PeriodTrend> getPeriodTrends(String scripName, TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataListCurrentTimeFormat) {
-		return trendCheck.getTrendByEMASlope(scripName, trendTimeFormat, unitPriceDataListCurrentTimeFormat, getMovingAverage().getNumber());
+		return trendCheck.getTrendByDirectionalSystemAndADX(scripName, trendTimeFormat, unitPriceDataListCurrentTimeFormat, getDirectionalSystem());
 	}
 
 	@Override
 	protected void executeForCurrentUnitLessThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 		Trend trend = getPriorTrend(current.getDateTime(), periodTrends);
 		if (!Trend.UP.equals(trend) && tradeBook.isLastTradeLong() && !tradeBook.isLastTradeExited()) {
-			tradeBook.exitLongTrade(current);
-		}
-
-		if (current.getClose() < current.getMovingAverage(getMovingAverage().getNumber()) && tradeBook.isLastTradeLong() && !tradeBook.isLastTradeExited()) {
 			tradeBook.exitLongTrade(current);
 		}
 
@@ -41,13 +37,8 @@ public abstract class ClosingPricesWithTrendCheckByEMATest extends ClosingPrices
 			tradeBook.coverShortTrade(current);
 		}
 
-		if (current.getClose() > current.getMovingAverage(getMovingAverage().getNumber()) && tradeBook.isLastTradeShort() && !tradeBook.isLastTradeExited()) {
-			tradeBook.coverShortTrade(current);
-		}
-
 		if (Trend.UP.equals(trend) && tradeBook.isLastTradeExited()) {
 			tradeBook.addLongTrade(new Trade(scripName, TradeAction.LONG, current.getDateTime(), current.getTradedValue()));
 		}
 	}
-
 }

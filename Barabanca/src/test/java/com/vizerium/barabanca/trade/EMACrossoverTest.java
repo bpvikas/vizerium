@@ -1,5 +1,7 @@
 package com.vizerium.barabanca.trade;
 
+import java.util.List;
+
 import com.vizerium.barabanca.historical.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.trade.TradeAction;
@@ -15,7 +17,7 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 	protected abstract int getStopLossMA();
 
 	@Override
-	protected void getAdditionalDataPriorToIteration(String scripName, int year, int month, TimeFormat timeFormat) {
+	protected void getAdditionalDataPriorToIteration(String scripName, TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
 		currentTradeAction = null;
 	}
 
