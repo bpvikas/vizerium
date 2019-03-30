@@ -116,4 +116,10 @@ public class Stochastic implements Indicator {
 		return new float[] { lookbackPeriod, maPeriodCountForCalculatingSlowFromFast, maPeriodCountForCalculatingDFromK, fastPercentKArray[position], slowPercentKArray[position],
 				slowPercentKArray[position], slowPercentDArray[position] };
 	}
+
+	@Override
+	public int getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues() {
+		// The value for the lookbackPeriod needs to be a sum of the lookback period and the MA for Fast->Slow calculations and MA for K->D calculations.
+		return lookbackPeriod + maPeriodCountForCalculatingSlowFromFast + maPeriodCountForCalculatingDFromK;
+	}
 }

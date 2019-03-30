@@ -2,7 +2,7 @@ package com.vizerium.barabanca.trade;
 
 import java.util.List;
 
-import com.vizerium.barabanca.historical.TimeFormat;
+import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 
 public class MACDTradesTest extends TradeStrategyTest {

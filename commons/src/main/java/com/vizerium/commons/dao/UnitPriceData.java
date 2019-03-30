@@ -28,6 +28,8 @@ public class UnitPriceData extends UnitPrice {
 
 	private LocalDateTime dateTime;
 
+	private TimeFormat timeFormat;
+
 	private List<MovingAverageAndValue> movingAverages = new ArrayList<MovingAverageAndValue>(MovingAverage.values().length);
 
 	private Map<Indicators, Indicator> indicators = new TreeMap<Indicators, Indicator>();
@@ -85,6 +87,14 @@ public class UnitPriceData extends UnitPrice {
 
 	public void setDateTime(LocalDateTime dateTime) {
 		this.dateTime = dateTime;
+	}
+
+	public void setTimeFormat(TimeFormat timeFormat) {
+		this.timeFormat = timeFormat;
+	}
+
+	public TimeFormat getTimeFormat() {
+		return timeFormat;
 	}
 
 	public List<MovingAverageAndValue> getMovingAverages() {
@@ -145,8 +155,8 @@ public class UnitPriceData extends UnitPrice {
 			return false;
 		}
 		UnitPriceData other = (UnitPriceData) obj;
-		return Objects.equals(scripName, other.scripName) && Objects.equals(dateTime, other.dateTime) && Objects.equals(open, other.open) && Objects.equals(high, other.high)
-				&& Objects.equals(low, other.low) && Objects.equals(close, other.close);
+		return Objects.equals(scripName, other.scripName) && Objects.equals(timeFormat, other.timeFormat) && Objects.equals(dateTime, other.dateTime)
+				&& Objects.equals(open, other.open) && Objects.equals(high, other.high) && Objects.equals(low, other.low) && Objects.equals(close, other.close);
 
 	};
 
@@ -157,7 +167,7 @@ public class UnitPriceData extends UnitPrice {
 
 	@Override
 	public String toString() {
-		return scripName + "," + df.format(dateTime) + "," + nf.format(open) + "," + nf.format(high) + "," + nf.format(low) + "," + nf.format(close);
+		return scripName + "," + timeFormat.toString() + "," + df.format(dateTime) + "," + nf.format(open) + "," + nf.format(high) + "," + nf.format(low) + "," + nf.format(close);
 	}
 
 	public String printMovingAverages() {

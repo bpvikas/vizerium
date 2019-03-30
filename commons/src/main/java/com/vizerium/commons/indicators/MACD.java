@@ -43,6 +43,9 @@ public class MACD implements Indicator {
 	}
 
 	public MACD(int fastMA, int slowMA, MovingAverageType fastSlowMAType, MovingAverageType smoothingMAType, int smoothingPeriod) {
+		if (fastMA >= slowMA) {
+			throw new RuntimeException("Fast MA (" + fastMA + ") has to be less than Slow MA (" + slowMA + ")");
+		}
 		this.fastMA = fastMA;
 		this.slowMA = slowMA;
 		this.fastSlowMAType = fastSlowMAType;
@@ -129,4 +132,9 @@ public class MACD implements Indicator {
 		return "MACD[" + fastMA + fastSlowMAType.toString() + "," + slowMA + fastSlowMAType.toString() + "," + smoothingPeriod + "," + smoothingMAType.toString() + "]";
 	}
 
+	@Override
+	public int getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues() {
+		// The value for the lookbackPeriod needs to be a sum of the slower MA and the smoothing period so that we can get the calculations correct.
+		return getSlowMA() + getSmoothingPeriod();
+	}
 }

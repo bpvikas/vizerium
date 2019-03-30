@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class RSICalculator {
 
-	private static final int AVERAGE_GAIN_LOSS_CALCULATION_START = 1;
+	static final int AVERAGE_GAIN_LOSS_CALCULATION_START = 1;
 
 	public RSI calculate(float[] closingPrices) {
 		return calculate(closingPrices, new RSI());

@@ -7,7 +7,7 @@ import com.vizerium.commons.dao.UnitPrice;
 
 public class DirectionalSystemCalculator {
 
-	public static final int DIRECTIONAL_MOVEMENT_CALCULATION_START = 1;
+	static final int DIRECTIONAL_MOVEMENT_CALCULATION_START = 1;
 
 	public DirectionalSystem calculate(List<? extends UnitPrice> unitPrices) {
 		return calculate(unitPrices, new DirectionalSystem());

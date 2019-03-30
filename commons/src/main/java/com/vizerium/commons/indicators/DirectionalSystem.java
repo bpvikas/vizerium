@@ -64,4 +64,11 @@ public class DirectionalSystem implements Indicator {
 	public float[] getUnitPriceIndicator(int position) {
 		return new float[] { smoothingPeriod, smoothedPlusDI[position], smoothedMinusDI[position], adx[position] };
 	}
+
+	@Override
+	public int getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues() {
+		// The value for the lookbackPeriod needs to be a sum of the first smoothing (to get +DI -DI) and the smoothing period (to get ADX) and 1 (to get the initial true
+		// range) so that we can get the calculations correct.
+		return DirectionalSystemCalculator.DIRECTIONAL_MOVEMENT_CALCULATION_START + getSmoothingPeriod() + getSmoothingPeriod();
+	}
 }

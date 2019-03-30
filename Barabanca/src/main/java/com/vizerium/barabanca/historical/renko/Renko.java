@@ -4,7 +4,7 @@ import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import com.vizerium.barabanca.historical.TimeFormat;
+import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.util.NumberFormats;
 
 public class Renko implements Cloneable, Comparable<Renko> {

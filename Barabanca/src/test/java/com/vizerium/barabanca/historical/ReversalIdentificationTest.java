@@ -9,6 +9,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 
 /*

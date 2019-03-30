@@ -2,11 +2,12 @@ package com.vizerium.barabanca.trade;
 
 import java.util.List;
 
-import com.vizerium.barabanca.historical.TimeFormat;
 import com.vizerium.barabanca.trend.PeriodTrend;
 import com.vizerium.barabanca.trend.Trend;
+import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.indicators.MACD;
+import com.vizerium.commons.indicators.MACDCalculator;
 import com.vizerium.commons.trade.TradeAction;
 
 public abstract class ClosingPricesWithTrendCheckByMACDHistogramTest extends ClosingPricesWithTrendCheckTest {
@@ -40,5 +41,22 @@ public abstract class ClosingPricesWithTrendCheckByMACDHistogramTest extends Clo
 		if (Trend.UP.equals(trend) && tradeBook.isLastTradeExited()) {
 			tradeBook.addLongTrade(new Trade(scripName, TradeAction.LONG, current.getDateTime(), current.getTradedValue()));
 		}
+	}
+
+	private void updateIndicatorDataInUnitPrices(List<UnitPriceData> unitPriceDataList, MACD macdInput) {
+		MACDCalculator macdCalculator = new MACDCalculator();
+
+		
+
+		
+		
+		
+		
+		
+		
+		
+		
+		MACD macd = macdCalculator.calculate(unitPriceDataList, macdInput);
+
 	}
 }

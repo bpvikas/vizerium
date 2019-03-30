@@ -5,7 +5,7 @@ import java.util.ListIterator;
 
 import org.apache.log4j.Logger;
 
-import com.vizerium.barabanca.historical.TimeFormat;
+import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.trade.TradeAction;
 

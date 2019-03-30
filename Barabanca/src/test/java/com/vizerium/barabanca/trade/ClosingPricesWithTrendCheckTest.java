@@ -6,10 +6,10 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 
-import com.vizerium.barabanca.historical.TimeFormat;
 import com.vizerium.barabanca.trend.PeriodTrend;
 import com.vizerium.barabanca.trend.Trend;
 import com.vizerium.barabanca.trend.TrendCheck;
+import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 
 public abstract class ClosingPricesWithTrendCheckTest extends ClosingPricesTest {
@@ -23,7 +23,7 @@ public abstract class ClosingPricesWithTrendCheckTest extends ClosingPricesTest 
 	@Before
 	public void setUp() {
 		super.setUp();
-		trendCheck = new TrendCheck(historicalDataReader);
+		trendCheck = new TrendCheck();
 	}
 
 	protected abstract List<PeriodTrend> getPeriodTrends(String scripName, TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataListCurrentTimeFormat);
@@ -41,8 +41,8 @@ public abstract class ClosingPricesWithTrendCheckTest extends ClosingPricesTest 
 	protected Trend getPriorTrend(LocalDateTime unitPriceDateTime, List<PeriodTrend> periodTrends) {
 		for (int i = 0; i < periodTrends.size() - 1; i++) {
 			if (!periodTrends.get(i).getStartDateTime().isAfter(unitPriceDateTime) && !periodTrends.get(i + 1).getStartDateTime().isBefore(unitPriceDateTime)) {
-				logger.debug("For " + unitPriceDateTime + ", " + periodTrends.get(i));
-				return periodTrends.get(i).getTrend();
+				logger.debug("For " + unitPriceDateTime + ", " + periodTrends.get(i - 1));
+				return periodTrends.get(i - 1).getTrend();
 			}
 		}
 		if (unitPriceDateTime.isAfter(periodTrends.get(periodTrends.size() - 1).getStartDateTime())) {

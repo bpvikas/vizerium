@@ -2,7 +2,7 @@ package com.vizerium.barabanca.trend;
 
 import java.time.LocalDateTime;
 
-import com.vizerium.barabanca.historical.TimeFormat;
+import com.vizerium.commons.dao.TimeFormat;
 
 public class PeriodTrend {
 
@@ -35,6 +35,6 @@ public class PeriodTrend {
 
 	@Override
 	public String toString() {
-		return trend.name() + " trend seen for " + startDateTime + " on " + timeFormat.getProperty() + " chart.";
+		return trend.name() + " trend @ " + startDateTime + " on " + timeFormat.getProperty() + " chart.";
 	}
 }

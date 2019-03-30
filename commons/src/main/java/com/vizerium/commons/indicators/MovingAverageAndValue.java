@@ -34,4 +34,9 @@ public class MovingAverageAndValue implements Comparable<MovingAverageAndValue>,
 	public float[] getUnitPriceIndicator(int position) {
 		return new float[] { ma, value };
 	}
+
+	@Override
+	public int getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues() {
+		return ma;
+	}
 }

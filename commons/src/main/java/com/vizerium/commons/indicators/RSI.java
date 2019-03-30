@@ -42,4 +42,10 @@ public class RSI implements Indicator {
 	public float[] getUnitPriceIndicator(int position) {
 		return new float[] { lookbackPeriod, values[position] };
 	}
+
+	@Override
+	public int getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues() {
+		// The value for the lookbackPeriod needs to be a sum of the start point of the gain loss calculation and the lookback period.
+		return RSICalculator.AVERAGE_GAIN_LOSS_CALCULATION_START + lookbackPeriod;
+	}
 }

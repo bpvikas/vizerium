@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.vizerium.barabanca.historical.HistoricalDataReader;
-import com.vizerium.barabanca.historical.TimeFormat;
+import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

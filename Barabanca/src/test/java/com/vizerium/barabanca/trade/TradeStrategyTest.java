@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.vizerium.barabanca.historical.HistoricalDataReader;
-import com.vizerium.barabanca.historical.TimeFormat;
+import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.io.FileUtils;
 
@@ -27,7 +27,7 @@ public abstract class TradeStrategyTest {
 
 	private static final Logger logger = Logger.getLogger(TradeStrategyTest.class);
 
-	protected HistoricalDataReader historicalDataReader;
+	private HistoricalDataReader historicalDataReader;
 
 	private static BufferedWriter bw = null;
 
@@ -80,8 +80,8 @@ public abstract class TradeStrategyTest {
 
 	protected void testAndReportTradeStrategy(String scripName, TimeFormat timeFormat, int startYear, int startMonth, int endYear, int endMonth) {
 		TradeBook tradeBook = testTradeStrategy(scripName, timeFormat, startYear, startMonth, endYear, endMonth);
-		printReport(tradeBook, timeFormat, TimeFormat._1YEAR, startYear, startMonth);
-		printReport(tradeBook, timeFormat, TimeFormat._1MONTH, startYear, startMonth);
+		printReport(tradeBook, timeFormat, ReportTimeFormat._1YEAR, startYear, startMonth);
+		printReport(tradeBook, timeFormat, ReportTimeFormat._1MONTH, startYear, startMonth);
 	}
 
 	protected TradeBook testTradeStrategy(String scripName, TimeFormat timeFormat, int startYear, int startMonth, int endYear, int endMonth) {
@@ -144,10 +144,10 @@ public abstract class TradeStrategyTest {
 		}
 	}
 
-	protected void printReport(TradeBook tradeBook, TimeFormat timeFormat, TimeFormat reportTimeFormat, int startYear, int startMonth) {
+	protected void printReport(TradeBook tradeBook, TimeFormat timeFormat, ReportTimeFormat reportTimeFormat, int startYear, int startMonth) {
 		StringBuilder p = new StringBuilder(), l = new StringBuilder(), t = new StringBuilder();
 
-		if (TimeFormat._1YEAR.equals(reportTimeFormat)) {
+		if (ReportTimeFormat._1YEAR.equals(reportTimeFormat)) {
 			int currentYear = startYear;
 			TradeBook currentDurationTradeBook = new TradeBook();
 			for (Trade trade : tradeBook) {
@@ -159,7 +159,7 @@ public abstract class TradeStrategyTest {
 				currentDurationTradeBook.add(trade);
 			}
 			updatePLT(currentDurationTradeBook, p, l, t);
-		} else if (TimeFormat._1MONTH.equals(reportTimeFormat)) {
+		} else if (ReportTimeFormat._1MONTH.equals(reportTimeFormat)) {
 			int currentYear = startYear;
 			int currentMonth = startMonth;
 			TradeBook currentDurationTradeBook = new TradeBook();
@@ -213,5 +213,9 @@ public abstract class TradeStrategyTest {
 
 	private LocalDateTime getNextMonth(int previousYear, int previousMonth) {
 		return LocalDateTime.of(previousYear, previousMonth, 1, 6, 0).plusMonths(1);
+	}
+
+	private static enum ReportTimeFormat {
+		_1MONTH, _1YEAR;
 	}
 }

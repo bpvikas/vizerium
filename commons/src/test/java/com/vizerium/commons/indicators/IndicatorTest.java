@@ -10,6 +10,11 @@ import org.junit.Test;
 
 public class IndicatorTest {
 
+	/*
+	 * This is just a test case whether I can annotate elements and put them in a list. Tried using an annotation @interface but while trying to put it in a List or Map, could not
+	 * add elements of a certain annotation.
+	 */
+
 	@Test
 	public void testIndicatorsForMap() {
 		Map<Indicators, Indicator> indicators = new TreeMap<Indicators, Indicator>();
@@ -28,7 +33,7 @@ public class IndicatorTest {
 	public void testString() {
 		String p = "";
 		updateString(p);
-		Assert.assertNotEquals("Passing string to a called method does not change the value of the String in the called method.", "hi,hi,", p);
+		Assert.assertNotEquals("Passing string to a called method does not change the value of the String in the calling method.", "hi,hi,", p);
 	}
 
 	private void updateString(String p) {

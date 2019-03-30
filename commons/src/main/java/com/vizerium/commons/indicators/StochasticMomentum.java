@@ -94,4 +94,11 @@ public class StochasticMomentum implements Indicator {
 		return new float[] { percentKLookbackPeriod, maPeriodCountForFirstSmoothingK, maPeriodCountForDoubleSmoothingK, percentDLookbackPeriod, smiArray[position],
 				signalArray[position] };
 	}
+
+	@Override
+	public int getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues() {
+		// The value for the lookbackPeriod needs to be a sum of the %K lookback period and the MA for first smoothing and the MA for the
+		// second smoothing and the %D lookbackPeriod.
+		return percentKLookbackPeriod + maPeriodCountForFirstSmoothingK + maPeriodCountForDoubleSmoothingK + percentDLookbackPeriod;
+	}
 }

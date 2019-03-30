@@ -1,7 +1,9 @@
-package com.vizerium.barabanca.historical;
+package com.vizerium.commons.dao;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.vizerium.commons.dao.TimeFormat;
 
 public class TimeFormatTest {
 
