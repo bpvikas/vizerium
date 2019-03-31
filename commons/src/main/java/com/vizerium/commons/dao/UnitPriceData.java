@@ -5,17 +5,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import com.vizerium.commons.indicators.Indicator;
 import com.vizerium.commons.indicators.Indicators;
-import com.vizerium.commons.indicators.MovingAverage;
-import com.vizerium.commons.indicators.MovingAverageAndValue;
+import com.vizerium.commons.indicators.StandardMovingAverages;
 import com.vizerium.commons.util.NumberFormats;
 
 public class UnitPriceData extends UnitPrice {
@@ -30,7 +27,7 @@ public class UnitPriceData extends UnitPrice {
 
 	private TimeFormat timeFormat;
 
-	private List<MovingAverageAndValue> movingAverages = new ArrayList<MovingAverageAndValue>(MovingAverage.values().length);
+	private TreeSet<MovingAverage> movingAverages = new TreeSet<MovingAverage>();
 
 	private Map<Indicators, Indicator> indicators = new TreeMap<Indicators, Indicator>();
 
@@ -47,12 +44,10 @@ public class UnitPriceData extends UnitPrice {
 				unitPriceDetailsArray[6]);
 		if (unitPriceDetailsArray.length > 11) {
 			// The above condition is to take care of parsedData which has upto 8 elements. 2 elements as 0,0 beyond the OHLC information.
-			setMovingAverage(MovingAverage._5, Float.parseFloat(unitPriceDetailsArray[7]));
-			setMovingAverage(MovingAverage._13, Float.parseFloat(unitPriceDetailsArray[8]));
-			setMovingAverage(MovingAverage._26, Float.parseFloat(unitPriceDetailsArray[9]));
-			setMovingAverage(MovingAverage._50, Float.parseFloat(unitPriceDetailsArray[10]));
-			setMovingAverage(MovingAverage._100, Float.parseFloat(unitPriceDetailsArray[11]));
-			setMovingAverage(MovingAverage._200, Float.parseFloat(unitPriceDetailsArray[12]));
+			int[] standardMovingAverages = StandardMovingAverages.getAllStandardMAsSorted();
+			for (int i = 0; i < standardMovingAverages.length; i++) {
+				setMovingAverage(standardMovingAverages[i], Float.parseFloat(unitPriceDetailsArray[7 + i]));
+			}
 		}
 	}
 
@@ -97,27 +92,17 @@ public class UnitPriceData extends UnitPrice {
 		return timeFormat;
 	}
 
-	public List<MovingAverageAndValue> getMovingAverages() {
-		return movingAverages;
-	}
-
 	public float getMovingAverage(int ma) {
-		for (MovingAverageAndValue movingAverageAndValue : movingAverages) {
-			if (movingAverageAndValue.getMA() == ma) {
-				return movingAverageAndValue.getValue();
+		for (MovingAverage movingAverage : movingAverages) {
+			if (movingAverage.getMA() == ma) {
+				return movingAverage.getValue();
 			}
 		}
 		throw new RuntimeException("Unable to obtain Moving Average for " + ma);
 	}
 
-	public void setMovingAverages(List<MovingAverageAndValue> movingAverages) {
-		Collections.sort(movingAverages);
-		this.movingAverages = movingAverages;
-	}
-
-	public void setMovingAverage(MovingAverage ma, float value) {
-		this.movingAverages.add(new MovingAverageAndValue(ma, value));
-		Collections.sort(movingAverages);
+	public void setMovingAverage(int ma, float value) {
+		this.movingAverages.add(new MovingAverage(ma, value));
 	}
 
 	/*
@@ -162,7 +147,7 @@ public class UnitPriceData extends UnitPrice {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(scripName, dateTime, open, high, low, close);
+		return Objects.hash(scripName, timeFormat, dateTime, open, high, low, close);
 	};
 
 	@Override
@@ -172,9 +157,37 @@ public class UnitPriceData extends UnitPrice {
 
 	public String printMovingAverages() {
 		String movingAveragesString = "";
-		for (MovingAverageAndValue movingAverageAndValue : movingAverages) {
-			movingAveragesString += ("," + manf.format(movingAverageAndValue.getValue()));
+		for (MovingAverage movingAverage : movingAverages) {
+			movingAveragesString += ("," + manf.format(movingAverage.getValue()));
 		}
 		return movingAveragesString;
+	}
+
+	static class MovingAverage implements Comparable<MovingAverage> {
+
+		private int ma;
+		private float value;
+
+		public MovingAverage() {
+
+		}
+
+		public MovingAverage(int ma, float value) {
+			this.ma = ma;
+			this.value = value;
+		}
+
+		public int getMA() {
+			return ma;
+		}
+
+		public float getValue() {
+			return value;
+		}
+
+		@Override
+		public int compareTo(MovingAverage other) {
+			return Integer.compare(ma, other.ma);
+		}
 	}
 }

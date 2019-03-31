@@ -20,7 +20,7 @@ public class RenkoCalculator {
 	private RenkoRange getRenkoRange(List<UnitPriceData> unitPriceDataList, Renko renko) {
 		if (renko.getBrickSize() <= 0.0f) {
 			AverageTrueRangeCalculator atrCalculator = new AverageTrueRangeCalculator();
-			float[] averageTrueRange = atrCalculator.calculateAverageTrueRange(unitPriceDataList);
+			float[] averageTrueRange = atrCalculator.calculate(unitPriceDataList).getValues();
 			renko.setBrickSize(averageTrueRange[averageTrueRange.length - 1]);
 			logger.info("Auto calculated Renko brick size " + renko.getScripName() + " " + renko.getTimeFormat() + " " + renko.getBrickSize());
 		}

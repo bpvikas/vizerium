@@ -5,47 +5,39 @@ import java.util.List;
 
 import com.vizerium.commons.dao.UnitPrice;
 
-public class AverageTrueRangeCalculator {
+public class AverageTrueRangeCalculator implements IndicatorCalculator<AverageTrueRange> {
 
-	private int smoothingPeriod;
+	static final int TRUE_RANGE_CALCULATION_START = 1;
 
-	private MovingAverageType smoothingMAType;
-
-	private static final int DEFAULT_SMOOTHING_PERIOD = 14;
-	private static final MovingAverageType DEFAULT_SMOOTHING_MA_TYPE = MovingAverageType.WELLESWILDER;
-	private static final int TRUE_RANGE_CALCULATION_START = 1;
-
-	public AverageTrueRangeCalculator() {
-		this.smoothingPeriod = DEFAULT_SMOOTHING_PERIOD;
-		this.smoothingMAType = DEFAULT_SMOOTHING_MA_TYPE;
+	public AverageTrueRange calculate(List<? extends UnitPrice> unitPrices) {
+		return calculate(unitPrices, new AverageTrueRange());
 	}
 
-	public AverageTrueRangeCalculator(int smoothingPeriod, MovingAverageType smoothingMAType) {
-		this.smoothingPeriod = smoothingPeriod;
-		this.smoothingMAType = smoothingMAType;
+	@Override
+	public AverageTrueRange calculate(List<? extends UnitPrice> unitPrices, AverageTrueRange atr) {
+		int smoothingPeriod = atr.getSmoothingPeriod();
+		int size = unitPrices.size();
+		if (size < smoothingPeriod) {
+			atr.setValues(new float[size]);
+			return atr;
+		} else {
+			float[] trueRangeArr = calculateTrueRange(unitPrices);
+			float[] calculableTrueRangeArr = Arrays.copyOfRange(trueRangeArr, TRUE_RANGE_CALCULATION_START, size);
+			float[] smoothAtrArr = MovingAverageCalculator.calculateArrayMA(atr.getSmoothingMAType(), calculableTrueRangeArr, smoothingPeriod);
+			float[] smoothAtrArrShifted = new float[size];
+			System.arraycopy(smoothAtrArr, 0, smoothAtrArrShifted, TRUE_RANGE_CALCULATION_START, smoothAtrArr.length);
+			atr.setValues(smoothAtrArrShifted);
+			return atr;
+		}
 	}
 
-	public float[] calculateTrueRange(List<? extends UnitPrice> unitPrices) {
+	private float[] calculateTrueRange(List<? extends UnitPrice> unitPrices) {
 		float[] trueRange = new float[unitPrices.size()];
 		// This starts from i=1 as trueRange[0] defaults to 0.0f
 		for (int i = TRUE_RANGE_CALCULATION_START; i < unitPrices.size(); i++) {
 			trueRange[i] = getTrueRange(unitPrices.get(i).getHigh(), unitPrices.get(i).getLow(), unitPrices.get(i - 1).getClose());
 		}
 		return trueRange;
-	}
-
-	public float[] calculateAverageTrueRange(List<? extends UnitPrice> unitPrices) {
-		int size = unitPrices.size();
-		if (size < smoothingPeriod) {
-			return new float[size];
-		} else {
-			float[] trueRangeArr = calculateTrueRange(unitPrices);
-			float[] calculableTrueRangeArr = Arrays.copyOfRange(trueRangeArr, TRUE_RANGE_CALCULATION_START, size);
-			float[] smoothAtrArr = MovingAverageCalculator.calculateArrayMA(smoothingMAType, calculableTrueRangeArr, smoothingPeriod);
-			float[] smoothAtrArrShifted = new float[size];
-			System.arraycopy(smoothAtrArr, 0, smoothAtrArrShifted, TRUE_RANGE_CALCULATION_START, smoothAtrArr.length);
-			return smoothAtrArrShifted;
-		}
 	}
 
 	private float getTrueRange(float todayHigh, float todayLow, float yesterdayClose) {

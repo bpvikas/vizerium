@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.vizerium.commons.dao.UnitPrice;
 
-public class DirectionalSystemCalculator {
+public class DirectionalSystemCalculator implements IndicatorCalculator<DirectionalSystem> {
 
 	static final int DIRECTIONAL_MOVEMENT_CALCULATION_START = 1;
 
@@ -13,6 +13,7 @@ public class DirectionalSystemCalculator {
 		return calculate(unitPrices, new DirectionalSystem());
 	}
 
+	@Override
 	public DirectionalSystem calculate(List<? extends UnitPrice> unitPrices, DirectionalSystem ds) {
 
 		float[] plusDM = getPlusDM(unitPrices);
@@ -64,7 +65,7 @@ public class DirectionalSystemCalculator {
 
 	private float[] getAverageTrueRange(List<? extends UnitPrice> unitPrices) {
 		AverageTrueRangeCalculator atrCalculator = new AverageTrueRangeCalculator();
-		return atrCalculator.calculateAverageTrueRange(unitPrices);
+		return atrCalculator.calculate(unitPrices).getValues();
 	}
 
 	private float[] getSmoothedPlusDM(float[] plusDM, DirectionalSystem ds) {

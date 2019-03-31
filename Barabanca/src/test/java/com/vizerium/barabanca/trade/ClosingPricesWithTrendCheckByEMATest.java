@@ -15,7 +15,7 @@ public abstract class ClosingPricesWithTrendCheckByEMATest extends ClosingPrices
 
 	@Override
 	protected List<PeriodTrend> getPeriodTrends(String scripName, TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataListCurrentTimeFormat) {
-		return trendCheck.getTrendByEMASlope(scripName, trendTimeFormat, unitPriceDataListCurrentTimeFormat, getMovingAverage().getNumber());
+		return trendCheck.getTrendByEMASlope(scripName, trendTimeFormat, unitPriceDataListCurrentTimeFormat, getMovingAverage().getMA());
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public abstract class ClosingPricesWithTrendCheckByEMATest extends ClosingPrices
 			tradeBook.exitLongTrade(current);
 		}
 
-		if (current.getClose() < current.getMovingAverage(getMovingAverage().getNumber()) && tradeBook.isLastTradeLong() && !tradeBook.isLastTradeExited()) {
+		if (current.getClose() < current.getMovingAverage(getMovingAverage().getMA()) && tradeBook.isLastTradeLong() && !tradeBook.isLastTradeExited()) {
 			tradeBook.exitLongTrade(current);
 		}
 
@@ -41,7 +41,7 @@ public abstract class ClosingPricesWithTrendCheckByEMATest extends ClosingPrices
 			tradeBook.coverShortTrade(current);
 		}
 
-		if (current.getClose() > current.getMovingAverage(getMovingAverage().getNumber()) && tradeBook.isLastTradeShort() && !tradeBook.isLastTradeExited()) {
+		if (current.getClose() > current.getMovingAverage(getMovingAverage().getMA()) && tradeBook.isLastTradeShort() && !tradeBook.isLastTradeExited()) {
 			tradeBook.coverShortTrade(current);
 		}
 

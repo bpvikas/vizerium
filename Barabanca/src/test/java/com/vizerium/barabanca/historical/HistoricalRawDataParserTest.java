@@ -118,31 +118,31 @@ public class HistoricalRawDataParserTest {
 
 	@Test
 	public void test04A_UpdateMovingAveragesIn1MinDataFiles() {
-		unit.updateMovingAveragesInTimeSeriesDataFiles(TimeFormat._1MIN);
+		unit.updateStandardMovingAveragesInTimeSeriesDataFiles(TimeFormat._1MIN);
 	}
 
 	@Test
 	public void test04B_UpdateMovingAveragesIn5MinDataFiles() {
-		unit.updateMovingAveragesInTimeSeriesDataFiles(TimeFormat._5MIN);
+		unit.updateStandardMovingAveragesInTimeSeriesDataFiles(TimeFormat._5MIN);
 	}
 
 	@Test
 	public void test04C_UpdateMovingAveragesIn1HourDataFiles() {
-		unit.updateMovingAveragesInTimeSeriesDataFiles(TimeFormat._1HOUR);
+		unit.updateStandardMovingAveragesInTimeSeriesDataFiles(TimeFormat._1HOUR);
 	}
 
 	@Test
 	public void test04D_UpdateMovingAveragesIn1DayDataFiles() {
-		unit.updateMovingAveragesInTimeSeriesDataFiles(TimeFormat._1DAY);
+		unit.updateStandardMovingAveragesInTimeSeriesDataFiles(TimeFormat._1DAY);
 	}
 
 	@Test
 	public void test04E_UpdateMovingAveragesIn1WeekDataFiles() {
-		unit.updateMovingAveragesInTimeSeriesDataFiles(TimeFormat._1WEEK);
+		unit.updateStandardMovingAveragesInTimeSeriesDataFiles(TimeFormat._1WEEK);
 	}
 
 	@Test
 	public void test04F_UpdateMovingAveragesIn1MonthDataFiles() {
-		unit.updateMovingAveragesInTimeSeriesDataFiles(TimeFormat._1MONTH);
+		unit.updateStandardMovingAveragesInTimeSeriesDataFiles(TimeFormat._1MONTH);
 	}
 }

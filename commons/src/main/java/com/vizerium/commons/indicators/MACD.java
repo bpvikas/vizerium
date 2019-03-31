@@ -137,4 +137,9 @@ public class MACD implements Indicator {
 		// The value for the lookbackPeriod needs to be a sum of the slower MA and the smoothing period so that we can get the calculations correct.
 		return getSlowMA() + getSmoothingPeriod();
 	}
+
+	@Override
+	public MACDCalculator getCalculator() {
+		return new MACDCalculator();
+	}
 }

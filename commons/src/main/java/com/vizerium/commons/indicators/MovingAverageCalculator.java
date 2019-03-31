@@ -1,8 +1,28 @@
 package com.vizerium.commons.indicators;
 
 import java.util.Arrays;
+import java.util.List;
 
-public class MovingAverageCalculator {
+import com.vizerium.commons.dao.UnitPrice;
+
+public class MovingAverageCalculator implements IndicatorCalculator<MovingAverage> {
+
+	@Override
+	public MovingAverage calculate(List<? extends UnitPrice> unitPrices, MovingAverage movingAverage) {
+		// I really tried to use lambda expressions here.
+		// return calculate(unitPrices.stream().mapToFloat(UnitPrice::getClose).toArray(), ma);
+		// but it does not have a mapToFloat.. So, I am looping over it myself
+		// https://stackoverflow.com/questions/4837568/java-convert-arraylistfloat-to-float
+
+		float[] closingPrices = new float[unitPrices.size()];
+		int i = 0;
+		for (UnitPrice unitPrice : unitPrices) {
+			closingPrices[i++] = unitPrice.getClose();
+		}
+		float[] movingAverageValues = calculateArrayMA(movingAverage.getType(), closingPrices, movingAverage.getMA());
+		movingAverage.setValues(movingAverageValues);
+		return movingAverage;
+	}
 
 	public static float calculateSMA(float[] closingPrices, int numberOfPeriods) {
 		if (closingPrices.length < numberOfPeriods) {

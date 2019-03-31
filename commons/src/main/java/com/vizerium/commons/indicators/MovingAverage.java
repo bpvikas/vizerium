@@ -1,30 +1,52 @@
 package com.vizerium.commons.indicators;
 
-import java.util.Arrays;
+public class MovingAverage implements Indicator {
+	private int ma;
+	private MovingAverageType type;
+	private float[] values;
 
-public enum MovingAverage {
-	_5, _13, _26, _50, _100, _200;
+	public MovingAverage() {
 
-	public static MovingAverage getMAByNumber(int maInput) {
-		for (MovingAverage ma : values()) {
-			if (Integer.parseInt(ma.name().substring(1)) == maInput) {
-				return ma;
-			}
-		}
-		throw new RuntimeException("Unable to identify moving average from " + maInput);
 	}
 
-	public int getNumber() {
-		return Integer.parseInt(name().substring(1));
+	public MovingAverage(int ma, MovingAverageType type) {
+		this.ma = ma;
+		this.type = type;
 	}
 
-	public static int[] getAllStandardMAValuesSorted() {
-		int i = 0;
-		int[] allValues = new int[values().length];
-		for (MovingAverage ma : values()) {
-			allValues[i++] = ma.getNumber();
-		}
-		Arrays.sort(allValues);
-		return allValues;
+	public int getMA() {
+		return ma;
+	}
+
+	public MovingAverageType getType() {
+		return type;
+	}
+
+	public float[] getValues() {
+		return values;
+	}
+
+	public void setValues(float[] values) {
+		this.values = values;
+	}
+
+	@Override
+	public String toString() {
+		return ma + type.toString();
+	}
+
+	@Override
+	public float[] getUnitPriceIndicator(int position) {
+		return new float[] { ma, values[position] };
+	}
+
+	@Override
+	public int getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues() {
+		return ma;
+	}
+
+	@Override
+	public MovingAverageCalculator getCalculator() {
+		return new MovingAverageCalculator();
 	}
 }

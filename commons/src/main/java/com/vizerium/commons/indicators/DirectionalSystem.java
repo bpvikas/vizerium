@@ -71,4 +71,9 @@ public class DirectionalSystem implements Indicator {
 		// range) so that we can get the calculations correct.
 		return DirectionalSystemCalculator.DIRECTIONAL_MOVEMENT_CALCULATION_START + getSmoothingPeriod() + getSmoothingPeriod();
 	}
+
+	@Override
+	public DirectionalSystemCalculator getCalculator() {
+		return new DirectionalSystemCalculator();
+	}
 }

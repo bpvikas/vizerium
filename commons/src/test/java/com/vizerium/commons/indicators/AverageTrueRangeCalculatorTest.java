@@ -53,8 +53,8 @@ public class AverageTrueRangeCalculatorTest {
 
 	private void testAtrCalculations(int count) {
 		float[] expectedSmoothedAtrValues = getOHLCDataAndATRValues(count);
-		float[] actualSmoothedAtrValues = unit.calculateAverageTrueRange(unitPrices);
-		assertArrays(expectedSmoothedAtrValues, actualSmoothedAtrValues, count);
+		AverageTrueRange atr = unit.calculate(unitPrices);
+		assertArrays(expectedSmoothedAtrValues, atr.getValues(), count);
 	}
 
 	private void assertArrays(float[] expectedSmoothedAtrValues, float[] actualSmoothedAtrValues, int count) {

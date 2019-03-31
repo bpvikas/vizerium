@@ -1,8 +1,11 @@
 package com.vizerium.commons.indicators;
 
 import java.util.Arrays;
+import java.util.List;
 
-public class RSICalculator {
+import com.vizerium.commons.dao.UnitPrice;
+
+public class RSICalculator implements IndicatorCalculator<RSI> {
 
 	static final int AVERAGE_GAIN_LOSS_CALCULATION_START = 1;
 
@@ -67,5 +70,20 @@ public class RSICalculator {
 			}
 		}
 		return rsiValues;
+	}
+
+	@Override
+	public RSI calculate(List<? extends UnitPrice> unitPrices, RSI rsi) {
+		// I really tried to use lambda expressions here.
+		// return calculate(unitPrices.stream().mapToFloat(UnitPrice::getClose).toArray(), rsi);
+		// but it does not have a mapToFloat.. So, I am looping over it myself
+		// https://stackoverflow.com/questions/4837568/java-convert-arraylistfloat-to-float
+
+		float[] closingPrices = new float[unitPrices.size()];
+		int i = 0;
+		for (UnitPrice unitPrice : unitPrices) {
+			closingPrices[i++] = unitPrice.getClose();
+		}
+		return calculate(closingPrices, rsi);
 	}
 }

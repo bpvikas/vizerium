@@ -5,12 +5,13 @@ import java.util.List;
 
 import com.vizerium.commons.dao.UnitPrice;
 
-public class StochasticCalculator implements StochasticCalculatorBase {
+public class StochasticCalculator implements StochasticCalculatorBase, IndicatorCalculator<Stochastic> {
 
 	public Stochastic calculate(List<? extends UnitPrice> unitPrices) {
 		return calculate(unitPrices, new Stochastic());
 	}
 
+	@Override
 	public Stochastic calculate(List<? extends UnitPrice> unitPrices, Stochastic stochastic) {
 		int size = unitPrices.size();
 		int lookbackPeriod = stochastic.getLookbackPeriod();

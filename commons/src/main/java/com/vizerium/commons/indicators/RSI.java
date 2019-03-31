@@ -48,4 +48,9 @@ public class RSI implements Indicator {
 		// The value for the lookbackPeriod needs to be a sum of the start point of the gain loss calculation and the lookback period.
 		return RSICalculator.AVERAGE_GAIN_LOSS_CALCULATION_START + lookbackPeriod;
 	}
+
+	@Override
+	public RSICalculator getCalculator() {
+		return new RSICalculator();
+	}
 }

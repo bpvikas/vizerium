@@ -14,8 +14,6 @@ import com.vizerium.commons.indicators.Indicator;
 
 public class LookbackPeriodCalculator {
 
-	private static final int LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND = 3;
-
 	private HistoricalDataReader historicalDataReader;
 
 	public LookbackPeriodCalculator() {
@@ -26,12 +24,13 @@ public class LookbackPeriodCalculator {
 		this.historicalDataReader = historicalDataReader;
 	}
 
-	public int getLookbackPeriodForEMASlopeCalculations() {
-		return LOOKBACK_PERIOD_FOR_EMA_SLOPE_TREND;
-	}
-
 	public int getLookbackPeriodForIndicator(Indicator indicator) {
 		return indicator.getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues();
+	}
+
+	public List<UnitPriceData> getUnitPricesIncludingLookbackPeriodWithTimeFormat(String scripName, TimeFormat outputTimeFormat, List<UnitPriceData> unitPriceDataList,
+			Indicator indicator) {
+		return getUnitPricesIncludingLookbackPeriodWithTimeFormat(scripName, outputTimeFormat, unitPriceDataList, getLookbackPeriodForIndicator(indicator));
 	}
 
 	public List<UnitPriceData> getUnitPricesIncludingLookbackPeriodWithTimeFormat(String scripName, TimeFormat outputTimeFormat, List<UnitPriceData> unitPriceDataList,
@@ -116,7 +115,6 @@ public class LookbackPeriodCalculator {
 			DateTimeTuple dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, trendTimeFormat, originalStartDateTime, startDateTime, endDateTime, lookbackPeriod);
 			startDateTime = dateTimeTuple.getStartDateTime();
 		}
-
 		return new DateTimeTuple(startDateTime, endDateTime);
 	}
 
@@ -152,5 +150,4 @@ public class LookbackPeriodCalculator {
 
 		return new DateTimeTuple(startDateTime, endDateTime);
 	}
-
 }

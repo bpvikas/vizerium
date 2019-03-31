@@ -101,4 +101,9 @@ public class StochasticMomentum implements Indicator {
 		// second smoothing and the %D lookbackPeriod.
 		return percentKLookbackPeriod + maPeriodCountForFirstSmoothingK + maPeriodCountForDoubleSmoothingK + percentDLookbackPeriod;
 	}
+
+	@Override
+	public StochasticMomentumCalculator getCalculator() {
+		return new StochasticMomentumCalculator();
+	}
 }

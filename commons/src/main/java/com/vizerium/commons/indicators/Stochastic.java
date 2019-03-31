@@ -122,4 +122,9 @@ public class Stochastic implements Indicator {
 		// The value for the lookbackPeriod needs to be a sum of the lookback period and the MA for Fast->Slow calculations and MA for K->D calculations.
 		return lookbackPeriod + maPeriodCountForCalculatingSlowFromFast + maPeriodCountForCalculatingDFromK;
 	}
+
+	@Override
+	public StochasticCalculator getCalculator() {
+		return new StochasticCalculator();
+	}
 }

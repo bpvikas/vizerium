@@ -27,8 +27,8 @@ import org.apache.log4j.Logger;
 
 import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
-import com.vizerium.commons.indicators.MovingAverage;
 import com.vizerium.commons.indicators.MovingAverageCalculator;
+import com.vizerium.commons.indicators.StandardMovingAverages;
 import com.vizerium.commons.io.FileUtils;
 import com.vizerium.commons.util.FloatArrayList;
 
@@ -310,7 +310,7 @@ public class HistoricalRawDataParser {
 		}
 	}
 
-	public void updateMovingAveragesInTimeSeriesDataFiles(TimeFormat timeFormat) {
+	public void updateStandardMovingAveragesInTimeSeriesDataFiles(TimeFormat timeFormat) {
 		try {
 			File timeSeriesDirectory = new File(extractedDataDirectoryPath + timeFormat.getProperty() + "/");
 			for (File timeSeriesScripDataDirectory : timeSeriesDirectory.listFiles()) {
@@ -348,9 +348,9 @@ public class HistoricalRawDataParser {
 
 	private void calculateExponentialMovingAverage(FloatArrayList closingPrices, UnitPriceData unitPriceData) {
 		float[] closingPricesArray = closingPrices.toArray();
-		for (int ma : MovingAverage.getAllStandardMAValuesSorted()) {
+		for (int ma : StandardMovingAverages.getAllStandardMAsSorted()) {
 			float ema = MovingAverageCalculator.calculateEMA(closingPricesArray, ma);
-			unitPriceData.setMovingAverage(MovingAverage.getMAByNumber(ma), ema);
+			unitPriceData.setMovingAverage(ma, ema);
 		}
 	}
 

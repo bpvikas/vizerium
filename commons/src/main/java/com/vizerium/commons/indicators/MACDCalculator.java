@@ -5,12 +5,13 @@ import java.util.List;
 
 import com.vizerium.commons.dao.UnitPrice;
 
-public class MACDCalculator {
+public class MACDCalculator implements IndicatorCalculator<MACD> {
 
 	public MACD calculate(List<? extends UnitPrice> unitPrices) {
 		return calculate(unitPrices, new MACD());
 	}
 
+	@Override
 	public MACD calculate(List<? extends UnitPrice> unitPrices, MACD macd) {
 		int size = unitPrices.size();
 		int smooth = macd.getSmoothingPeriod();

@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.vizerium.commons.dao.UnitPrice;
 
-public class StochasticMomentumCalculator implements StochasticCalculatorBase {
+public class StochasticMomentumCalculator implements StochasticCalculatorBase, IndicatorCalculator<StochasticMomentum> {
 
 	// https://www.motivewave.com/studies/stochastic_momentum_index.htm
 	//
@@ -34,6 +34,7 @@ public class StochasticMomentumCalculator implements StochasticCalculatorBase {
 		return calculate(unitPrices, new StochasticMomentum());
 	}
 
+	@Override
 	public StochasticMomentum calculate(List<? extends UnitPrice> unitPrices, StochasticMomentum sm) {
 		int lbpk = sm.getPercentKLookbackPeriod();
 		int ma1 = sm.getMaPeriodCountForFirstSmoothingK();
