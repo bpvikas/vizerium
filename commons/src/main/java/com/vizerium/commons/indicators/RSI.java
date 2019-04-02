@@ -1,6 +1,10 @@
 package com.vizerium.commons.indicators;
 
-public class RSI implements Indicator {
+import java.util.List;
+
+import com.vizerium.commons.dao.UnitPrice;
+
+public class RSI implements Indicator<RSI> {
 
 	private int lookbackPeriod;
 
@@ -44,13 +48,25 @@ public class RSI implements Indicator {
 	}
 
 	@Override
+	public int getUnitPriceIndicatorValuesLength() {
+		return 2;
+	}
+
+	@Override
 	public int getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues() {
 		// The value for the lookbackPeriod needs to be a sum of the start point of the gain loss calculation and the lookback period.
 		return RSICalculator.AVERAGE_GAIN_LOSS_CALCULATION_START + lookbackPeriod;
 	}
 
 	@Override
-	public RSICalculator getCalculator() {
-		return new RSICalculator();
+	public RSI calculate(List<? extends UnitPrice> unitPrices) {
+		RSICalculator rsiCalculator = new RSICalculator();
+		return rsiCalculator.calculate(unitPrices, this);
+
+	}
+
+	@Override
+	public String getName() {
+		return getClass().getSimpleName() + "[" + lookbackPeriod + "]";
 	}
 }

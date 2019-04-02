@@ -1,6 +1,10 @@
 package com.vizerium.commons.indicators;
 
-public class MACD implements Indicator {
+import java.util.List;
+
+import com.vizerium.commons.dao.UnitPrice;
+
+public class MACD implements Indicator<MACD> {
 
 	// The default value for the fast MA for the MACD.
 	private static final int DEFAULT_FAST_MA = 12;
@@ -128,8 +132,8 @@ public class MACD implements Indicator {
 	}
 
 	@Override
-	public String toString() {
-		return "MACD[" + fastMA + fastSlowMAType.toString() + "," + slowMA + fastSlowMAType.toString() + "," + smoothingPeriod + "," + smoothingMAType.toString() + "]";
+	public int getUnitPriceIndicatorValuesLength() {
+		return 8;
 	}
 
 	@Override
@@ -139,7 +143,14 @@ public class MACD implements Indicator {
 	}
 
 	@Override
-	public MACDCalculator getCalculator() {
-		return new MACDCalculator();
+	public MACD calculate(List<? extends UnitPrice> unitPrices) {
+		MACDCalculator macdCalculator = new MACDCalculator();
+		return macdCalculator.calculate(unitPrices, this);
+	}
+
+	@Override
+	public String getName() {
+		return getClass().getSimpleName() + "[" + fastMA + fastSlowMAType.toString() + "," + slowMA + fastSlowMAType.toString() + "," + smoothingPeriod + ","
+				+ smoothingMAType.toString() + "]";
 	}
 }

@@ -12,7 +12,7 @@ import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.indicators.Indicator;
 
-public class LookbackPeriodCalculator {
+public class LookbackPeriodCalculator<I extends Indicator<I>> {
 
 	private HistoricalDataReader historicalDataReader;
 
@@ -20,16 +20,12 @@ public class LookbackPeriodCalculator {
 		historicalDataReader = new HistoricalDataReader();
 	}
 
-	public void setHistoricalDataReader(HistoricalDataReader historicalDataReader) {
-		this.historicalDataReader = historicalDataReader;
-	}
-
-	public int getLookbackPeriodForIndicator(Indicator indicator) {
+	public int getLookbackPeriodForIndicator(I indicator) {
 		return indicator.getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues();
 	}
 
 	public List<UnitPriceData> getUnitPricesIncludingLookbackPeriodWithTimeFormat(String scripName, TimeFormat outputTimeFormat, List<UnitPriceData> unitPriceDataList,
-			Indicator indicator) {
+			I indicator) {
 		return getUnitPricesIncludingLookbackPeriodWithTimeFormat(scripName, outputTimeFormat, unitPriceDataList, getLookbackPeriodForIndicator(indicator));
 	}
 
@@ -50,8 +46,8 @@ public class LookbackPeriodCalculator {
 			List<UnitPriceData> lookbackPeriodUnitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName, dateTimeTuple.getStartDateTime(),
 					unitPriceDataList.get(0).getDateTime(), outputTimeFormat);
 
-			List<UnitPriceData> lookForwardPeriodUnitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName, unitPriceDataList.get(unitPriceDataList.size() - 1)
-					.getDateTime(), dateTimeTuple.getEndDateTime(), outputTimeFormat);
+			List<UnitPriceData> lookForwardPeriodUnitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName,
+					unitPriceDataList.get(unitPriceDataList.size() - 1).getDateTime(), dateTimeTuple.getEndDateTime(), outputTimeFormat);
 
 			if (!lookbackPeriodUnitPriceDataList.isEmpty() && lookbackPeriodUnitPriceDataList.get(lookbackPeriodUnitPriceDataList.size() - 1).equals(unitPriceDataList.get(0))) {
 				lookbackPeriodUnitPriceDataList.remove(lookbackPeriodUnitPriceDataList.size() - 1);

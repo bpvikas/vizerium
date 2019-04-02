@@ -23,7 +23,6 @@ public abstract class ClosingPricesWithTrendCheckTest extends ClosingPricesTest 
 	@Before
 	public void setUp() {
 		super.setUp();
-		trendCheck = new TrendCheck();
 	}
 
 	protected abstract List<PeriodTrend> getPeriodTrends(String scripName, TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataListCurrentTimeFormat);

@@ -5,13 +5,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
+import java.util.Set;
 import java.util.TreeSet;
 
-import com.vizerium.commons.indicators.Indicator;
-import com.vizerium.commons.indicators.Indicators;
 import com.vizerium.commons.indicators.StandardMovingAverages;
 import com.vizerium.commons.util.NumberFormats;
 
@@ -27,9 +24,9 @@ public class UnitPriceData extends UnitPrice {
 
 	private TimeFormat timeFormat;
 
-	private TreeSet<MovingAverage> movingAverages = new TreeSet<MovingAverage>();
+	private Set<MovingAverage> movingAverages;
 
-	private Map<Indicators, Indicator> indicators = new TreeMap<Indicators, Indicator>();
+	private Set<IndicatorData> indicators;
 
 	public UnitPriceData() {
 
@@ -93,16 +90,21 @@ public class UnitPriceData extends UnitPrice {
 	}
 
 	public float getMovingAverage(int ma) {
-		for (MovingAverage movingAverage : movingAverages) {
-			if (movingAverage.getMA() == ma) {
-				return movingAverage.getValue();
+		if (movingAverages != null) {
+			for (MovingAverage movingAverage : movingAverages) {
+				if (movingAverage.getMA() == ma) {
+					return movingAverage.getValue();
+				}
 			}
 		}
 		throw new RuntimeException("Unable to obtain Moving Average for " + ma);
 	}
 
 	public void setMovingAverage(int ma, float value) {
-		this.movingAverages.add(new MovingAverage(ma, value));
+		if (movingAverages == null) {
+			movingAverages = new TreeSet<MovingAverage>();
+		}
+		movingAverages.add(new MovingAverage(ma, value));
 	}
 
 	/*
@@ -112,19 +114,29 @@ public class UnitPriceData extends UnitPrice {
 		return getClose();
 	}
 
-	public Indicator getIndicator(Indicators indicatorName) {
-		return indicators.get(indicatorName);
+	public IndicatorData getIndicator(String indicatorName) {
+		if (indicators != null) {
+			for (IndicatorData indicatorData : indicators) {
+				if (indicatorData.getName().equals(indicatorName)) {
+					return indicatorData;
+				}
+			}
+		}
+		throw new RuntimeException("Unable to get indicator data in unit prices for " + indicatorName);
 	}
 
-	public void addIndicator(Indicators indicatorName, Indicator indicatorValue) {
-		indicators.put(indicatorName, indicatorValue);
+	public void addIndicator(String indicatorName, float[] indicatorValues) {
+		if (indicators == null) {
+			indicators = new TreeSet<IndicatorData>();
+		}
+		indicators.add(new IndicatorData(indicatorName, indicatorValues));
 	}
 
-	public Map<Indicators, Indicator> getIndicators() {
+	public Set<IndicatorData> getIndicators() {
 		return indicators;
 	}
 
-	public void setIndicators(Map<Indicators, Indicator> indicators) {
+	public void setIndicators(Set<IndicatorData> indicators) {
 		this.indicators = indicators;
 	}
 
@@ -157,8 +169,10 @@ public class UnitPriceData extends UnitPrice {
 
 	public String printMovingAverages() {
 		String movingAveragesString = "";
-		for (MovingAverage movingAverage : movingAverages) {
-			movingAveragesString += ("," + manf.format(movingAverage.getValue()));
+		if (movingAverages != null) {
+			for (MovingAverage movingAverage : movingAverages) {
+				movingAveragesString += ("," + manf.format(movingAverage.getValue()));
+			}
 		}
 		return movingAveragesString;
 	}
@@ -188,6 +202,63 @@ public class UnitPriceData extends UnitPrice {
 		@Override
 		public int compareTo(MovingAverage other) {
 			return Integer.compare(ma, other.ma);
+		}
+	}
+
+	public static class IndicatorData implements Comparable<IndicatorData> {
+
+		private String name;
+		private float[] values;
+
+		public IndicatorData() {
+
+		}
+
+		IndicatorData(String name, float[] values) {
+			this.name = name;
+			this.values = values;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public float[] getValues() {
+			return values;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (getClass() != obj.getClass()) {
+				return false;
+			}
+			IndicatorData other = (IndicatorData) obj;
+			return Objects.equals(name, other.name);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(name);
+		}
+
+		@Override
+		public String toString() {
+			String indicatorValues = "";
+			for (float value : values) {
+				indicatorValues += (value + ",");
+			}
+			return name + "," + indicatorValues.substring(0, indicatorValues.lastIndexOf(','));
+		}
+
+		@Override
+		public int compareTo(IndicatorData other) {
+			return name.compareTo(other.name);
 		}
 	}
 }

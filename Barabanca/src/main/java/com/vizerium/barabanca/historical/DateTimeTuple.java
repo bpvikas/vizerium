@@ -8,7 +8,7 @@ public class DateTimeTuple {
 
 	private LocalDateTime endDateTime;
 
-	DateTimeTuple(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+	public DateTimeTuple(LocalDateTime startDateTime, LocalDateTime endDateTime) {
 		if (endDateTime.isBefore(startDateTime)) {
 			throw new RuntimeException("endDateTime " + endDateTime + " cannot be before startDateTime " + startDateTime);
 		}

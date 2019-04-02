@@ -2,8 +2,6 @@ package com.vizerium.commons.indicators;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,19 +12,10 @@ public class IndicatorTest {
 	 * This is just a test case whether I can annotate elements and put them in a list. Tried using an annotation @interface but while trying to put it in a List or Map, could not
 	 * add elements of a certain annotation.
 	 */
-
-	@Test
-	public void testIndicatorsForMap() {
-		Map<Indicators, Indicator> indicators = new TreeMap<Indicators, Indicator>();
-		indicators.put(Indicators.MACD, new MACD());
-		indicators.put(Indicators.STOCHASTIC, new Stochastic());
-	}
-
 	@Test
 	public void testIndicatorsForList() {
-		List<Indicator> indicators = new ArrayList<Indicator>();
+		List<Indicator<MACD>> indicators = new ArrayList<Indicator<MACD>>();
 		indicators.add(new MACD());
-		indicators.add(new Stochastic());
 	}
 
 	@Test
@@ -51,5 +40,13 @@ public class IndicatorTest {
 	private void updateStringBuilder(StringBuilder p) {
 		p.append("hi,");
 		p.append("hi,");
+	}
+
+	@Test
+	public void testClassName() {
+		System.out.println("CanonicalName -> " + this.getClass().getCanonicalName());
+		System.out.println("Name -> " + this.getClass().getName());
+		System.out.println("SimpleName -> " + this.getClass().getSimpleName());
+		System.out.println("TypeName -> " + this.getClass().getTypeName());
 	}
 }

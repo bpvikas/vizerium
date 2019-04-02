@@ -1,13 +1,13 @@
 package com.vizerium.commons.indicators;
 
-public class MovingAverage implements Indicator {
+import java.util.List;
+
+import com.vizerium.commons.dao.UnitPrice;
+
+public class MovingAverage implements Indicator<MovingAverage> {
 	private int ma;
 	private MovingAverageType type;
 	private float[] values;
-
-	public MovingAverage() {
-
-	}
 
 	public MovingAverage(int ma, MovingAverageType type) {
 		this.ma = ma;
@@ -31,13 +31,13 @@ public class MovingAverage implements Indicator {
 	}
 
 	@Override
-	public String toString() {
-		return ma + type.toString();
+	public float[] getUnitPriceIndicator(int position) {
+		return new float[] { ma, values[position] };
 	}
 
 	@Override
-	public float[] getUnitPriceIndicator(int position) {
-		return new float[] { ma, values[position] };
+	public int getUnitPriceIndicatorValuesLength() {
+		return 2;
 	}
 
 	@Override
@@ -46,7 +46,13 @@ public class MovingAverage implements Indicator {
 	}
 
 	@Override
-	public MovingAverageCalculator getCalculator() {
-		return new MovingAverageCalculator();
+	public MovingAverage calculate(List<? extends UnitPrice> unitPrices) {
+		MovingAverageCalculator maCalculator = new MovingAverageCalculator();
+		return maCalculator.calculate(unitPrices, this);
+	}
+
+	@Override
+	public String getName() {
+		return "[" + ma + type.toString() + "]";
 	}
 }

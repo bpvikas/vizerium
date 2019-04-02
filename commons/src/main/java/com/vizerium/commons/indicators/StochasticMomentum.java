@@ -1,6 +1,10 @@
 package com.vizerium.commons.indicators;
 
-public class StochasticMomentum implements Indicator {
+import java.util.List;
+
+import com.vizerium.commons.dao.UnitPrice;
+
+public class StochasticMomentum implements Indicator<StochasticMomentum> {
 
 	// The default value for the look back period for the Stochastic Momentum indicator.
 	public static final int DEFAULT_STOCHASTIC_MOMENTUM_LOOK_BACK_PERIOD = 10;
@@ -84,15 +88,14 @@ public class StochasticMomentum implements Indicator {
 	}
 
 	@Override
-	public String toString() {
-		return "StochasticMomentum [" + percentKLookbackPeriod + ", " + maPeriodCountForFirstSmoothingK + ", " + maPeriodCountForDoubleSmoothingK + ", " + percentDLookbackPeriod
-				+ ", " + maTypeForCalculatingDFromK.toString() + "]";
-	}
-
-	@Override
 	public float[] getUnitPriceIndicator(int position) {
 		return new float[] { percentKLookbackPeriod, maPeriodCountForFirstSmoothingK, maPeriodCountForDoubleSmoothingK, percentDLookbackPeriod, smiArray[position],
 				signalArray[position] };
+	}
+
+	@Override
+	public int getUnitPriceIndicatorValuesLength() {
+		return 6;
 	}
 
 	@Override
@@ -103,7 +106,14 @@ public class StochasticMomentum implements Indicator {
 	}
 
 	@Override
-	public StochasticMomentumCalculator getCalculator() {
-		return new StochasticMomentumCalculator();
+	public StochasticMomentum calculate(List<? extends UnitPrice> unitPrices) {
+		StochasticMomentumCalculator smCalculator = new StochasticMomentumCalculator();
+		return smCalculator.calculate(unitPrices, this);
+	}
+
+	@Override
+	public String getName() {
+		return getClass().getSimpleName() + "[" + percentKLookbackPeriod + "," + maPeriodCountForFirstSmoothingK + ", " + maPeriodCountForDoubleSmoothingK + ", "
+				+ percentDLookbackPeriod + ", " + maTypeForCalculatingDFromK.toString() + "]";
 	}
 }

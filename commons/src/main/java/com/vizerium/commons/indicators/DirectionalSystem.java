@@ -1,6 +1,10 @@
 package com.vizerium.commons.indicators;
 
-public class DirectionalSystem implements Indicator {
+import java.util.List;
+
+import com.vizerium.commons.dao.UnitPrice;
+
+public class DirectionalSystem implements Indicator<DirectionalSystem> {
 
 	private float[] smoothedPlusDI;
 
@@ -66,6 +70,11 @@ public class DirectionalSystem implements Indicator {
 	}
 
 	@Override
+	public int getUnitPriceIndicatorValuesLength() {
+		return 4;
+	}
+
+	@Override
 	public int getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues() {
 		// The value for the lookbackPeriod needs to be a sum of the first smoothing (to get +DI -DI) and the smoothing period (to get ADX) and 1 (to get the initial true
 		// range) so that we can get the calculations correct.
@@ -73,7 +82,13 @@ public class DirectionalSystem implements Indicator {
 	}
 
 	@Override
-	public DirectionalSystemCalculator getCalculator() {
-		return new DirectionalSystemCalculator();
+	public DirectionalSystem calculate(List<? extends UnitPrice> unitPrices) {
+		DirectionalSystemCalculator dsCalculator = new DirectionalSystemCalculator();
+		return dsCalculator.calculate(unitPrices, this);
+	}
+
+	@Override
+	public String getName() {
+		return "ADX[" + smoothingPeriod + "," + movingAverageType.toString() + "]";
 	}
 }

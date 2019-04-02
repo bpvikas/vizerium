@@ -2,12 +2,13 @@ package com.vizerium.barabanca.trade;
 
 import java.util.List;
 
+import com.vizerium.barabanca.historical.UnitPriceIndicatorData;
+import com.vizerium.barabanca.trend.MACDHistogramSlopeTrendCheck;
 import com.vizerium.barabanca.trend.PeriodTrend;
 import com.vizerium.barabanca.trend.Trend;
 import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.indicators.MACD;
-import com.vizerium.commons.indicators.MACDCalculator;
 import com.vizerium.commons.trade.TradeAction;
 
 public abstract class ClosingPricesWithTrendCheckByMACDHistogramTest extends ClosingPricesWithTrendCheckTest {
@@ -16,7 +17,8 @@ public abstract class ClosingPricesWithTrendCheckByMACDHistogramTest extends Clo
 
 	@Override
 	protected List<PeriodTrend> getPeriodTrends(String scripName, TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataListCurrentTimeFormat) {
-		return trendCheck.getTrendByMACDHistogramSlope(scripName, trendTimeFormat, unitPriceDataListCurrentTimeFormat, getMACD());
+		trendCheck = new MACDHistogramSlopeTrendCheck(getMACD());
+		return trendCheck.getTrend(scripName, trendTimeFormat, unitPriceDataListCurrentTimeFormat);
 	}
 
 	@Override
@@ -44,19 +46,7 @@ public abstract class ClosingPricesWithTrendCheckByMACDHistogramTest extends Clo
 	}
 
 	private void updateIndicatorDataInUnitPrices(List<UnitPriceData> unitPriceDataList, MACD macdInput) {
-		MACDCalculator macdCalculator = new MACDCalculator();
-
-		
-
-		
-		
-		
-		
-		
-		
-		
-		
-		MACD macd = macdCalculator.calculate(unitPriceDataList, macdInput);
-
+		UnitPriceIndicatorData unitPriceIndicatorData = new UnitPriceIndicatorData();
+		unitPriceIndicatorData.updateIndicatorDataInUnitPriceDataList(unitPriceDataList, macdInput);
 	}
 }

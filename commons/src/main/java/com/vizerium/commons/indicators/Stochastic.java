@@ -1,6 +1,10 @@
 package com.vizerium.commons.indicators;
 
-public class Stochastic implements Indicator {
+import java.util.List;
+
+import com.vizerium.commons.dao.UnitPrice;
+
+public class Stochastic implements Indicator<Stochastic> {
 
 	// The default value for the look back period for the Stochastic indicator.
 	public static final int DEFAULT_STOCHASTIC_LOOK_BACK_PERIOD = 14;
@@ -118,13 +122,25 @@ public class Stochastic implements Indicator {
 	}
 
 	@Override
+	public int getUnitPriceIndicatorValuesLength() {
+		return 7;
+	}
+
+	@Override
 	public int getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues() {
 		// The value for the lookbackPeriod needs to be a sum of the lookback period and the MA for Fast->Slow calculations and MA for K->D calculations.
 		return lookbackPeriod + maPeriodCountForCalculatingSlowFromFast + maPeriodCountForCalculatingDFromK;
 	}
 
 	@Override
-	public StochasticCalculator getCalculator() {
-		return new StochasticCalculator();
+	public Stochastic calculate(List<? extends UnitPrice> unitPrices) {
+		StochasticCalculator stochasticCalculator = new StochasticCalculator();
+		return stochasticCalculator.calculate(unitPrices, this);
+	}
+
+	@Override
+	public String getName() {
+		return getClass().getSimpleName() + "[" + lookbackPeriod + "," + maPeriodCountForCalculatingSlowFromFast + "," + maPeriodCountForCalculatingDFromK + ","
+				+ maTypeForCalculatingSlowFromFast.toString() + "]";
 	}
 }

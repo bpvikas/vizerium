@@ -1,9 +1,18 @@
 package com.vizerium.commons.indicators;
 
-public interface Indicator {
+import java.util.List;
+
+import com.vizerium.commons.dao.UnitPrice;
+
+public interface Indicator<I extends Indicator<I>> {
+
 	public float[] getUnitPriceIndicator(int position);
+
+	public int getUnitPriceIndicatorValuesLength();
 
 	public int getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues();
 
-	public IndicatorCalculator<? extends Indicator> getCalculator();
+	public I calculate(List<? extends UnitPrice> unitPrices);
+
+	public String getName();
 }

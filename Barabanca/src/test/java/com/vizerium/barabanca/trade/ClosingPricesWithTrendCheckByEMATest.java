@@ -2,6 +2,7 @@ package com.vizerium.barabanca.trade;
 
 import java.util.List;
 
+import com.vizerium.barabanca.trend.EMASlopeTrendCheck;
 import com.vizerium.barabanca.trend.PeriodTrend;
 import com.vizerium.barabanca.trend.Trend;
 import com.vizerium.commons.dao.TimeFormat;
@@ -15,7 +16,8 @@ public abstract class ClosingPricesWithTrendCheckByEMATest extends ClosingPrices
 
 	@Override
 	protected List<PeriodTrend> getPeriodTrends(String scripName, TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataListCurrentTimeFormat) {
-		return trendCheck.getTrendByEMASlope(scripName, trendTimeFormat, unitPriceDataListCurrentTimeFormat, getMovingAverage().getMA());
+		trendCheck = new EMASlopeTrendCheck(getMovingAverage());
+		return trendCheck.getTrend(scripName, trendTimeFormat, unitPriceDataListCurrentTimeFormat);
 	}
 
 	@Override

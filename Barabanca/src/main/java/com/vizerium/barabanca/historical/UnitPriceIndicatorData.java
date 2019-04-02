@@ -7,17 +7,20 @@ import com.vizerium.commons.indicators.Indicator;
 
 public class UnitPriceIndicatorData {
 
-	private LookbackPeriodCalculator lookbackPeriodCalculator;
+	public <I extends Indicator<I>> List<UnitPriceData> updateIndicatorDataInUnitPriceDataList(List<UnitPriceData> unitPriceDataList, I indicator) {
 
-	public void updateIndicatorDataInUnitPriceDataList(List<UnitPriceData> unitPriceDataList, Indicator indicator) {
-
+		LookbackPeriodCalculator<I> lookbackPeriodCalculator = new LookbackPeriodCalculator<I>();
 		if (!unitPriceDataList.isEmpty()) {
-			List<UnitPriceData> unitPriceDataListWithLookbackPeriod = lookbackPeriodCalculator.getUnitPricesIncludingLookbackPeriodWithTimeFormat(unitPriceDataList.get(0)
-					.getScripName(), unitPriceDataList.get(0).getTimeFormat(), unitPriceDataList, indicator);
-			
-			
-			
-			
+			List<UnitPriceData> unitPriceDataListWithLookbackPeriod = lookbackPeriodCalculator.getUnitPricesIncludingLookbackPeriodWithTimeFormat(
+					unitPriceDataList.get(0).getScripName(), unitPriceDataList.get(0).getTimeFormat(), unitPriceDataList, indicator);
+
+			indicator = indicator.calculate(unitPriceDataListWithLookbackPeriod);
+
+			int lookbackPeriod = indicator.getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues();
+			for (int i = lookbackPeriod; i < unitPriceDataListWithLookbackPeriod.size() - 1; i++) {
+				unitPriceDataList.get(i - lookbackPeriod).addIndicator(indicator.getName(), indicator.getUnitPriceIndicator(i));
+			}
 		}
+		return unitPriceDataList;
 	}
 }

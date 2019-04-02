@@ -1,6 +1,10 @@
 package com.vizerium.commons.indicators;
 
-public class AverageTrueRange implements Indicator {
+import java.util.List;
+
+import com.vizerium.commons.dao.UnitPrice;
+
+public class AverageTrueRange implements Indicator<AverageTrueRange> {
 
 	private int smoothingPeriod;
 
@@ -43,13 +47,24 @@ public class AverageTrueRange implements Indicator {
 	}
 
 	@Override
+	public int getUnitPriceIndicatorValuesLength() {
+		return 2;
+	}
+
+	@Override
 	public int getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues() {
 		// The value for the lookbackPeriod needs to be a sum of the start point of the gain loss calculation and the smoothing period.
 		return AverageTrueRangeCalculator.TRUE_RANGE_CALCULATION_START + smoothingPeriod;
 	}
 
 	@Override
-	public AverageTrueRangeCalculator getCalculator() {
-		return new AverageTrueRangeCalculator();
+	public AverageTrueRange calculate(List<? extends UnitPrice> unitPrices) {
+		AverageTrueRangeCalculator atrCalculator = new AverageTrueRangeCalculator();
+		return atrCalculator.calculate(unitPrices, this);
+	}
+
+	@Override
+	public String getName() {
+		return "ATR[" + smoothingPeriod + "]";
 	}
 }

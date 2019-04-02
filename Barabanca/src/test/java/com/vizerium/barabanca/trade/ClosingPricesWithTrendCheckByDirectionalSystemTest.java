@@ -2,6 +2,7 @@ package com.vizerium.barabanca.trade;
 
 import java.util.List;
 
+import com.vizerium.barabanca.trend.DirectionalSystemADXTrendCheck;
 import com.vizerium.barabanca.trend.PeriodTrend;
 import com.vizerium.barabanca.trend.Trend;
 import com.vizerium.commons.dao.TimeFormat;
@@ -15,7 +16,8 @@ public abstract class ClosingPricesWithTrendCheckByDirectionalSystemTest extends
 
 	@Override
 	protected List<PeriodTrend> getPeriodTrends(String scripName, TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataListCurrentTimeFormat) {
-		return trendCheck.getTrendByDirectionalSystemAndADX(scripName, trendTimeFormat, unitPriceDataListCurrentTimeFormat, getDirectionalSystem());
+		trendCheck = new DirectionalSystemADXTrendCheck(getDirectionalSystem());
+		return trendCheck.getTrend(scripName, trendTimeFormat, unitPriceDataListCurrentTimeFormat);
 	}
 
 	@Override
