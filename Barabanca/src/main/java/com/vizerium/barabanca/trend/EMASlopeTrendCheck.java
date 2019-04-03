@@ -1,6 +1,5 @@
 package com.vizerium.barabanca.trend;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.vizerium.barabanca.historical.LookbackPeriodCalculator;
@@ -17,14 +16,14 @@ public class EMASlopeTrendCheck implements IndicatorTrendCheck<MovingAverage> {
 	}
 
 	@Override
-	public List<PeriodTrend> getTrend(String scripName, TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataListCurrentTimeFormat) {
+	public PeriodTrends getTrend(TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataListCurrentTimeFormat) {
 
-		List<UnitPriceData> expandedUnitPriceDataList = getLookbackPeriodCalculator().getUnitPricesIncludingLookbackPeriodWithTimeFormat(scripName, trendTimeFormat,
+		List<UnitPriceData> expandedUnitPriceDataList = getLookbackPeriodCalculator().getUnitPricesIncludingLookbackPeriodWithTimeFormat(trendTimeFormat,
 				unitPriceDataListCurrentTimeFormat, ma);
 
 		ma = ma.calculate(expandedUnitPriceDataList);
 
-		List<PeriodTrend> periodTrends = new ArrayList<PeriodTrend>();
+		PeriodTrends periodTrends = new PeriodTrends();
 		for (int i = 2; i < expandedUnitPriceDataList.size(); i++) {
 			if (ma.getValues()[i - 2] < ma.getValues()[i - 1]) {
 				periodTrends.add(new PeriodTrend(expandedUnitPriceDataList.get(i).getDateTime(), trendTimeFormat, Trend.UP));

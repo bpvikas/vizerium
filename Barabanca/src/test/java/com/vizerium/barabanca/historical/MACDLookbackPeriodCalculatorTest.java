@@ -27,6 +27,6 @@ public class MACDLookbackPeriodCalculatorTest {
 
 	@Test
 	public void testGetUnitPricesIncludingLookbackPeriodWithTimeFormatStringTimeFormatListOfUnitPriceDataI() {
-		unit.getUnitPricesIncludingLookbackPeriodWithTimeFormat(null, null, null, null);
+		unit.getUnitPricesIncludingLookbackPeriodWithTimeFormat(null, null, null);
 	}
 }

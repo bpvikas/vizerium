@@ -17,7 +17,7 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 	protected abstract int getStopLossMA();
 
 	@Override
-	protected void getAdditionalDataPriorToIteration(String scripName, TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
+	protected void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
 		currentTradeAction = null;
 	}
 
@@ -27,7 +27,7 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 	}
 
 	@Override
-	protected void executeForCurrentUnitGreaterThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
+	protected void executeForCurrentUnitGreaterThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 		if (current.getClose() > current.getMovingAverage(getStopLossMA())) {
 			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
 				tradeBook.coverShortTrade(current);
@@ -40,7 +40,7 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 				tradeBook.coverShortTrade(current);
 			}
 			currentTradeAction = TradeAction.LONG;
-			tradeBook.addLongTrade(new Trade(scripName, currentTradeAction, current.getDateTime(), current.getTradedValue()));
+			tradeBook.addLongTrade(current);
 		}
 	}
 
@@ -50,7 +50,7 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 	}
 
 	@Override
-	protected void executeForCurrentUnitLessThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
+	protected void executeForCurrentUnitLessThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 		if (current.getClose() < current.getMovingAverage(getStopLossMA())) {
 			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
 				tradeBook.exitLongTrade(current);
@@ -63,7 +63,7 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 				tradeBook.exitLongTrade(current);
 			}
 			currentTradeAction = TradeAction.SHORT;
-			tradeBook.addShortTrade(new Trade(scripName, currentTradeAction, current.getDateTime(), current.getTradedValue()));
+			tradeBook.addShortTrade(current);
 		}
 	}
 
@@ -73,10 +73,12 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 	}
 
 	protected boolean positiveCrossover(UnitPriceData current, UnitPriceData previous) {
-		return ((current.getMovingAverage(getFastMA()) > current.getMovingAverage(getSlowMA())) && (previous.getMovingAverage(getFastMA()) < previous.getMovingAverage(getSlowMA())));
+		return ((current.getMovingAverage(getFastMA()) > current.getMovingAverage(getSlowMA()))
+				&& (previous.getMovingAverage(getFastMA()) < previous.getMovingAverage(getSlowMA())));
 	}
 
 	protected boolean negativeCrossover(UnitPriceData current, UnitPriceData previous) {
-		return ((current.getMovingAverage(getFastMA()) < current.getMovingAverage(getSlowMA())) && (previous.getMovingAverage(getFastMA()) > previous.getMovingAverage(getSlowMA())));
+		return ((current.getMovingAverage(getFastMA()) < current.getMovingAverage(getSlowMA()))
+				&& (previous.getMovingAverage(getFastMA()) > previous.getMovingAverage(getSlowMA())));
 	}
 }

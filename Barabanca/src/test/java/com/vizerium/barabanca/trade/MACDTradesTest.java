@@ -8,7 +8,7 @@ import com.vizerium.commons.dao.UnitPriceData;
 public class MACDTradesTest extends TradeStrategyTest {
 
 	@Override
-	protected void getAdditionalDataPriorToIteration(String scripName, TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
+	protected void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
 		// TODO Auto-generated method stub
 
 	}
@@ -20,7 +20,7 @@ public class MACDTradesTest extends TradeStrategyTest {
 	}
 
 	@Override
-	protected void executeForCurrentUnitGreaterThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
+	protected void executeForCurrentUnitGreaterThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 		// TODO Auto-generated method stub
 
 	}
@@ -32,7 +32,7 @@ public class MACDTradesTest extends TradeStrategyTest {
 	}
 
 	@Override
-	protected void executeForCurrentUnitLessThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
+	protected void executeForCurrentUnitLessThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 		// TODO Auto-generated method stub
 
 	}

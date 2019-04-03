@@ -7,6 +7,6 @@ import com.vizerium.commons.dao.UnitPriceData;
 
 public interface TrendCheck {
 
-	public List<PeriodTrend> getTrend(String scripName, TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataListCurrentTimeFormat);
+	public PeriodTrends getTrend(TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataListCurrentTimeFormat);
 
 }

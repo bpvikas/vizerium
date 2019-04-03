@@ -11,8 +11,8 @@ public class UnitPriceIndicatorData<I extends Indicator<I>> {
 
 		LookbackPeriodCalculator<I> lookbackPeriodCalculator = new LookbackPeriodCalculator<I>();
 		if (!unitPriceDataList.isEmpty()) {
-			List<UnitPriceData> unitPriceDataListWithLookbackPeriod = lookbackPeriodCalculator.getUnitPricesIncludingLookbackPeriodWithTimeFormat(
-					unitPriceDataList.get(0).getScripName(), unitPriceDataList.get(0).getTimeFormat(), unitPriceDataList, indicator);
+			List<UnitPriceData> unitPriceDataListWithLookbackPeriod = lookbackPeriodCalculator
+					.getUnitPricesIncludingLookbackPeriodWithTimeFormat(unitPriceDataList.get(0).getTimeFormat(), unitPriceDataList, indicator);
 
 			indicator = indicator.calculate(unitPriceDataListWithLookbackPeriod);
 

@@ -29,7 +29,7 @@ public abstract class IndicatorTrendCheckTest<I extends Indicator<I>> {
 	public void testGetTrend() {
 		List<UnitPriceData> unitPrices = getOHLCData(LocalDateTime.of(2018, 1, 1, 6, 0), LocalDateTime.of(2018, 12, 31, 21, 00), TimeFormat._1DAY);
 
-		List<PeriodTrend> periodTrends = unit.getTrend("BANKNIFTY", TimeFormat._1WEEK, unitPrices);
+		PeriodTrends periodTrends = unit.getTrend(TimeFormat._1WEEK, unitPrices);
 		for (PeriodTrend periodTrend : periodTrends) {
 			logger.info(periodTrend);
 		}

@@ -25,8 +25,8 @@ public class ClosingPricesWithTrendCheckByMACD5_13_9SameTimeFormatAndIndicatorCh
 	}
 
 	@Override
-	protected void getAdditionalDataPriorToIteration(String scripName, TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
-		periodTrends = getPeriodTrends(scripName, timeFormat, unitPriceDataList);
+	protected void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
+		periodTrends = getPeriodTrends(timeFormat, unitPriceDataList);
 		updateIndicatorDataInUnitPrices(unitPriceDataList, macd);
 	}
 }

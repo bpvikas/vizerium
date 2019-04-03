@@ -158,7 +158,7 @@ public class Trade {
 	public void setUnrealisedStatus(UnitPriceData unitPriceData) {
 		if (exitDateTime == null || exitPrice == 0.0f) {
 			if (TradeAction.LONG.equals(action)) {
-				currentUnrealisedPL = unitPriceData.getTradedValue() - entryPrice;
+				currentUnrealisedPL = unitPriceData.getClose() - entryPrice;
 				if (currentUnrealisedPL > maxUnrealisedProfit) {
 					maxUnrealisedProfit = currentUnrealisedPL;
 					maxUnrealisedProfitDateTime = unitPriceData.getDateTime();
@@ -170,7 +170,7 @@ public class Trade {
 
 			}
 			if (TradeAction.SHORT.equals(action)) {
-				currentUnrealisedPL = entryPrice - unitPriceData.getTradedValue();
+				currentUnrealisedPL = entryPrice - unitPriceData.getClose();
 				if (currentUnrealisedPL > maxUnrealisedProfit) {
 					maxUnrealisedProfit = currentUnrealisedPL;
 					maxUnrealisedProfitDateTime = unitPriceData.getDateTime();

@@ -24,6 +24,8 @@ public class UnitPriceData extends UnitPrice {
 
 	private TimeFormat timeFormat;
 
+	private float tradedValue;
+
 	private Set<MovingAverage> movingAverages;
 
 	private Set<IndicatorData> indicators;
@@ -111,7 +113,15 @@ public class UnitPriceData extends UnitPrice {
 	 * This method is used to determine at which value the trade has actually happened. This defaults to the Closing Price, but some traders tend to use the Open as well.
 	 */
 	public float getTradedValue() {
-		return getClose();
+		if (tradedValue != 0.0f) {
+			return tradedValue;
+		} else {
+			return getClose();
+		}
+	}
+
+	public void setTradedValue(float tradedValue) {
+		this.tradedValue = tradedValue;
 	}
 
 	public IndicatorData getIndicator(String indicatorName) {

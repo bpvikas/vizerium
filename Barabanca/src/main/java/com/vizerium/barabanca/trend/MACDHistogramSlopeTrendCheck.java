@@ -1,6 +1,5 @@
 package com.vizerium.barabanca.trend;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.vizerium.barabanca.historical.LookbackPeriodCalculator;
@@ -17,14 +16,14 @@ public class MACDHistogramSlopeTrendCheck implements IndicatorTrendCheck<MACD> {
 	}
 
 	@Override
-	public List<PeriodTrend> getTrend(String scripName, TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataListCurrentTimeFormat) {
+	public PeriodTrends getTrend(TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataListCurrentTimeFormat) {
 
-		List<UnitPriceData> expandedUnitPriceDataListTrendTimeFormat = getLookbackPeriodCalculator().getUnitPricesIncludingLookbackPeriodWithTimeFormat(scripName, trendTimeFormat,
+		List<UnitPriceData> expandedUnitPriceDataListTrendTimeFormat = getLookbackPeriodCalculator().getUnitPricesIncludingLookbackPeriodWithTimeFormat(trendTimeFormat,
 				unitPriceDataListCurrentTimeFormat, macd);
 
 		macd = macd.calculate(expandedUnitPriceDataListTrendTimeFormat);
 
-		List<PeriodTrend> periodTrends = new ArrayList<PeriodTrend>();
+		PeriodTrends periodTrends = new PeriodTrends();
 		for (int i = 1; i < expandedUnitPriceDataListTrendTimeFormat.size(); i++) {
 			if (macd.getHistogramValues()[i] > macd.getHistogramValues()[i - 1]) {
 				periodTrends.add(new PeriodTrend(expandedUnitPriceDataListTrendTimeFormat.get(i).getDateTime(), trendTimeFormat, Trend.UP));

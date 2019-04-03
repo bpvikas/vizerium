@@ -11,20 +11,20 @@ public class ClosingPricesWithStopAndReverseTest extends ClosingPricesTest {
 	protected TradeAction currentTradeAction;
 
 	@Override
-	protected void executeForCurrentUnitGreaterThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
+	protected void executeForCurrentUnitGreaterThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 		if (TradeAction.LONG != currentTradeAction) {
 			tradeBook.coverShortTrade(current);
 			currentTradeAction = TradeAction.LONG;
-			tradeBook.addLongTrade(new Trade(scripName, currentTradeAction, current.getDateTime(), current.getTradedValue()));
+			tradeBook.addLongTrade(current);
 		}
 	}
 
 	@Override
-	protected void executeForCurrentUnitLessThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
+	protected void executeForCurrentUnitLessThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 		if (TradeAction.SHORT != currentTradeAction) {
 			tradeBook.exitLongTrade(current);
 			currentTradeAction = TradeAction.SHORT;
-			tradeBook.addShortTrade(new Trade(scripName, currentTradeAction, current.getDateTime(), current.getTradedValue()));
+			tradeBook.addShortTrade(current);
 		}
 	}
 
@@ -34,7 +34,7 @@ public class ClosingPricesWithStopAndReverseTest extends ClosingPricesTest {
 	}
 
 	@Override
-	protected void getAdditionalDataPriorToIteration(String scripName, TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
+	protected void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
 		currentTradeAction = null;
 	}
 }

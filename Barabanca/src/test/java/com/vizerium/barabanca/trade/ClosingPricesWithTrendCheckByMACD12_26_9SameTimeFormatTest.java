@@ -25,7 +25,7 @@ public class ClosingPricesWithTrendCheckByMACD12_26_9SameTimeFormatTest extends 
 	}
 
 	@Override
-	protected void getAdditionalDataPriorToIteration(String scripName, TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
-		periodTrends = getPeriodTrends(scripName, timeFormat, unitPriceDataList);
+	protected void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
+		periodTrends = getPeriodTrends(timeFormat, unitPriceDataList);
 	}
 }

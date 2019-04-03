@@ -24,18 +24,16 @@ public class LookbackPeriodCalculator<I extends Indicator<I>> {
 		return indicator.getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues();
 	}
 
-	public List<UnitPriceData> getUnitPricesIncludingLookbackPeriodWithTimeFormat(String scripName, TimeFormat outputTimeFormat, List<UnitPriceData> unitPriceDataList,
-			I indicator) {
-		return getUnitPricesIncludingLookbackPeriodWithTimeFormat(scripName, outputTimeFormat, unitPriceDataList, getLookbackPeriodForIndicator(indicator));
+	public List<UnitPriceData> getUnitPricesIncludingLookbackPeriodWithTimeFormat(TimeFormat outputTimeFormat, List<UnitPriceData> unitPriceDataList, I indicator) {
+		return getUnitPricesIncludingLookbackPeriodWithTimeFormat(outputTimeFormat, unitPriceDataList, getLookbackPeriodForIndicator(indicator));
 	}
 
-	public List<UnitPriceData> getUnitPricesIncludingLookbackPeriodWithTimeFormat(String scripName, TimeFormat outputTimeFormat, List<UnitPriceData> unitPriceDataList,
-			int lookbackPeriod) {
+	public List<UnitPriceData> getUnitPricesIncludingLookbackPeriodWithTimeFormat(TimeFormat outputTimeFormat, List<UnitPriceData> unitPriceDataList, int lookbackPeriod) {
 
 		if (unitPriceDataList.isEmpty()) {
 			throw new RuntimeException("Unable to calculate lookback period for no unit price data.");
 		}
-
+		String scripName = unitPriceDataList.get(0).getScripName();
 		DateTimeTuple dateTimeTuple = new DateTimeTuple(unitPriceDataList.get(0).getDateTime(), unitPriceDataList.get(unitPriceDataList.size() - 1).getDateTime());
 		dateTimeTuple = updateStartAndEndDatesForLookbackPeriods(scripName, outputTimeFormat, dateTimeTuple.getStartDateTime(), dateTimeTuple.getStartDateTime(),
 				dateTimeTuple.getEndDateTime(), lookbackPeriod);

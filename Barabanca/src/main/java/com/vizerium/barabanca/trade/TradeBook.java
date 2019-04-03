@@ -99,15 +99,15 @@ public class TradeBook extends ArrayList<Trade> {
 		return get(size() - 1);
 	}
 
-	public boolean addLongTrade(Trade trade) {
+	public boolean addLongTrade(UnitPriceData unitPriceData) {
+		Trade trade = new Trade(unitPriceData.getScripName(), TradeAction.LONG, unitPriceData.getDateTime(), unitPriceData.getTradedValue());
 		logger.debug("Going long @ " + trade.getEntryPrice() + " @ " + trade.getEntryDateTime());
-		trade.setAction(TradeAction.LONG);
 		return add(trade);
 	}
 
-	public boolean addShortTrade(Trade trade) {
+	public boolean addShortTrade(UnitPriceData unitPriceData) {
+		Trade trade = new Trade(unitPriceData.getScripName(), TradeAction.SHORT, unitPriceData.getDateTime(), unitPriceData.getTradedValue());
 		logger.debug("Going short @ " + trade.getEntryPrice() + " @ " + trade.getEntryDateTime());
-		trade.setAction(TradeAction.SHORT);
 		return add(trade);
 	}
 
@@ -120,6 +120,8 @@ public class TradeBook extends ArrayList<Trade> {
 			currentTrade.setExitDateTime(unitPriceData.getDateTime());
 			currentTrade.setExitPrice(unitPriceData.getTradedValue());
 			logger.debug("Exiting Trade : " + currentTrade);
+			// resetting the traded information here, so that it is available fresh for other trades.
+			unitPriceData.setTradedValue(0.0f);
 		}
 	}
 

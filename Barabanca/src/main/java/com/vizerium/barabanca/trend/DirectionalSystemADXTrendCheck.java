@@ -1,6 +1,5 @@
 package com.vizerium.barabanca.trend;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.vizerium.barabanca.historical.LookbackPeriodCalculator;
@@ -17,13 +16,12 @@ public class DirectionalSystemADXTrendCheck implements IndicatorTrendCheck<Direc
 	}
 
 	@Override
-	public List<PeriodTrend> getTrend(String scripName, TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataList) {
+	public PeriodTrends getTrend(TimeFormat trendTimeFormat, List<UnitPriceData> unitPriceDataList) {
 
-		List<UnitPriceData> expandedUnitPriceDataList = getLookbackPeriodCalculator().getUnitPricesIncludingLookbackPeriodWithTimeFormat(scripName, trendTimeFormat,
-				unitPriceDataList, ds);
+		List<UnitPriceData> expandedUnitPriceDataList = getLookbackPeriodCalculator().getUnitPricesIncludingLookbackPeriodWithTimeFormat(trendTimeFormat, unitPriceDataList, ds);
 
 		ds = ds.calculate(expandedUnitPriceDataList);
-		List<PeriodTrend> periodTrends = new ArrayList<PeriodTrend>();
+		PeriodTrends periodTrends = new PeriodTrends();
 
 		// TODO: Need to read Alexander Elder's book to determine exact rules for trend being, up, down or choppy
 		return periodTrends;

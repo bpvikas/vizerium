@@ -68,15 +68,15 @@ public abstract class TradeStrategyTest {
 		testAndReportTradeStrategy("NIFTY", TimeFormat._1DAY, 2011, 1, 2019, 2);
 	}
 
-	protected abstract void getAdditionalDataPriorToIteration(String scripName, TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList);
+	protected abstract void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList);
 
 	protected abstract boolean testForCurrentUnitGreaterThanPreviousUnit(UnitPriceData current, UnitPriceData previous);
 
-	protected abstract void executeForCurrentUnitGreaterThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous);
+	protected abstract void executeForCurrentUnitGreaterThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous);
 
 	protected abstract boolean testForCurrentUnitLessThanPreviousUnit(UnitPriceData current, UnitPriceData previous);
 
-	protected abstract void executeForCurrentUnitLessThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous);
+	protected abstract void executeForCurrentUnitLessThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous);
 
 	protected abstract void executeForCurrentUnitChoppyWithPreviousUnit(UnitPriceData current, UnitPriceData previous);
 
@@ -103,11 +103,11 @@ public abstract class TradeStrategyTest {
 		List<UnitPriceData> unitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName, LocalDateTime.of(startYear, startMonth, 1, 6, 0),
 				LocalDateTime.of(endYear, endMonth, lastDateOfMonth, 21, 00), timeFormat);
 
-		return testTradeStrategy(scripName, timeFormat, unitPriceDataList);
+		return testTradeStrategy(timeFormat, unitPriceDataList);
 	}
 
-	protected TradeBook testTradeStrategy(String scripName, TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
-		getAdditionalDataPriorToIteration(scripName, timeFormat, unitPriceDataList);
+	protected TradeBook testTradeStrategy(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
+		getAdditionalDataPriorToIteration(timeFormat, unitPriceDataList);
 
 		TradeBook tradeBook = new TradeBook();
 		for (int i = 1; i < unitPriceDataList.size(); i++) {
@@ -115,13 +115,13 @@ public abstract class TradeStrategyTest {
 				logger.debug("For date " + unitPriceDataList.get(i).getDateTime() + " New close " + unitPriceDataList.get(i).getClose() + " MORE than old close "
 						+ unitPriceDataList.get(i - 1).getClose());
 
-				executeForCurrentUnitGreaterThanPreviousUnit(scripName, tradeBook, unitPriceDataList.get(i), unitPriceDataList.get(i - 1));
+				executeForCurrentUnitGreaterThanPreviousUnit(tradeBook, unitPriceDataList.get(i), unitPriceDataList.get(i - 1));
 
 			} else if (testForCurrentUnitLessThanPreviousUnit(unitPriceDataList.get(i), unitPriceDataList.get(i - 1))) {
 				logger.debug("For date " + unitPriceDataList.get(i).getDateTime() + " New close " + unitPriceDataList.get(i).getClose() + " LESS than old close "
 						+ unitPriceDataList.get(i - 1).getClose());
 
-				executeForCurrentUnitLessThanPreviousUnit(scripName, tradeBook, unitPriceDataList.get(i), unitPriceDataList.get(i - 1));
+				executeForCurrentUnitLessThanPreviousUnit(tradeBook, unitPriceDataList.get(i), unitPriceDataList.get(i - 1));
 
 			} else {
 				executeForCurrentUnitChoppyWithPreviousUnit(unitPriceDataList.get(i), unitPriceDataList.get(i - 1));
