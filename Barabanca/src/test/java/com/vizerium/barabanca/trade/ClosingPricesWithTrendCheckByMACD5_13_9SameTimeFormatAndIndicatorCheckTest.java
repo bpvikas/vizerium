@@ -9,7 +9,7 @@ import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.indicators.MACD;
 import com.vizerium.commons.indicators.MovingAverageType;
 
-public class ClosingPricesWithTrendCheckByMACD5_13_9SameTimeFormatTest extends ClosingPricesWithTrendCheckByMACDHistogramTest {
+public class ClosingPricesWithTrendCheckByMACD5_13_9SameTimeFormatAndIndicatorCheckTest extends ClosingPricesWithTrendCheckByMACDHistogramAndIndicatorCheckTest {
 
 	private MACD macd;
 
@@ -27,5 +27,6 @@ public class ClosingPricesWithTrendCheckByMACD5_13_9SameTimeFormatTest extends C
 	@Override
 	protected void getAdditionalDataPriorToIteration(String scripName, TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
 		periodTrends = getPeriodTrends(scripName, timeFormat, unitPriceDataList);
+		updateIndicatorDataInUnitPrices(unitPriceDataList, macd);
 	}
 }

@@ -18,8 +18,10 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.vizerium.barabanca.historical.HistoricalDataReader;
+import com.vizerium.barabanca.historical.UnitPriceIndicatorData;
 import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
+import com.vizerium.commons.indicators.Indicator;
 import com.vizerium.commons.io.FileUtils;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -77,6 +79,11 @@ public abstract class TradeStrategyTest {
 	protected abstract void executeForCurrentUnitLessThanPreviousUnit(String scripName, TradeBook tradeBook, UnitPriceData current, UnitPriceData previous);
 
 	protected abstract void executeForCurrentUnitChoppyWithPreviousUnit(UnitPriceData current, UnitPriceData previous);
+
+	protected <I extends Indicator<I>> void updateIndicatorDataInUnitPrices(List<UnitPriceData> unitPriceDataList, I indicator) {
+		UnitPriceIndicatorData<I> unitPriceIndicatorData = new UnitPriceIndicatorData<I>();
+		unitPriceIndicatorData.updateIndicatorDataInUnitPriceDataList(unitPriceDataList, indicator);
+	}
 
 	protected void testAndReportTradeStrategy(String scripName, TimeFormat timeFormat, int startYear, int startMonth, int endYear, int endMonth) {
 		TradeBook tradeBook = testTradeStrategy(scripName, timeFormat, startYear, startMonth, endYear, endMonth);

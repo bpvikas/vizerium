@@ -42,7 +42,7 @@ public class MovingAverage implements Indicator<MovingAverage> {
 
 	@Override
 	public int getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues() {
-		return ma;
+		return ma + 2; // +2 to ensure that the slope trend check requires 2 prior trends to function correctly
 	}
 
 	@Override

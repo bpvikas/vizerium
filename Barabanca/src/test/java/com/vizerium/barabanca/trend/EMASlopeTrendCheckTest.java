@@ -4,13 +4,14 @@ import org.junit.Assert;
 import org.junit.Before;
 
 import com.vizerium.commons.indicators.MovingAverage;
-import com.vizerium.commons.indicators.MovingAverageType;
 
-public class EMASlopeTrendCheckTest extends IndicatorTrendCheckTest<MovingAverage> {
+public abstract class EMASlopeTrendCheckTest extends IndicatorTrendCheckTest<MovingAverage> {
+
+	protected abstract MovingAverage getMovingAverage();
 
 	@Before
-	public void setUp() throws Exception {
-		unit = new EMASlopeTrendCheck(new MovingAverage(13, MovingAverageType.EXPONENTIAL));
+	public void setUp() {
+		unit = new EMASlopeTrendCheck(getMovingAverage());
 	}
 
 	@Override

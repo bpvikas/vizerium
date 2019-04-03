@@ -12,24 +12,28 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.indicators.MACD;
 
-public class UnitPriceMACDIndicatorDataTest {
+public class UnitPriceIndicatorDataMACDTest {
 
-	private static final float delta = 0.001f;
+	private static final float delta = 0.0045f;
 
-	private UnitPriceIndicatorData unit;
+	private UnitPriceIndicatorData<MACD> unit;
 
 	@Before
 	public void setUp() throws Exception {
-		unit = new UnitPriceIndicatorData();
+		unit = new UnitPriceIndicatorData<MACD>();
 	}
 
 	@Test
 	public void testUpdateIndicatorDataInUnitPriceDataList() {
 		MACD macd = new MACD();
-		LocalDateTime startDateTime = LocalDateTime.of(2018, 11, 19, 14, 16);
+		// The above startDateTime is set in such a way that it matches the MACD calculations in the MACD test data file.
+		// Moving the startDateTime above or below results in correct calculations, but the test data has calculations only from a specific date,
+		// which we get by subtracting the lookbackPeriod from the startDate below.
+		LocalDateTime startDateTime = LocalDateTime.of(2018, 11, 10, 12, 16);
 		LocalDateTime endDateTime = LocalDateTime.of(2018, 11, 30, 15, 16);
 		List<UnitPriceData> expectedUnitPriceDataList = getUnitPriceDataWithMACDValues(startDateTime, endDateTime, macd);
 		List<UnitPriceData> actualUnitPriceDataList = getUnitPriceDataWithMACDValues(startDateTime, endDateTime, null);
@@ -70,15 +74,15 @@ public class UnitPriceMACDIndicatorDataTest {
 
 				UnitPriceData unitPriceData = new UnitPriceData(dataLineDetails[0], dataLineDetails[1], dataLineDetails[2], dataLineDetails[3], dataLineDetails[4],
 						dataLineDetails[5], dataLineDetails[6]);
-
+				unitPriceData.setTimeFormat(TimeFormat._1HOUR);
 				if (!unitPriceData.getDateTime().isBefore(startDateTime) && !unitPriceData.getDateTime().isAfter(endDateTime)) {
 					if (macd != null) {
 						float[] indicatorValues = new float[macd.getUnitPriceIndicatorValuesLength()];
-						indicatorValues[0] = macd.getSmoothingPeriod();
-						indicatorValues[1] = macd.getFastMA();
-						indicatorValues[2] = Float.parseFloat(dataLineDetails[7]);
-						indicatorValues[3] = macd.getSlowMA();
-						indicatorValues[4] = Float.parseFloat(dataLineDetails[8]);
+						indicatorValues[0] = macd.getFastMA();
+						indicatorValues[1] = Float.parseFloat(dataLineDetails[7]);
+						indicatorValues[2] = macd.getSlowMA();
+						indicatorValues[3] = Float.parseFloat(dataLineDetails[8]);
+						indicatorValues[4] = macd.getSmoothingPeriod();
 						indicatorValues[5] = Float.parseFloat(dataLineDetails[9]);
 						indicatorValues[6] = Float.parseFloat(dataLineDetails[10]);
 						indicatorValues[7] = Float.parseFloat(dataLineDetails[11]);

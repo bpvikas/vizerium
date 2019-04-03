@@ -10,7 +10,7 @@ import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.indicators.MACD;
 import com.vizerium.commons.trade.TradeAction;
 
-public abstract class ClosingPricesWithTrendCheckByMACDHistogramTest extends ClosingPricesWithTrendCheckTest {
+public abstract class ClosingPricesWithTrendCheckByMACDHistogramAndIndicatorCheckTest extends ClosingPricesWithTrendCheckTest {
 
 	protected abstract MACD getMACD();
 
@@ -27,7 +27,8 @@ public abstract class ClosingPricesWithTrendCheckByMACDHistogramTest extends Clo
 			tradeBook.exitLongTrade(current);
 		}
 
-		if (Trend.DOWN.equals(trend) && tradeBook.isLastTradeExited()) {
+		// Only take those short trades where the MACD histogram turns down from above the centreline.
+		if (Trend.DOWN.equals(trend) && tradeBook.isLastTradeExited() && current.getIndicator(getMACD().getName()).getValues()[MACD.UPI_POSN_HISTOGRAM] > 0.0f) {
 			tradeBook.addShortTrade(new Trade(scripName, TradeAction.SHORT, current.getDateTime(), current.getTradedValue()));
 		}
 	}
@@ -39,7 +40,8 @@ public abstract class ClosingPricesWithTrendCheckByMACDHistogramTest extends Clo
 			tradeBook.coverShortTrade(current);
 		}
 
-		if (Trend.UP.equals(trend) && tradeBook.isLastTradeExited()) {
+		// Only take those long trades where the MACD histogram turns up from below the centreline.
+		if (Trend.UP.equals(trend) && tradeBook.isLastTradeExited() && current.getIndicator(getMACD().getName()).getValues()[MACD.UPI_POSN_HISTOGRAM] < 0.0f) {
 			tradeBook.addLongTrade(new Trade(scripName, TradeAction.LONG, current.getDateTime(), current.getTradedValue()));
 		}
 	}

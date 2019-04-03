@@ -25,7 +25,7 @@ public class EMASlopeTrendCheck implements IndicatorTrendCheck<MovingAverage> {
 		ma = ma.calculate(expandedUnitPriceDataList);
 
 		List<PeriodTrend> periodTrends = new ArrayList<PeriodTrend>();
-		for (int i = ma.getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues(); i < expandedUnitPriceDataList.size(); i++) {
+		for (int i = 2; i < expandedUnitPriceDataList.size(); i++) {
 			if (ma.getValues()[i - 2] < ma.getValues()[i - 1]) {
 				periodTrends.add(new PeriodTrend(expandedUnitPriceDataList.get(i).getDateTime(), trendTimeFormat, Trend.UP));
 			} else if (ma.getValues()[i - 2] > ma.getValues()[i - 1]) {

@@ -38,6 +38,8 @@ public class MACD implements Indicator<MACD> {
 
 	private float[] histogramValues;
 
+	public static final int UPI_POSN_HISTOGRAM = 7;
+
 	public MACD() {
 		this.fastMA = DEFAULT_FAST_MA;
 		this.slowMA = DEFAULT_SLOW_MA;
@@ -127,10 +129,10 @@ public class MACD implements Indicator<MACD> {
 
 	@Override
 	public float[] getUnitPriceIndicator(int position) {
-		return new float[] { smoothingPeriod, fastMA, fastMAValues[position], slowMA, slowMAValues[position], differenceMAValues[position], signalValues[position],
+		return new float[] { fastMA, fastMAValues[position], slowMA, slowMAValues[position], smoothingPeriod, differenceMAValues[position], signalValues[position],
 				histogramValues[position] };
 	}
-
+	
 	@Override
 	public int getUnitPriceIndicatorValuesLength() {
 		return 8;
@@ -150,7 +152,7 @@ public class MACD implements Indicator<MACD> {
 
 	@Override
 	public String getName() {
-		return getClass().getSimpleName() + "[" + fastMA + fastSlowMAType.toString() + "," + slowMA + fastSlowMAType.toString() + "," + smoothingPeriod + ","
-				+ smoothingMAType.toString() + "]";
+		return getClass().getSimpleName() + "[" + fastMA + fastSlowMAType.toString() + "," + slowMA + fastSlowMAType.toString() + "," + smoothingPeriod + smoothingMAType.toString()
+				+ "]";
 	}
 }

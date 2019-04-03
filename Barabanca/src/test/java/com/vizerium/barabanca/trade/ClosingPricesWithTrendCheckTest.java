@@ -38,7 +38,7 @@ public abstract class ClosingPricesWithTrendCheckTest extends ClosingPricesTest 
 	}
 
 	protected Trend getPriorTrend(LocalDateTime unitPriceDateTime, List<PeriodTrend> periodTrends) {
-		for (int i = 0; i < periodTrends.size() - 1; i++) {
+		for (int i = 1; i < periodTrends.size() - 1; i++) {
 			if (!periodTrends.get(i).getStartDateTime().isAfter(unitPriceDateTime) && !periodTrends.get(i + 1).getStartDateTime().isBefore(unitPriceDateTime)) {
 				logger.debug("For " + unitPriceDateTime + ", " + periodTrends.get(i - 1));
 				return periodTrends.get(i - 1).getTrend();

@@ -5,9 +5,9 @@ import java.util.List;
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.indicators.Indicator;
 
-public class UnitPriceIndicatorData {
+public class UnitPriceIndicatorData<I extends Indicator<I>> {
 
-	public <I extends Indicator<I>> List<UnitPriceData> updateIndicatorDataInUnitPriceDataList(List<UnitPriceData> unitPriceDataList, I indicator) {
+	public List<UnitPriceData> updateIndicatorDataInUnitPriceDataList(List<UnitPriceData> unitPriceDataList, I indicator) {
 
 		LookbackPeriodCalculator<I> lookbackPeriodCalculator = new LookbackPeriodCalculator<I>();
 		if (!unitPriceDataList.isEmpty()) {
@@ -16,9 +16,17 @@ public class UnitPriceIndicatorData {
 
 			indicator = indicator.calculate(unitPriceDataListWithLookbackPeriod);
 
-			int lookbackPeriod = indicator.getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues();
-			for (int i = lookbackPeriod; i < unitPriceDataListWithLookbackPeriod.size() - 1; i++) {
-				unitPriceDataList.get(i - lookbackPeriod).addIndicator(indicator.getName(), indicator.getUnitPriceIndicator(i));
+			int lookbackPeriod = 0;
+			for (UnitPriceData unitPriceDataInLookbackPeriod : unitPriceDataListWithLookbackPeriod) {
+				if (unitPriceDataInLookbackPeriod.equals(unitPriceDataList.get(0))) {
+					break;
+				} else {
+					++lookbackPeriod;
+				}
+			}
+
+			for (int i = 0; i < unitPriceDataList.size(); i++) {
+				unitPriceDataList.get(i).addIndicator(indicator.getName(), indicator.getUnitPriceIndicator(lookbackPeriod + i));
 			}
 		}
 		return unitPriceDataList;
