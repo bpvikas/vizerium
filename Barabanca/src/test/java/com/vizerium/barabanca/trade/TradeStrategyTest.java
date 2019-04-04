@@ -1,16 +1,19 @@
 package com.vizerium.barabanca.trade;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -67,6 +70,38 @@ public abstract class TradeStrategyTest {
 	public void test04_NiftyDailyChart() {
 		testAndReportTradeStrategy("NIFTY", TimeFormat._1DAY, 2011, 1, 2019, 2);
 	}
+
+	@Test
+	public void test05_compareWithPreviousResult() {
+		try {
+			if (bw != null) {
+				bw.flush();
+				bw.close();
+			}
+			File previousResultFile = new File("src/test/resources/output/" + getPreviousResultFileName());
+			List<String> previousResultLines = new ArrayList<String>();
+			BufferedReader br = new BufferedReader(new FileReader(previousResultFile));
+			String s = "";
+			while ((s = br.readLine()) != null) {
+				previousResultLines.add(s);
+			}
+			br.close();
+
+			File currentTestRunLogFile = new File(FileUtils.directoryPath + "output-log-v2/testrun.csv");
+			List<String> currentTestRunResultLines = new ArrayList<String>();
+			br = new BufferedReader(new FileReader(currentTestRunLogFile));
+			while ((s = br.readLine()) != null) {
+				currentTestRunResultLines.add(s);
+			}
+			br.close();
+
+			Assert.assertEquals(previousResultLines, currentTestRunResultLines);
+		} catch (Exception e) {
+			Assert.fail(e.toString());
+		}
+	}
+
+	protected abstract String getPreviousResultFileName();
 
 	protected abstract void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList);
 
@@ -137,18 +172,6 @@ public abstract class TradeStrategyTest {
 		tradeBook.printStatus(timeFormat);
 
 		return tradeBook;
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() {
-		if (bw != null) {
-			try {
-				bw.flush();
-				bw.close();
-			} catch (IOException ioe) {
-				logger.error("Error while writing P L T results to CSV file.", ioe);
-			}
-		}
 	}
 
 	protected void printReport(TradeBook tradeBook, TimeFormat timeFormat, ReportTimeFormat reportTimeFormat, int startYear, int startMonth) {

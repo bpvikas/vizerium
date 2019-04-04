@@ -25,4 +25,9 @@ public class ClosingPricesWithTrendCheckByMACD12_26_9HigherTimeFormatTest extend
 	protected MACD getMACD() {
 		return macd;
 	}
+
+	@Override
+	protected String getPreviousResultFileName() {
+		return "testrun_macd_12_26_higher_time_format_trend.csv";
+	}
 }

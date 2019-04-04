@@ -29,4 +29,9 @@ public class ClosingPricesWithTrendCheckByMACD5_13_9SameTimeFormatAndIndicatorCh
 		periodTrends = getPeriodTrends(timeFormat, unitPriceDataList);
 		updateIndicatorDataInUnitPrices(unitPriceDataList, macd);
 	}
+
+	@Override
+	protected String getPreviousResultFileName() {
+		return "testrun_macd_5_13_same_time_format_trend_indicator_check.csv";
+	}
 }

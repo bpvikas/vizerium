@@ -9,4 +9,9 @@ public class ClosingPricesWithTrendCheckBy5EMATest extends ClosingPricesWithTren
 	protected MovingAverage getMovingAverage() {
 		return new MovingAverage(5, MovingAverageType.EXPONENTIAL);
 	}
+
+	@Override
+	protected String getPreviousResultFileName() {
+		return "testrun_5ema_slope.csv";
+	}
 }

@@ -9,4 +9,9 @@ public class ClosingPricesWithTrendCheckByDirectionalSystem_ADX_14Test extends C
 		// The default DirectionalSystem constructor has a smoothingPeriod of 14.
 		return new DirectionalSystem();
 	}
+
+	@Override
+	protected String getPreviousResultFileName() {
+		return null;
+	}
 }

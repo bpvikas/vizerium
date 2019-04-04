@@ -37,4 +37,9 @@ public class ClosingPricesWithStopAndReverseTest extends ClosingPricesTest {
 	protected void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
 		currentTradeAction = null;
 	}
+
+	@Override
+	protected String getPreviousResultFileName() {
+		return "testrun_SR.csv";
+	}
 }

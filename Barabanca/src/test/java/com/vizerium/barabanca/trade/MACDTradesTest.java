@@ -43,4 +43,9 @@ public class MACDTradesTest extends TradeStrategyTest {
 
 	}
 
+	@Override
+	protected String getPreviousResultFileName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

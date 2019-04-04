@@ -28,4 +28,9 @@ public class ClosingPricesWithTrendCheckByMACD5_13_9SameTimeFormatTest extends C
 	protected void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
 		periodTrends = getPeriodTrends(timeFormat, unitPriceDataList);
 	}
+
+	@Override
+	protected String getPreviousResultFileName() {
+		return "testrun_macd_5_13_same_time_format_trend.csv";
+	}
 }
