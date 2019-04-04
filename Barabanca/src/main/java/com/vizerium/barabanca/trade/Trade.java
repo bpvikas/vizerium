@@ -151,8 +151,8 @@ public class Trade {
 	}
 
 	public String printUnrealisedStatus() {
-		return "Unrealised max_p @ " + maxUnrealisedProfitDateTime + " @ " + nf.format(maxUnrealisedProfit) + " \tmax_l @ " + maxUnrealisedLossDateTime + " @ "
-				+ nf.format(maxUnrealisedLoss) + "\tcurrentPL " + nf.format(currentUnrealisedPL);
+		return "Unrealised currentPL " + nf.format(currentUnrealisedPL) + "\tmax_p @ " + maxUnrealisedProfitDateTime + " @ " + nf.format(maxUnrealisedProfit) + " \tmax_l @ "
+				+ maxUnrealisedLossDateTime + " @ " + nf.format(maxUnrealisedLoss);
 	}
 
 	public void setUnrealisedStatus(UnitPriceData unitPriceData) {
@@ -203,5 +203,18 @@ public class Trade {
 	public String toString() {
 		return action.name() + "\t" + scripName + " at " + entryDateTime + " @ " + nf.format(entryPrice) + " exited at " + exitDateTime + " @ " + nf.format(exitPrice) + "\t"
 				+ (isProfitable() ? "PROFIT" : "LOSS") + "\t" + nf.format(getPayoff()) + System.lineSeparator() + printUnrealisedStatus();
+	}
+
+	public String toCsvString() {
+		return action.name() + "," + scripName + "," + entryDateTime.toLocalDate() + "," + entryDateTime.toLocalTime() + "," + nf.format(entryPrice) + ","
+				+ exitDateTime.toLocalDate() + "," + exitDateTime.toLocalTime() + "," + nf.format(exitPrice) + "," + (isProfitable() ? "PROFIT" : "LOSS") + ","
+				+ nf.format(getPayoff()) + "," + ((maxUnrealisedProfitDateTime != null) ? maxUnrealisedProfitDateTime.toLocalDate() : "") + ","
+				+ ((maxUnrealisedProfitDateTime != null) ? maxUnrealisedProfitDateTime.toLocalTime() : "") + "," + nf.format(maxUnrealisedProfit) + ","
+				+ ((maxUnrealisedLossDateTime != null) ? maxUnrealisedLossDateTime.toLocalDate() : "") + ","
+				+ ((maxUnrealisedLossDateTime != null) ? maxUnrealisedLossDateTime.toLocalTime() : "") + "," + nf.format(maxUnrealisedLoss);
+	}
+
+	public static String getCsvHeaderString() {
+		return "Action,Scrip,EntryDate,EntryTime,Price,ExitDate,ExitTime,Price,P/L,Amount,UnrProfitDate,UnrProfitTime,UnrProfit,UnrLossDate,UnrLossTime,UnrLoss";
 	}
 }

@@ -29,16 +29,6 @@ public class TradeBook extends ArrayList<Trade> {
 
 	private Trade largestProfitTrade;
 
-	public void printAllTrades() {
-		ListIterator<Trade> i = listIterator();
-		while (i.hasNext()) {
-			Trade t = i.next();
-			if (Math.abs(t.getPayoff() / t.getExitPrice()) > 0.1f) {
-				logger.debug(t);
-			}
-		}
-	}
-
 	public float getPayoff() {
 		if (payoff == Float.MIN_VALUE) {
 			payoff = 0.0f;
