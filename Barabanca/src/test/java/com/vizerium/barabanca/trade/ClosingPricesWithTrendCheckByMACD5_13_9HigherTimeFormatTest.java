@@ -28,6 +28,6 @@ public class ClosingPricesWithTrendCheckByMACD5_13_9HigherTimeFormatTest extends
 
 	@Override
 	protected String getPreviousResultFileName() {
-		return "testrun_macd_5_13_higher_time_format_trend.csv";
+		return "macd_5_13_higher_time_format_trend";
 	}
 }

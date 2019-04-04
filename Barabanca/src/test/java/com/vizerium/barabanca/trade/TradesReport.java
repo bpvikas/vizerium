@@ -1,10 +1,14 @@
 package com.vizerium.barabanca.trade;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.log4j.Logger;
@@ -37,9 +41,9 @@ public class TradesReport {
 	private static final Logger logger = Logger.getLogger(TradesReport.class);
 
 	public static void print(TradeBook tradeBook, TimeFormat timeFormat, int startYear, int startMonth) {
-		printReport(tradeBook, timeFormat, ReportTimeFormat._1YEAR, startYear, startMonth);
-		printReport(tradeBook, timeFormat, ReportTimeFormat._1MONTH, startYear, startMonth);
-		printAllTrades(tradeBook);
+		printReport(tradeBook, ReportTimeFormat._1YEAR, startYear, startMonth);
+		printReport(tradeBook, ReportTimeFormat._1MONTH, startYear, startMonth);
+		printAllTrades(timeFormat, tradeBook);
 		tradeBook.printStatus(timeFormat);
 	}
 
@@ -47,7 +51,7 @@ public class TradesReport {
 		_1MONTH, _1YEAR;
 	}
 
-	protected static void printReport(TradeBook tradeBook, TimeFormat timeFormat, ReportTimeFormat reportTimeFormat, int startYear, int startMonth) {
+	protected static void printReport(TradeBook tradeBook, ReportTimeFormat reportTimeFormat, int startYear, int startMonth) {
 		StringBuilder p = new StringBuilder(), l = new StringBuilder(), t = new StringBuilder();
 
 		if (ReportTimeFormat._1YEAR.equals(reportTimeFormat)) {
@@ -126,16 +130,33 @@ public class TradesReport {
 		}
 	}
 
-	public static void printAllTrades(TradeBook tradeBook) {
+	public static void printAllTrades(TimeFormat timeFormat, TradeBook tradeBook) {
 		try {
 			ListIterator<Trade> i = tradeBook.listIterator();
 			while (i.hasNext()) {
 				Trade t = i.next();
-				bwTradeBook.write(t.toCsvString());
+				bwTradeBook.write(timeFormat.toString() + "," + t.toCsvString());
 				bwTradeBook.newLine();
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Error while creating CSV file for writing P L T results.", e);
 		}
+	}
+
+	public static List<String> readFileAsString(String fileName) {
+
+		List<String> previousResultLines = new ArrayList<String>();
+		try {
+			File previousResultFile = new File(fileName);
+			BufferedReader br = new BufferedReader(new FileReader(previousResultFile));
+			String s = "";
+			while ((s = br.readLine()) != null) {
+				previousResultLines.add(s);
+			}
+			br.close();
+		} catch (IOException e) {
+			throw new RuntimeException("Error while reading lines from File " + fileName, e);
+		}
+		return previousResultLines;
 	}
 }

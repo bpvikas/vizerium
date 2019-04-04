@@ -31,6 +31,6 @@ public class ClosingPricesWithTrendCheckByMACD12_26_9SameTimeFormatTest extends 
 
 	@Override
 	protected String getPreviousResultFileName() {
-		return "testrun_macd_12_26_same_time_format_trend.csv";
+		return "macd_12_26_same_time_format_trend";
 	}
 }

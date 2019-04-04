@@ -9,6 +9,6 @@ public class EMA5x13CrossoverSLFastMATest extends EMA5x13CrossoverTest {
 
 	@Override
 	protected String getPreviousResultFileName() {
-		return "testrun_5x13crossover_SL5.csv";
+		return "5x13crossover_SL5";
 	}
 }

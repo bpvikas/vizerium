@@ -1,12 +1,8 @@
 package com.vizerium.barabanca.trade;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -65,24 +61,15 @@ public abstract class TradeStrategyTest {
 	public void test05_compareWithPreviousResult() {
 		try {
 			TradesReport.close();
-			File previousResultFile = new File("src/test/resources/output/" + getPreviousResultFileName());
-			List<String> previousResultLines = new ArrayList<String>();
-			BufferedReader br = new BufferedReader(new FileReader(previousResultFile));
-			String s = "";
-			while ((s = br.readLine()) != null) {
-				previousResultLines.add(s);
-			}
-			br.close();
 
-			File currentTestRunLogFile = new File(FileUtils.directoryPath + "output-log-v2/testrun.csv");
-			List<String> currentTestRunResultLines = new ArrayList<String>();
-			br = new BufferedReader(new FileReader(currentTestRunLogFile));
-			while ((s = br.readLine()) != null) {
-				currentTestRunResultLines.add(s);
-			}
-			br.close();
+			List<String> previousResult = TradesReport.readFileAsString("src/test/resources/output/testRun_" + getPreviousResultFileName() + ".csv");
+			List<String> currentTestRunResult = TradesReport.readFileAsString(FileUtils.directoryPath + "output-log-v2/testrun.csv");
+			Assert.assertEquals(previousResult, currentTestRunResult);
 
-			Assert.assertEquals(previousResultLines, currentTestRunResultLines);
+			List<String> previousTradeBook = TradesReport.readFileAsString("src/test/resources/output/tradebook_" + getPreviousResultFileName() + ".csv");
+			List<String> currentTradeBook = TradesReport.readFileAsString(FileUtils.directoryPath + "output-log-v2/tradebook.csv");
+			Assert.assertEquals(previousTradeBook, currentTradeBook);
+
 		} catch (Exception e) {
 			Assert.fail(e.toString());
 		}

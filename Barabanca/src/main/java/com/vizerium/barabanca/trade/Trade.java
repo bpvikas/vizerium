@@ -215,6 +215,6 @@ public class Trade {
 	}
 
 	public static String getCsvHeaderString() {
-		return "Action,Scrip,EntryDate,EntryTime,Price,ExitDate,ExitTime,Price,P/L,Amount,UnrProfitDate,UnrProfitTime,UnrProfit,UnrLossDate,UnrLossTime,UnrLoss";
+		return "TimeFormat,Action,Scrip,EntryDate,EntryTime,Price,ExitDate,ExitTime,Price,P/L,Amount,UnrProfitDate,UnrProfitTime,UnrProfit,UnrLossDate,UnrLossTime,UnrLoss";
 	}
 }

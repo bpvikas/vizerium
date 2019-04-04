@@ -40,6 +40,6 @@ public class ClosingPricesWithStopAndReverseTest extends ClosingPricesTest {
 
 	@Override
 	protected String getPreviousResultFileName() {
-		return "testrun_SR.csv";
+		return "SR";
 	}
 }
