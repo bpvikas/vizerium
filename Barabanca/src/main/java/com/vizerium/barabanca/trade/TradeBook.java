@@ -90,13 +90,13 @@ public class TradeBook extends ArrayList<Trade> {
 	}
 
 	public boolean addLongTrade(UnitPriceData unitPriceData) {
-		Trade trade = new Trade(unitPriceData.getScripName(), TradeAction.LONG, unitPriceData.getDateTime(), unitPriceData.getTradedValue());
+		Trade trade = new Trade(unitPriceData.getScripName(), unitPriceData.getTimeFormat(), TradeAction.LONG, unitPriceData.getDateTime(), unitPriceData.getTradedValue());
 		logger.debug("Going long @ " + trade.getEntryPrice() + " @ " + trade.getEntryDateTime());
 		return add(trade);
 	}
 
 	public boolean addShortTrade(UnitPriceData unitPriceData) {
-		Trade trade = new Trade(unitPriceData.getScripName(), TradeAction.SHORT, unitPriceData.getDateTime(), unitPriceData.getTradedValue());
+		Trade trade = new Trade(unitPriceData.getScripName(), unitPriceData.getTimeFormat(), TradeAction.SHORT, unitPriceData.getDateTime(), unitPriceData.getTradedValue());
 		logger.debug("Going short @ " + trade.getEntryPrice() + " @ " + trade.getEntryDateTime());
 		return add(trade);
 	}

@@ -43,7 +43,7 @@ public class TradesReport {
 	public static void print(TradeBook tradeBook, TimeFormat timeFormat, int startYear, int startMonth) {
 		printReport(tradeBook, ReportTimeFormat._1YEAR, startYear, startMonth);
 		printReport(tradeBook, ReportTimeFormat._1MONTH, startYear, startMonth);
-		printAllTrades(timeFormat, tradeBook);
+		printAllTrades(tradeBook);
 		tradeBook.printStatus(timeFormat);
 	}
 
@@ -130,12 +130,12 @@ public class TradesReport {
 		}
 	}
 
-	public static void printAllTrades(TimeFormat timeFormat, TradeBook tradeBook) {
+	public static void printAllTrades(TradeBook tradeBook) {
 		try {
 			ListIterator<Trade> i = tradeBook.listIterator();
 			while (i.hasNext()) {
 				Trade t = i.next();
-				bwTradeBook.write(timeFormat.toString() + "," + t.toCsvString());
+				bwTradeBook.write(t.toCsvString());
 				bwTradeBook.newLine();
 			}
 		} catch (IOException e) {

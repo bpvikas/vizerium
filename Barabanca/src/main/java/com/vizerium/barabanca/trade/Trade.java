@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import org.apache.log4j.Logger;
 
+import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.trade.TradeAction;
 import com.vizerium.commons.util.NumberFormats;
@@ -16,6 +17,8 @@ public class Trade {
 	private static NumberFormat nf = NumberFormats.getForPrice();
 
 	private String scripName;
+
+	private TimeFormat timeFormat;
 
 	private TradeAction action;
 
@@ -47,26 +50,28 @@ public class Trade {
 
 	}
 
-	public Trade(String scripName, TradeAction action, LocalDateTime entryDateTime, float entryPrice) {
+	public Trade(String scripName, TimeFormat timeFormat, TradeAction action, LocalDateTime entryDateTime, float entryPrice) {
 		this.scripName = scripName;
+		this.timeFormat = timeFormat;
 		this.action = action;
 		this.entryDateTime = entryDateTime;
 		this.entryPrice = entryPrice;
 	}
 
-	public Trade(String scripName, TradeAction action, LocalDateTime entryDateTime, float entryPrice, float stopLoss) {
-		this(scripName, action, entryDateTime, entryPrice);
+	public Trade(String scripName, TimeFormat timeFormat, TradeAction action, LocalDateTime entryDateTime, float entryPrice, float stopLoss) {
+		this(scripName, timeFormat, action, entryDateTime, entryPrice);
 		this.entryStopLoss = stopLoss;
 	}
 
-	public Trade(String scripName, TradeAction action, LocalDateTime entryDateTime, float entryPrice, LocalDateTime exitDateTime, float exitPrice) {
-		this(scripName, action, entryDateTime, entryPrice);
+	public Trade(String scripName, TimeFormat timeFormat, TradeAction action, LocalDateTime entryDateTime, float entryPrice, LocalDateTime exitDateTime, float exitPrice) {
+		this(scripName, timeFormat, action, entryDateTime, entryPrice);
 		this.exitDateTime = exitDateTime;
 		this.exitPrice = exitPrice;
 	}
 
-	public Trade(String scripName, TradeAction action, LocalDateTime entryDateTime, float entryPrice, float stopLoss, LocalDateTime exitDateTime, float exitPrice) {
-		this(scripName, action, entryDateTime, entryPrice, stopLoss);
+	public Trade(String scripName, TimeFormat timeFormat, TradeAction action, LocalDateTime entryDateTime, float entryPrice, float stopLoss, LocalDateTime exitDateTime,
+			float exitPrice) {
+		this(scripName, timeFormat, action, entryDateTime, entryPrice, stopLoss);
 		this.exitDateTime = exitDateTime;
 		this.exitPrice = exitPrice;
 	}
@@ -77,6 +82,14 @@ public class Trade {
 
 	public void setScripName(String scripName) {
 		this.scripName = scripName;
+	}
+
+	public TimeFormat getTimeFormat() {
+		return timeFormat;
+	}
+
+	public void setTimeFormat(TimeFormat timeFormat) {
+		this.timeFormat = timeFormat;
 	}
 
 	public TradeAction getAction() {
@@ -206,9 +219,10 @@ public class Trade {
 	}
 
 	public String toCsvString() {
-		return action.name() + "," + scripName + "," + entryDateTime.toLocalDate() + "," + entryDateTime.toLocalTime() + "," + nf.format(entryPrice) + ","
-				+ exitDateTime.toLocalDate() + "," + exitDateTime.toLocalTime() + "," + nf.format(exitPrice) + "," + (isProfitable() ? "PROFIT" : "LOSS") + ","
-				+ nf.format(getPayoff()) + "," + ((maxUnrealisedProfitDateTime != null) ? maxUnrealisedProfitDateTime.toLocalDate() : "") + ","
+		return timeFormat.getProperty() + "," + action.name() + "," + scripName + "," + entryDateTime.toLocalDate() + "," + entryDateTime.toLocalTime() + ","
+				+ nf.format(entryPrice) + "," + exitDateTime.toLocalDate() + "," + exitDateTime.toLocalTime() + "," + nf.format(exitPrice) + ","
+				+ (isProfitable() ? "PROFIT" : "LOSS") + "," + nf.format(getPayoff()) + ","
+				+ ((maxUnrealisedProfitDateTime != null) ? maxUnrealisedProfitDateTime.toLocalDate() : "") + ","
 				+ ((maxUnrealisedProfitDateTime != null) ? maxUnrealisedProfitDateTime.toLocalTime() : "") + "," + nf.format(maxUnrealisedProfit) + ","
 				+ ((maxUnrealisedLossDateTime != null) ? maxUnrealisedLossDateTime.toLocalDate() : "") + ","
 				+ ((maxUnrealisedLossDateTime != null) ? maxUnrealisedLossDateTime.toLocalTime() : "") + "," + nf.format(maxUnrealisedLoss);

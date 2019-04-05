@@ -4,11 +4,8 @@ import java.util.List;
 
 import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
-import com.vizerium.commons.trade.TradeAction;
 
 public abstract class EMACrossoverTest extends ClosingPricesTest {
-
-	protected TradeAction currentTradeAction;
 
 	protected abstract int getFastMA();
 
@@ -18,7 +15,6 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 
 	@Override
 	protected void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
-		currentTradeAction = null;
 	}
 
 	@Override
@@ -31,7 +27,6 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 		if (current.getClose() > current.getMovingAverage(getStopLossMA())) {
 			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
 				tradeBook.coverShortTrade(current);
-				currentTradeAction = null;
 			}
 		}
 
@@ -39,7 +34,6 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
 				tradeBook.coverShortTrade(current);
 			}
-			currentTradeAction = TradeAction.LONG;
 			tradeBook.addLongTrade(current);
 		}
 	}
@@ -54,7 +48,6 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 		if (current.getClose() < current.getMovingAverage(getStopLossMA())) {
 			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
 				tradeBook.exitLongTrade(current);
-				currentTradeAction = null;
 			}
 		}
 
@@ -62,7 +55,6 @@ public abstract class EMACrossoverTest extends ClosingPricesTest {
 			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
 				tradeBook.exitLongTrade(current);
 			}
-			currentTradeAction = TradeAction.SHORT;
 			tradeBook.addShortTrade(current);
 		}
 	}

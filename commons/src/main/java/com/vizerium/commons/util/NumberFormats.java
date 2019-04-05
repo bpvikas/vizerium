@@ -18,11 +18,21 @@ public class NumberFormats {
 		manf.setGroupingUsed(false);
 	}
 
+	private static NumberFormat mnf = NumberFormat.getInstance();
+	static {
+		mnf.setMinimumIntegerDigits(2);
+		mnf.setMaximumIntegerDigits(2);
+	}
+
 	public static NumberFormat getForPrice() {
 		return pnf;
 	}
 
 	public static NumberFormat getForMovingAverage() {
 		return manf;
+	}
+
+	public static NumberFormat getForMonth() {
+		return mnf;
 	}
 }
