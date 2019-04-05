@@ -25,7 +25,7 @@ public abstract class TradeStrategyTest {
 
 	private static final Logger logger = Logger.getLogger(TradeStrategyTest.class);
 
-	private HistoricalDataReader historicalDataReader;
+	protected HistoricalDataReader historicalDataReader;
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
@@ -142,5 +142,13 @@ public abstract class TradeStrategyTest {
 			}
 		}
 		return tradeBook;
+	}
+
+	protected boolean higherClose(UnitPriceData current, UnitPriceData previous) {
+		return current.getClose() > previous.getClose();
+	}
+
+	protected boolean lowerClose(UnitPriceData current, UnitPriceData previous) {
+		return current.getClose() < previous.getClose();
 	}
 }

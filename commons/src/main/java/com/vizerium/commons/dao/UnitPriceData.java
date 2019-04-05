@@ -91,6 +91,10 @@ public class UnitPriceData extends UnitPrice {
 		return timeFormat;
 	}
 
+	public float getMovingAverage(com.vizerium.commons.indicators.MovingAverage ma) {
+		return getMovingAverage(ma.getMA());
+	}
+
 	public float getMovingAverage(int ma) {
 		if (movingAverages != null) {
 			for (MovingAverage movingAverage : movingAverages) {
@@ -132,7 +136,7 @@ public class UnitPriceData extends UnitPrice {
 				}
 			}
 		}
-		throw new RuntimeException("Unable to get indicator data in unit prices for " + indicatorName);
+		throw new RuntimeException("Unable to get " + indicatorName + " indicator data in unit prices");
 	}
 
 	public void addIndicator(String indicatorName, float[] indicatorValues) {

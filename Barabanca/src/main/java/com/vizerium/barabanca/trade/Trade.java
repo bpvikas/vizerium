@@ -148,6 +148,39 @@ public class Trade {
 		this.exitStopLoss = exitStopLoss;
 	}
 
+	public boolean isExitStopLossHit(float price) {
+		if (exitStopLoss == 0.0f) {
+			return false;
+		} else if (TradeAction.SHORT.equals(action) && price > exitStopLoss) {
+			return true;
+		} else if (TradeAction.LONG.equals(action) && price < exitStopLoss) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public float getExitStoppedPrice(UnitPriceData unitPriceData) {
+		if (exitStopLoss == 0.0f) {
+			return unitPriceData.getClose();
+		} else {
+			if (TradeAction.SHORT.equals(action)) {
+				if (unitPriceData.getOpen() >= exitStopLoss) {
+					return unitPriceData.getOpen();
+				} else if (unitPriceData.getHigh() >= exitStopLoss && unitPriceData.getLow() <= exitStopLoss) {
+					return exitStopLoss;
+				}
+			} else {
+				if (unitPriceData.getOpen() <= exitStopLoss) {
+					return unitPriceData.getOpen();
+				} else if (unitPriceData.getHigh() >= exitStopLoss && unitPriceData.getLow() <= exitStopLoss) {
+					return exitStopLoss;
+				}
+			}
+		}
+		throw new RuntimeException("Unable to determine Exit Stopped Price for " + unitPriceData.toString());
+	}
+
 	public float getPayoff() {
 		if (payoff == Float.MIN_VALUE) {
 			if (entryDateTime != null && exitDateTime != null) {

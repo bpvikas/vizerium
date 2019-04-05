@@ -4,14 +4,15 @@ import java.util.List;
 
 import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
+import com.vizerium.commons.indicators.MovingAverage;
 
-public abstract class EMACrossoverTest extends ClosingPricesTest {
+public abstract class EMACrossoverTest extends TradeStrategyTest {
 
-	protected abstract int getFastMA();
+	protected abstract MovingAverage getFastMA();
 
-	protected abstract int getSlowMA();
+	protected abstract MovingAverage getSlowMA();
 
-	protected abstract int getStopLossMA();
+	protected abstract MovingAverage getStopLossMA();
 
 	@Override
 	protected void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {

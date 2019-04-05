@@ -59,6 +59,24 @@ public class MACD implements Indicator<MACD> {
 		this.smoothingPeriod = smoothingPeriod;
 	}
 
+	public MACD(MovingAverage fastMA, MovingAverage slowMA) {
+		this(fastMA, slowMA, DEFAULT_SMOOTHING_MA_TYPE, DEFAULT_SMOOTHING_PERIOD_COUNT);
+	}
+
+	public MACD(MovingAverage fastMA, MovingAverage slowMA, MovingAverageType smoothingMAType, int smoothingPeriod) {
+		if (!(fastMA.getType().equals(slowMA.getType()))) {
+			throw new RuntimeException("Fast MA type (" + fastMA.getType().toString() + ") has to be same as Slow MA type (" + slowMA.getType().toString() + ")");
+		}
+		if (fastMA.getMA() >= slowMA.getMA()) {
+			throw new RuntimeException("Fast MA (" + fastMA.getMA() + ") has to be less than Slow MA (" + slowMA.getMA() + ")");
+		}
+		this.fastMA = fastMA.getMA();
+		this.slowMA = slowMA.getMA();
+		this.fastSlowMAType = fastMA.getType();
+		this.smoothingMAType = smoothingMAType;
+		this.smoothingPeriod = smoothingPeriod;
+	}
+
 	public int getFastMA() {
 		return fastMA;
 	}
@@ -132,7 +150,7 @@ public class MACD implements Indicator<MACD> {
 		return new float[] { fastMA, fastMAValues[position], slowMA, slowMAValues[position], smoothingPeriod, differenceMAValues[position], signalValues[position],
 				histogramValues[position] };
 	}
-	
+
 	@Override
 	public int getUnitPriceIndicatorValuesLength() {
 		return 8;

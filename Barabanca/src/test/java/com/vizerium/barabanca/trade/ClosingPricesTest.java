@@ -13,12 +13,4 @@ public abstract class ClosingPricesTest extends TradeStrategyTest {
 	protected boolean testForCurrentUnitLessThanPreviousUnit(UnitPriceData current, UnitPriceData previous) {
 		return lowerClose(current, previous);
 	}
-
-	protected boolean higherClose(UnitPriceData current, UnitPriceData previous) {
-		return current.getClose() > previous.getClose();
-	}
-
-	protected boolean lowerClose(UnitPriceData current, UnitPriceData previous) {
-		return current.getClose() < previous.getClose();
-	}
 }

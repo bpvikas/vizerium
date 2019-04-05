@@ -2,15 +2,15 @@ package com.vizerium.barabanca.trade;
 
 import com.vizerium.commons.indicators.MovingAverage;
 
-public class EMA5x13CrossoverSLFastMATest extends EMA5x13CrossoverTest {
+public class EMA5x13CrossoverAndIndicatorSLSlowMATest extends EMA5x13CrossoverAndIndicatorTest {
 
 	@Override
 	protected MovingAverage getStopLossMA() {
-		return getFastMA();
+		return getSlowMA();
 	}
 
 	@Override
 	protected String getPreviousResultFileName() {
-		return "5x13crossover_SL5";
+		return "5x13crossover_indicator_SL13";
 	}
 }
