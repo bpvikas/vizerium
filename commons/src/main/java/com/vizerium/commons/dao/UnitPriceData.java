@@ -178,7 +178,7 @@ public class UnitPriceData extends UnitPrice {
 
 	@Override
 	public String toString() {
-		return scripName + "," + timeFormat.toString() + "," + df.format(dateTime) + "," + nf.format(open) + "," + nf.format(high) + "," + nf.format(low) + "," + nf.format(close);
+		return scripName + "," + df.format(dateTime) + "," + nf.format(open) + "," + nf.format(high) + "," + nf.format(low) + "," + nf.format(close);
 	}
 
 	public String printMovingAverages() {

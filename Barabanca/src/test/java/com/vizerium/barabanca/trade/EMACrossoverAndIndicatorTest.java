@@ -36,22 +36,45 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 
 	@Override
 	protected void executeForCurrentUnitGreaterThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
-		if (current.getClose() > current.getMovingAverage(getStopLossMA())) {
-			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
-				logger.debug("MA SL Hit. Covering short trade.");
+		if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
+			float stoppedPrice = Float.MAX_VALUE;
+			Trade lastTrade = tradeBook.last();
+			if (trailingStopLossInSystem) {
+				if (lastTrade.isExitStopLossHit(current.getHigh())) {
+					float trailingStopLoss = lastTrade.getExitStoppedPrice(current);
+					if (trailingStopLoss < stoppedPrice) {
+						logger.debug("Trailing SL in System Hit. Covering short trade.");
+						stoppedPrice = trailingStopLoss;
+					}
+				} else if (current.getClose() > current.getMovingAverage(getStopLossMA())) {
+					logger.debug("MA SL Hit. Covering short trade.");
+					if (current.getClose() < stoppedPrice) {
+						stoppedPrice = current.getClose();
+					}
+				}
+			} else {
+				if (lastTrade.isExitStopLossHit(current.getClose())) {
+					if (current.getMovingAverage(getStopLossMA()) < lastTrade.getExitStopLoss()) {
+						logger.debug("MA SL Hit. Covering short trade.");
+					} else {
+						logger.debug("Trailing SL Not in System Hit. Covering short trade.");
+					}
+					if (current.getClose() < stoppedPrice) {
+						stoppedPrice = current.getClose();
+					}
+				} else if (current.getClose() > current.getMovingAverage(getStopLossMA())) {
+					logger.debug("MA SL Hit. Covering short trade.");
+					if (current.getClose() < stoppedPrice) {
+						stoppedPrice = current.getClose();
+					}
+				}
+			}
+			if (stoppedPrice < Float.MAX_VALUE) {
+				current.setTradedValue(stoppedPrice);
 				tradeBook.coverShortTrade(current);
 			}
 		}
 
-		if (!tradeBook.isEmpty() && tradeBook.last().isExitStopLossHit(current.getClose())) {
-			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
-				logger.debug("Trailing SL Hit. Covering short trade.");
-				if (trailingStopLossInSystem) {
-					current.setTradedValue(tradeBook.last().getExitStoppedPrice(current));
-				}
-				tradeBook.coverShortTrade(current);
-			}
-		}
 		updateTrailingStopLossBasedOnMACDHistogramSlope(tradeBook, current, previous);
 
 		if (positiveCrossover(current, previous)) {
@@ -60,9 +83,14 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 				tradeBook.coverShortTrade(current);
 			}
 
-			tradeBook.addLongTrade(current);
-			float previousLow = historicalDataReader.getPreviousN(current.getScripName(), current.getTimeFormat().getHigherTimeFormat(), current.getDateTime(), 1).get(0).getLow();
-			tradeBook.last().setExitStopLoss(previousLow);
+			if (current.getClose() > current.getMovingAverage(getFastMA()) && current.getClose() > current.getMovingAverage(getSlowMA())) {
+				// Backtesting for all conditions proves that presence or absence of above if condition has no effect on the overall result
+				// Positive crossover indicates that close has gone above both MAs
+				tradeBook.addLongTrade(current);
+				float previousLow = historicalDataReader.getPreviousN(current.getScripName(), current.getTimeFormat().getHigherTimeFormat(), current.getDateTime(), 1).get(0)
+						.getLow();
+				tradeBook.last().setExitStopLoss(previousLow);
+			}
 		}
 	}
 
@@ -73,22 +101,45 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 
 	@Override
 	protected void executeForCurrentUnitLessThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
-		if (current.getClose() < current.getMovingAverage(getStopLossMA())) {
-			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
-				logger.debug("MA SL Hit. Exiting long trade.");
+		if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
+			float stoppedPrice = Float.MIN_VALUE;
+			Trade lastTrade = tradeBook.last();
+			if (trailingStopLossInSystem) {
+				if (lastTrade.isExitStopLossHit(current.getLow())) {
+					float trailingStopLoss = lastTrade.getExitStoppedPrice(current);
+					if (trailingStopLoss > stoppedPrice) {
+						logger.debug("Trailing SL in System Hit. Exiting long trade.");
+						stoppedPrice = trailingStopLoss;
+					}
+				} else if (current.getClose() < current.getMovingAverage(getStopLossMA())) {
+					logger.debug("MA SL Hit. Exiting long trade.");
+					if (current.getClose() > stoppedPrice) {
+						stoppedPrice = current.getClose();
+					}
+				}
+			} else {
+				if (lastTrade.isExitStopLossHit(current.getClose())) {
+					if (current.getMovingAverage(getStopLossMA()) > lastTrade.getExitStopLoss()) {
+						logger.debug("MA SL Hit. Exiting long trade.");
+					} else {
+						logger.debug("Trailing SL Not in System Hit. Exiting long trade.");
+					}
+					if (current.getClose() > stoppedPrice) {
+						stoppedPrice = current.getClose();
+					}
+				} else if (current.getClose() < current.getMovingAverage(getStopLossMA())) {
+					logger.debug("MA SL Hit. Exiting long trade.");
+					if (current.getClose() > stoppedPrice) {
+						stoppedPrice = current.getClose();
+					}
+				}
+			}
+			if (stoppedPrice > Float.MIN_VALUE) {
+				current.setTradedValue(stoppedPrice);
 				tradeBook.exitLongTrade(current);
 			}
 		}
 
-		if (!tradeBook.isEmpty() && tradeBook.last().isExitStopLossHit(current.getClose())) {
-			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
-				logger.debug("Trailing SL Hit. Exiting long trade.");
-				if (trailingStopLossInSystem) {
-					current.setTradedValue(tradeBook.last().getExitStoppedPrice(current));
-				}
-				tradeBook.exitLongTrade(current);
-			}
-		}
 		updateTrailingStopLossBasedOnMACDHistogramSlope(tradeBook, current, previous);
 
 		if (negativeCrossover(current, previous)) {
@@ -97,10 +148,14 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 				tradeBook.exitLongTrade(current);
 			}
 
-			tradeBook.addShortTrade(current);
-			float previousHigh = historicalDataReader.getPreviousN(current.getScripName(), current.getTimeFormat().getHigherTimeFormat(), current.getDateTime(), 1).get(0)
-					.getHigh();
-			tradeBook.last().setExitStopLoss(previousHigh);
+			if (current.getClose() < current.getMovingAverage(getFastMA()) && current.getClose() < current.getMovingAverage(getSlowMA())) {
+				// Backtesting for all conditions proves that presence or absence of above if condition has no effect on the overall result
+				// Negative crossover indicates that close has gone below both MAs
+				tradeBook.addShortTrade(current);
+				float previousHigh = historicalDataReader.getPreviousN(current.getScripName(), current.getTimeFormat().getHigherTimeFormat(), current.getDateTime(), 1).get(0)
+						.getHigh();
+				tradeBook.last().setExitStopLoss(previousHigh);
+			}
 		}
 	}
 
@@ -127,10 +182,11 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 		if (current.getIndicator(macd.getName()).getValues()[MACD.UPI_POSN_HISTOGRAM] < previous.getIndicator(macd.getName()).getValues()[MACD.UPI_POSN_HISTOGRAM]) {
 			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
 				float previousLow = historicalDataReader.getPreviousN(current.getScripName(), current.getTimeFormat(), current.getDateTime(), 1).get(0).getLow();
+				float lowerLow = Float.min(current.getLow(), previousLow);
 				float previousExitStopLoss = tradeBook.last().getExitStopLoss();
-				if (previousExitStopLoss == 0.0f || previousLow > previousExitStopLoss) {
-					logger.debug("Long Trailing SL updated to " + previousLow);
-					tradeBook.last().setExitStopLoss(previousLow);
+				if (previousExitStopLoss == 0.0f || lowerLow > previousExitStopLoss) {
+					logger.debug("Long Trailing SL updated to " + lowerLow);
+					tradeBook.last().setExitStopLoss(lowerLow);
 				}
 			}
 		}
@@ -138,10 +194,11 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 		if (current.getIndicator(macd.getName()).getValues()[MACD.UPI_POSN_HISTOGRAM] > previous.getIndicator(macd.getName()).getValues()[MACD.UPI_POSN_HISTOGRAM]) {
 			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
 				float previousHigh = historicalDataReader.getPreviousN(current.getScripName(), current.getTimeFormat(), current.getDateTime(), 1).get(0).getHigh();
+				float higherHigh = Float.max(current.getHigh(), previousHigh);
 				float previousExitStopLoss = tradeBook.last().getExitStopLoss();
-				if (previousExitStopLoss == 0.0f || previousHigh < previousExitStopLoss) {
-					logger.debug("Short Trailing SL updated to " + previousHigh);
-					tradeBook.last().setExitStopLoss(previousHigh);
+				if (previousExitStopLoss == 0.0f || higherHigh < previousExitStopLoss) {
+					logger.debug("Short Trailing SL updated to " + higherHigh);
+					tradeBook.last().setExitStopLoss(higherHigh);
 				}
 			}
 		}
