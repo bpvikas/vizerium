@@ -8,6 +8,7 @@ import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.indicators.MACD;
 import com.vizerium.commons.indicators.MovingAverage;
+import com.vizerium.commons.indicators.StochasticMomentum;
 
 public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 
@@ -23,10 +24,14 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 
 	protected MACD macd;
 
+	protected StochasticMomentum sm;
+
 	@Override
 	protected void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
 		macd = new MACD(getFastMA(), getSlowMA());
 		updateIndicatorDataInUnitPrices(unitPriceDataList, macd);
+		sm = new StochasticMomentum();
+		updateIndicatorDataInUnitPrices(unitPriceDataList, sm);
 	}
 
 	@Override
@@ -77,19 +82,26 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 
 		updateTrailingStopLossBasedOnMACDHistogramSlope(tradeBook, current, previous);
 
-		if (positiveCrossover(current, previous)) {
+		if (positiveCrossover(current, previous) || closeAboveBothMAs(current)) {
+			// Backtesting for all conditions proves that presence of if (closeAboveBothMAs(current)) condition at this point improves the overall profitability by more than 20%
+			// Positive MA crossover is usually late and that close has gone above both MAs already earlier
+
 			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
-				logger.debug("Positive crossover Hit. Covering short trade.");
+				if (positiveCrossover(current, previous) && closeAboveBothMAs(current)) {
+					logger.debug("Both Positive crossover and Close above both MAs Hit. Covering short trade.");
+				} else if (positiveCrossover(current, previous)) {
+					logger.debug("Positive crossover Hit. Covering short trade.");
+				} else if (closeAboveBothMAs(current)) {
+					logger.debug("Close above both MAs Hit. Covering short trade.");
+				}
 				tradeBook.coverShortTrade(current);
 			}
 
-			if (current.getClose() > current.getMovingAverage(getFastMA()) && current.getClose() > current.getMovingAverage(getSlowMA())) {
-				// Backtesting for all conditions proves that presence or absence of above if condition has no effect on the overall result
-				// Positive crossover indicates that close has gone above both MAs
+			if (tradeBook.isLastTradeExited()) {
 				tradeBook.addLongTrade(current);
 				float previousLow = historicalDataReader.getPreviousN(current.getScripName(), current.getTimeFormat().getHigherTimeFormat(), current.getDateTime(), 1).get(0)
 						.getLow();
-				tradeBook.last().setExitStopLoss(previousLow);
+				tradeBook.last().setExitStopLoss(previousLow * 0.999f); // The opening SL is set 0.1% below yesterday low for long trades.
 			}
 		}
 	}
@@ -142,19 +154,27 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 
 		updateTrailingStopLossBasedOnMACDHistogramSlope(tradeBook, current, previous);
 
-		if (negativeCrossover(current, previous)) {
+		if (negativeCrossover(current, previous) || closeBelowBothMAs(current)) {
+			// Backtesting for all conditions proves that presence of if (closeBelowBothMAs(current)) condition at this point improves the overall profitability by more than 20%
+			// Negative MA crossover is usually late and that close has gone below both MAs already earlier
+
 			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
-				logger.debug("Negative crossover Hit. Exiting long trade.");
+				if (negativeCrossover(current, previous) && closeBelowBothMAs(current)) {
+					logger.debug("Both Negative crossover and Close below both MAs Hit. Exiting long trade.");
+				} else if (negativeCrossover(current, previous)) {
+					logger.debug("Negative crossover Hit. Exiting long trade.");
+				} else if (closeBelowBothMAs(current)) {
+					logger.debug("Close below both MAs Hit. Exiting long trade.");
+				}
 				tradeBook.exitLongTrade(current);
 			}
-
-			if (current.getClose() < current.getMovingAverage(getFastMA()) && current.getClose() < current.getMovingAverage(getSlowMA())) {
-				// Backtesting for all conditions proves that presence or absence of above if condition has no effect on the overall result
+			if (tradeBook.isLastTradeExited()) {
+				// Backtesting for all conditions proves that presence or absence of if (closeBelowBothMAs(current)) condition has no effect on the overall result
 				// Negative crossover indicates that close has gone below both MAs
 				tradeBook.addShortTrade(current);
 				float previousHigh = historicalDataReader.getPreviousN(current.getScripName(), current.getTimeFormat().getHigherTimeFormat(), current.getDateTime(), 1).get(0)
 						.getHigh();
-				tradeBook.last().setExitStopLoss(previousHigh);
+				tradeBook.last().setExitStopLoss(previousHigh * 1.001f); // The opening SL is set 0.1% above yesterday high for short trades.
 			}
 		}
 	}
@@ -202,5 +222,13 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 				}
 			}
 		}
+	}
+
+	protected boolean closeBelowBothMAs(UnitPriceData current) {
+		return current.getClose() < current.getMovingAverage(getFastMA()) && current.getClose() < current.getMovingAverage(getSlowMA());
+	}
+
+	protected boolean closeAboveBothMAs(UnitPriceData current) {
+		return current.getClose() > current.getMovingAverage(getFastMA()) && current.getClose() > current.getMovingAverage(getSlowMA());
 	}
 }

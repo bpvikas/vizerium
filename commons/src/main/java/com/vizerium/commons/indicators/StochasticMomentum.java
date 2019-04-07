@@ -25,6 +25,8 @@ public class StochasticMomentum implements Indicator<StochasticMomentum> {
 
 	private float[] signalArray;
 
+	public static final int UPI_POSN_SMINDEX = 4;
+
 	public StochasticMomentum() {
 		this.percentKLookbackPeriod = DEFAULT_STOCHASTIC_MOMENTUM_LOOK_BACK_PERIOD;
 		this.maPeriodCountForFirstSmoothingK = DEFAULT_MA_PERIOD_COUNT_FOR_SMOOTHING_K;
