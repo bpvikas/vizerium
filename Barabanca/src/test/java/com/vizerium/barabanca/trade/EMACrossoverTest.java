@@ -20,7 +20,7 @@ public abstract class EMACrossoverTest extends TradeStrategyTest {
 
 	@Override
 	protected boolean testForCurrentUnitGreaterThanPreviousUnit(UnitPriceData current, UnitPriceData previous) {
-		return positiveCrossover(current, previous) || higherClose(current, previous);
+		return positiveMACrossover(current, previous) || higherClose(current, previous);
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public abstract class EMACrossoverTest extends TradeStrategyTest {
 			}
 		}
 
-		if (positiveCrossover(current, previous)) {
+		if (positiveMACrossover(current, previous)) {
 			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
 				tradeBook.coverShortTrade(current);
 			}
@@ -41,7 +41,7 @@ public abstract class EMACrossoverTest extends TradeStrategyTest {
 
 	@Override
 	protected boolean testForCurrentUnitLessThanPreviousUnit(UnitPriceData current, UnitPriceData previous) {
-		return negativeCrossover(current, previous) || lowerClose(current, previous);
+		return negativeMACrossover(current, previous) || lowerClose(current, previous);
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public abstract class EMACrossoverTest extends TradeStrategyTest {
 			}
 		}
 
-		if (negativeCrossover(current, previous)) {
+		if (negativeMACrossover(current, previous)) {
 			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
 				tradeBook.exitLongTrade(current);
 			}
@@ -65,12 +65,12 @@ public abstract class EMACrossoverTest extends TradeStrategyTest {
 
 	}
 
-	protected boolean positiveCrossover(UnitPriceData current, UnitPriceData previous) {
+	protected boolean positiveMACrossover(UnitPriceData current, UnitPriceData previous) {
 		return ((current.getMovingAverage(getFastMA()) > current.getMovingAverage(getSlowMA()))
 				&& (previous.getMovingAverage(getFastMA()) < previous.getMovingAverage(getSlowMA())));
 	}
 
-	protected boolean negativeCrossover(UnitPriceData current, UnitPriceData previous) {
+	protected boolean negativeMACrossover(UnitPriceData current, UnitPriceData previous) {
 		return ((current.getMovingAverage(getFastMA()) < current.getMovingAverage(getSlowMA()))
 				&& (previous.getMovingAverage(getFastMA()) > previous.getMovingAverage(getSlowMA())));
 	}

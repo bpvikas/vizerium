@@ -8,7 +8,9 @@ import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.indicators.MACD;
 import com.vizerium.commons.indicators.MovingAverage;
+import com.vizerium.commons.indicators.StandardMovingAverages;
 import com.vizerium.commons.indicators.StochasticMomentum;
+import com.vizerium.commons.trade.TradeAction;
 
 public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 
@@ -36,7 +38,7 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 
 	@Override
 	protected boolean testForCurrentUnitGreaterThanPreviousUnit(UnitPriceData current, UnitPriceData previous) {
-		return positiveCrossover(current, previous) || higherClose(current, previous);
+		return positiveMACrossover(current, previous) || higherClose(current, previous);
 	}
 
 	@Override
@@ -44,6 +46,7 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 		if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
 			float stoppedPrice = Float.MAX_VALUE;
 			Trade lastTrade = tradeBook.last();
+			// This if else condition below needs to be the first check going in as here it is checked whether the SL is hit, and if so, close the trade.
 			if (trailingStopLossInSystem) {
 				if (lastTrade.isExitStopLossHit(current.getHigh())) {
 					float trailingStopLoss = lastTrade.getExitStoppedPrice(current);
@@ -82,21 +85,29 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 
 		updateTrailingStopLossBasedOnMACDHistogramSlope(tradeBook, current, previous);
 
-		if (positiveCrossover(current, previous) || closeAboveBothMAs(current)) {
-			// Backtesting for all conditions proves that presence of if (closeAboveBothMAs(current)) condition at this point improves the overall profitability by more than 20%
+		updateTrailingStopLossOrExitTradeIfPriceStrugglingToCrossHighMA(tradeBook, current, previous);
+
+		if (positiveMACrossover(current, previous) || positiveCloseMACrossover(current, previous)) {
+			// Backtesting for all conditions proves that presence of if (positiveCloseMACrossover(current, previous)) condition at this point improves the overall profitability by
+			// more than 20%
 			// Positive MA crossover is usually late and that close has gone above both MAs already earlier
+			// On closer analysis, found that the number of transactions has nearly doubled, and though the profitability is up by 20%, need to get a better filter to cut the
+			// losses.
 
 			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
-				if (positiveCrossover(current, previous) && closeAboveBothMAs(current)) {
+				if (positiveMACrossover(current, previous) && positiveCloseMACrossover(current, previous)) {
 					logger.debug("Both Positive crossover and Close above both MAs Hit. Covering short trade.");
-				} else if (positiveCrossover(current, previous)) {
+				} else if (positiveMACrossover(current, previous)) {
 					logger.debug("Positive crossover Hit. Covering short trade.");
-				} else if (closeAboveBothMAs(current)) {
+				} else if (positiveCloseMACrossover(current, previous)) {
 					logger.debug("Close above both MAs Hit. Covering short trade.");
 				}
 				tradeBook.coverShortTrade(current);
 			}
-
+			// Added the Stochastic Momentum check as follows
+			// if (tradeBook.isLastTradeExited() && current.getIndicator(sm.getName()).getValues()[StochasticMomentum.UPI_POSN_SMINDEX] < 60.0f) {
+			// and tested it for all values 90 -> 40, but the profits were falling much faster than the losses, so reverting to the
+			// simpler if condition if (tradeBook.isLastTradeExited())
 			if (tradeBook.isLastTradeExited()) {
 				tradeBook.addLongTrade(current);
 				float previousLow = historicalDataReader.getPreviousN(current.getScripName(), current.getTimeFormat().getHigherTimeFormat(), current.getDateTime(), 1).get(0)
@@ -108,7 +119,7 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 
 	@Override
 	protected boolean testForCurrentUnitLessThanPreviousUnit(UnitPriceData current, UnitPriceData previous) {
-		return negativeCrossover(current, previous) || lowerClose(current, previous);
+		return negativeMACrossover(current, previous) || lowerClose(current, previous);
 	}
 
 	@Override
@@ -116,6 +127,7 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 		if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
 			float stoppedPrice = Float.MIN_VALUE;
 			Trade lastTrade = tradeBook.last();
+			// This if else condition below needs to be the first check going in as here it is checked whether the SL is hit, and if so, close the trade.
 			if (trailingStopLossInSystem) {
 				if (lastTrade.isExitStopLossHit(current.getLow())) {
 					float trailingStopLoss = lastTrade.getExitStoppedPrice(current);
@@ -154,23 +166,26 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 
 		updateTrailingStopLossBasedOnMACDHistogramSlope(tradeBook, current, previous);
 
-		if (negativeCrossover(current, previous) || closeBelowBothMAs(current)) {
-			// Backtesting for all conditions proves that presence of if (closeBelowBothMAs(current)) condition at this point improves the overall profitability by more than 20%
+		updateTrailingStopLossOrExitTradeIfPriceStrugglingToCrossHighMA(tradeBook, current, previous);
+
+		if (negativeMACrossover(current, previous) || negativeCloseMACrossover(current, previous)) {
+			// Backtesting for all conditions proves that presence of if (negativeCloseMACrossover(current, previous)) condition at this point improves the overall profitability by
+			// more than 20%
 			// Negative MA crossover is usually late and that close has gone below both MAs already earlier
+			// On closer analysis, found that the number of transactions has nearly doubled, and though the profitability is up by 20%, need to get a better filter to cut the
+			// losses.
 
 			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
-				if (negativeCrossover(current, previous) && closeBelowBothMAs(current)) {
+				if (negativeMACrossover(current, previous) && negativeCloseMACrossover(current, previous)) {
 					logger.debug("Both Negative crossover and Close below both MAs Hit. Exiting long trade.");
-				} else if (negativeCrossover(current, previous)) {
+				} else if (negativeMACrossover(current, previous)) {
 					logger.debug("Negative crossover Hit. Exiting long trade.");
-				} else if (closeBelowBothMAs(current)) {
+				} else if (negativeCloseMACrossover(current, previous)) {
 					logger.debug("Close below both MAs Hit. Exiting long trade.");
 				}
 				tradeBook.exitLongTrade(current);
 			}
 			if (tradeBook.isLastTradeExited()) {
-				// Backtesting for all conditions proves that presence or absence of if (closeBelowBothMAs(current)) condition has no effect on the overall result
-				// Negative crossover indicates that close has gone below both MAs
 				tradeBook.addShortTrade(current);
 				float previousHigh = historicalDataReader.getPreviousN(current.getScripName(), current.getTimeFormat().getHigherTimeFormat(), current.getDateTime(), 1).get(0)
 						.getHigh();
@@ -184,51 +199,127 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 
 	}
 
-	protected boolean positiveCrossover(UnitPriceData current, UnitPriceData previous) {
-		return ((current.getMovingAverage(getFastMA()) > current.getMovingAverage(getSlowMA()))
-				&& (previous.getMovingAverage(getFastMA()) < previous.getMovingAverage(getSlowMA())));
-	}
-
-	protected boolean negativeCrossover(UnitPriceData current, UnitPriceData previous) {
-		return ((current.getMovingAverage(getFastMA()) < current.getMovingAverage(getSlowMA()))
-				&& (previous.getMovingAverage(getFastMA()) > previous.getMovingAverage(getSlowMA())));
-	}
-
 	protected void setTrailingStopLossInSystem(boolean trailingStopLossInSystem) {
 		this.trailingStopLossInSystem = trailingStopLossInSystem;
 	}
 
 	protected void updateTrailingStopLossBasedOnMACDHistogramSlope(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 		if (current.getIndicator(macd.getName()).getValues()[MACD.UPI_POSN_HISTOGRAM] < previous.getIndicator(macd.getName()).getValues()[MACD.UPI_POSN_HISTOGRAM]) {
-			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
-				float previousLow = historicalDataReader.getPreviousN(current.getScripName(), current.getTimeFormat(), current.getDateTime(), 1).get(0).getLow();
-				float lowerLow = Float.min(current.getLow(), previousLow);
-				float previousExitStopLoss = tradeBook.last().getExitStopLoss();
-				if (previousExitStopLoss == 0.0f || lowerLow > previousExitStopLoss) {
-					logger.debug("Long Trailing SL updated to " + lowerLow);
-					tradeBook.last().setExitStopLoss(lowerLow);
-				}
-			}
+			setLongTradeTrailingStopLossToLowerLow(tradeBook, current, previous);
 		}
 
 		if (current.getIndicator(macd.getName()).getValues()[MACD.UPI_POSN_HISTOGRAM] > previous.getIndicator(macd.getName()).getValues()[MACD.UPI_POSN_HISTOGRAM]) {
-			if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
-				float previousHigh = historicalDataReader.getPreviousN(current.getScripName(), current.getTimeFormat(), current.getDateTime(), 1).get(0).getHigh();
-				float higherHigh = Float.max(current.getHigh(), previousHigh);
-				float previousExitStopLoss = tradeBook.last().getExitStopLoss();
-				if (previousExitStopLoss == 0.0f || higherHigh < previousExitStopLoss) {
-					logger.debug("Short Trailing SL updated to " + higherHigh);
-					tradeBook.last().setExitStopLoss(higherHigh);
+			setShortTradeTrailingStopLossToHigherHigh(tradeBook, current, previous);
+		}
+	}
+
+	protected void updateTrailingStopLossOrExitTradeIfPriceStrugglingToCrossHighMA(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
+		// This check is for 100 MA and 200 MA only
+		if (!tradeBook.isEmpty() && !tradeBook.isLastTradeExited()) {
+			Trade lastTrade = tradeBook.last();
+			if (TradeAction.LONG.equals(lastTrade.getAction())) {
+				if (isPriceStrugglingToCrossAboveHighMA(current, StandardMovingAverages._100.getNumber())
+						|| isPriceStrugglingToCrossAboveHighMA(current, StandardMovingAverages._200.getNumber())) {
+					setLongTradeTrailingStopLossToLowerLow(tradeBook, current, previous);
 				}
+
+				// This check below of closing the long trade if prices are struggling for 2 consecutive candles is counter-productive as
+				// the overall profitability is decreasing by up to 3%. See results written in diary (date 1-Jun-2013)
+
+				// if (arePricesStrugglingToCrossAboveHighMA(current, previous, StandardMovingAverages._100.getNumber())
+				// || arePricesStrugglingToCrossAboveHighMA(current, previous, StandardMovingAverages._200.getNumber())) {
+				// logger.debug("Prices struggling to cross above High MA. Exiting long trade.");
+				// tradeBook.exitLongTrade(current);
+				// }
+
+			} else if (TradeAction.SHORT.equals(lastTrade.getAction())) {
+				if (isPriceStrugglingToCrossBelowHighMA(current, StandardMovingAverages._100.getNumber())
+						|| isPriceStrugglingToCrossBelowHighMA(current, StandardMovingAverages._200.getNumber())) {
+					setShortTradeTrailingStopLossToHigherHigh(tradeBook, current, previous);
+				}
+				// This check below of closing the short trade if prices are struggling for 2 consecutive candles is counter-productive as
+				// the overall profitability is decreasing by up to 3%. See results written in diary (date 1-Jun-2013)
+
+				// if (arePricesStrugglingToCrossBelowHighMA(current, previous, StandardMovingAverages._100.getNumber())
+				// || arePricesStrugglingToCrossBelowHighMA(current, previous, StandardMovingAverages._200.getNumber())) {
+				// logger.debug("Prices struggling to cross below High MA. Covering short trade.");
+				// tradeBook.coverShortTrade(current);
+				// }
 			}
 		}
 	}
 
-	protected boolean closeBelowBothMAs(UnitPriceData current) {
-		return current.getClose() < current.getMovingAverage(getFastMA()) && current.getClose() < current.getMovingAverage(getSlowMA());
+	protected boolean closeBelowBothMAs(UnitPriceData unitPrice) {
+		return unitPrice.getClose() < unitPrice.getMovingAverage(getFastMA()) && unitPrice.getClose() < unitPrice.getMovingAverage(getSlowMA());
 	}
 
-	protected boolean closeAboveBothMAs(UnitPriceData current) {
-		return current.getClose() > current.getMovingAverage(getFastMA()) && current.getClose() > current.getMovingAverage(getSlowMA());
+	protected boolean closeAboveBothMAs(UnitPriceData unitPrice) {
+		return unitPrice.getClose() > unitPrice.getMovingAverage(getFastMA()) && unitPrice.getClose() > unitPrice.getMovingAverage(getSlowMA());
+	}
+
+	protected boolean positiveCloseMACrossover(UnitPriceData current, UnitPriceData previous) {
+		return closeAboveBothMAs(current) && !closeAboveBothMAs(previous);
+	}
+
+	protected boolean negativeCloseMACrossover(UnitPriceData current, UnitPriceData previous) {
+		return closeBelowBothMAs(current) && !closeBelowBothMAs(previous);
+	}
+
+	protected void setLongTradeTrailingStopLossToLowerLow(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
+		if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
+			float lowerLow = Float.min(current.getLow(), previous.getLow());
+			float previousExitStopLoss = tradeBook.last().getExitStopLoss();
+			if (previousExitStopLoss == 0.0f || lowerLow > previousExitStopLoss) {
+				logger.debug("Long Trailing SL updated to " + lowerLow);
+				tradeBook.last().setExitStopLoss(lowerLow);
+			}
+		}
+	}
+
+	protected void setShortTradeTrailingStopLossToHigherHigh(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
+		if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
+			float higherHigh = Float.max(current.getHigh(), previous.getHigh());
+			float previousExitStopLoss = tradeBook.last().getExitStopLoss();
+			if (previousExitStopLoss == 0.0f || higherHigh < previousExitStopLoss) {
+				logger.debug("Short Trailing SL updated to " + higherHigh);
+				tradeBook.last().setExitStopLoss(higherHigh);
+			}
+		}
+	}
+
+	// This one should be used more to tighten stops on long positions if it is unable to cross above 100 or 200 MA.
+	protected boolean isPriceStrugglingToCrossAboveHighMA(UnitPriceData unitPrice, int ma) {
+		if (unitPrice.getHigh() > unitPrice.getMovingAverage(ma) && unitPrice.getLow() < unitPrice.getMovingAverage(ma) && unitPrice.getClose() < unitPrice.getMovingAverage(ma)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	// This one should be used to close the long trade completely if candles are unable to cross above 100 or 200 MA.
+	protected boolean arePricesStrugglingToCrossAboveHighMA(UnitPriceData current, UnitPriceData previous, int ma) {
+		if (isPriceStrugglingToCrossAboveHighMA(current, ma) && isPriceStrugglingToCrossAboveHighMA(previous, ma)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	// This one should be used more to tighten stops on short positions if it is unable to cross below 100 or 200 MA.
+	protected boolean isPriceStrugglingToCrossBelowHighMA(UnitPriceData unitPrice, int ma) {
+		if (unitPrice.getHigh() > unitPrice.getMovingAverage(ma) && unitPrice.getLow() < unitPrice.getMovingAverage(ma) && unitPrice.getClose() > unitPrice.getMovingAverage(ma)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	// This one should be used to close the short trade completely if candles are unable to cross below 100 or 200 MA.
+	protected boolean arePricesStrugglingToCrossBelowHighMA(UnitPriceData current, UnitPriceData previous, int ma) {
+		if (isPriceStrugglingToCrossBelowHighMA(current, ma) && isPriceStrugglingToCrossBelowHighMA(previous, ma)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
