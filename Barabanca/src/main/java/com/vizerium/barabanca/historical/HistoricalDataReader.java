@@ -122,4 +122,60 @@ public class HistoricalDataReader {
 			throw new RuntimeException("Unable to get previous " + count + " unit prices from a list of size " + size);
 		}
 	}
+
+	public List<UnitPriceData> getNextN(String scripName, TimeFormat timeFormat, LocalDateTime unitPriceDateTime, int count) {
+		LocalDateTime startDateTime = LocalDateTime.of(unitPriceDateTime.toLocalDate(), unitPriceDateTime.toLocalTime());
+		LocalDateTime endDateTime;
+
+		if (timeFormat.getInterval() > 0) {
+			int plusMonths = 1;
+			if (timeFormat.equals(TimeFormat._1DAY)) {
+				plusMonths = (count / 20) + 1; // assuming that there are approximately 20 odd days in a month.
+			}
+			endDateTime = unitPriceDateTime.plusMonths(plusMonths).with(TemporalAdjusters.lastDayOfMonth());
+			if (timeFormat.equals(TimeFormat._1MIN) || timeFormat.equals(TimeFormat._5MIN) || timeFormat.equals(TimeFormat._1HOUR)) {
+				// The "1" below is not a typo, the calculations are such that for the next 5 minute candle to be returned,
+				// we just need to move the current time by one minute.
+				startDateTime = startDateTime.plusMinutes(1);
+			} else if (timeFormat.equals(TimeFormat._1DAY)) {
+				startDateTime = startDateTime.plusDays(1).withHour(0).withMinute(0);
+			}
+		} else {
+			if (timeFormat.equals(TimeFormat._1WEEK)) {
+				startDateTime = unitPriceDateTime.plusWeeks(1).with(DayOfWeek.MONDAY);
+			} else if (timeFormat.equals(TimeFormat._1MONTH)) {
+				startDateTime = unitPriceDateTime.plusMonths(1).withDayOfMonth(1);
+			}
+			endDateTime = HistoricalDataDateRange.getEndDateTime(scripName, timeFormat);
+		}
+
+		List<UnitPriceData> unitPriceDataList = getUnitPriceDataForRange(scripName, startDateTime, endDateTime, timeFormat);
+		int size = unitPriceDataList.size();
+		if (size >= count) {
+			return unitPriceDataList.subList(0, count);
+		} else {
+			throw new RuntimeException("Unable to get next " + count + " unit prices from a list of size " + size);
+		}
+	}
+
+	// This is to typically identify if current candle is the last one of the e.g. day/hour/week.
+	// The end goal of this is that if you are not making a profit by the end of the day (for hourly chart)
+	// or hour (for 5 min chart) or week (for daily chart), then close the trade.
+	public boolean isLastCandleOfTimePeriod(UnitPriceData unitPrice, TimeFormat timeFormat) {
+		if (unitPrice.getTimeFormat().equals(timeFormat)) {
+			// If the timeFormat of the unitPrice is the same as the timeFormat supplied, then return true
+			// For example, if you have a Day unitPrice, then that will be the only candle for that Day.
+			return true;
+		} else if (unitPrice.getTimeFormat().isHigherTimeFormatThan(timeFormat)) {
+			throw new RuntimeException("The timeFormat of the unitPrice is higher than the supplied timeFormat.");
+		} else {
+			UnitPriceData suppliedTimeFormatNextUnitPrice = getNextN(unitPrice.getScripName(), timeFormat, unitPrice.getDateTime(), 1).get(0);
+			UnitPriceData sameTimeFormatNextUnitPrice = getNextN(unitPrice.getScripName(), unitPrice.getTimeFormat(), unitPrice.getDateTime(), 1).get(0);
+			if (sameTimeFormatNextUnitPrice.getDateTime().equals(suppliedTimeFormatNextUnitPrice.getDateTime())) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
 }

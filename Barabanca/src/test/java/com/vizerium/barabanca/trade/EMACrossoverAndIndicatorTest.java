@@ -32,8 +32,8 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 	protected void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
 		macd = new MACD(getFastMA(), getSlowMA());
 		updateIndicatorDataInUnitPrices(unitPriceDataList, macd);
-		sm = new StochasticMomentum();
-		updateIndicatorDataInUnitPrices(unitPriceDataList, sm);
+		// sm = new StochasticMomentum();
+		// updateIndicatorDataInUnitPrices(unitPriceDataList, sm);
 	}
 
 	@Override
@@ -114,6 +114,9 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 						.getLow();
 				tradeBook.last().setExitStopLoss(previousLow * 0.999f); // The opening SL is set 0.1% below yesterday low for long trades.
 			}
+
+			// Still checking the feasibility of the idea below
+			// exitIntraDayTradeIfMakingLossByEOD(tradeBook, current);
 		}
 	}
 
@@ -191,6 +194,9 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 						.getHigh();
 				tradeBook.last().setExitStopLoss(previousHigh * 1.001f); // The opening SL is set 0.1% above yesterday high for short trades.
 			}
+
+			// Still checking the feasibility of the idea below
+			// exitIntraDayTradeIfMakingLossByEOD(tradeBook, current);
 		}
 	}
 
@@ -320,6 +326,21 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	protected void exitIntraDayTradeIfMakingLossByEOD(TradeBook tradeBook, UnitPriceData current) {
+		if (!tradeBook.isLastTradeExited()) {
+			Trade lastTrade = tradeBook.last();
+			// The below if condition is to check for those conditions where a trade was taken on an intra-day time frame and then was resulting in a loss
+			// by the end of the day already. So better to exit the trade.
+			if (lastTrade.getTimeFormat().isLowerTimeFormatThan(TimeFormat._1DAY) || lastTrade.getTimeFormat().equals(TimeFormat._1DAY)) {
+				if (historicalDataReader.isLastCandleOfTimePeriod(current, TimeFormat._1DAY) && lastTrade.getCurrentUnrealisedPL(current) < 0.0f) {
+					logger.debug("Exiting trade taken on an intra day chart at the EOD as it was in a loss @ EOD.");
+					current.setTradedValue(current.getClose());
+					tradeBook.exitLastTrade(current);
+				}
+			}
 		}
 	}
 }

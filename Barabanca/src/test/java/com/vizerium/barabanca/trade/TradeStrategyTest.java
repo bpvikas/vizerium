@@ -152,12 +152,11 @@ public abstract class TradeStrategyTest {
 		return current.getClose() < previous.getClose();
 	}
 
-	protected boolean isGreenCandle(UnitPriceData current) {
-		return current.getClose() > current.getOpen();
+	protected boolean isGreenCandle(UnitPriceData unitPrice) {
+		return unitPrice.getClose() > unitPrice.getOpen();
 	}
 
-	protected boolean isRedCandle(UnitPriceData current) {
-		return current.getClose() < current.getOpen();
+	protected boolean isRedCandle(UnitPriceData unitPrice) {
+		return unitPrice.getClose() < unitPrice.getOpen();
 	}
-
 }

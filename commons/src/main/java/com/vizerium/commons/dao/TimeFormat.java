@@ -1,6 +1,7 @@
 package com.vizerium.commons.dao;
 
 public enum TimeFormat {
+	// This needs to necessarily be in the ascending order as there are calculations based on this below.
 	_1MIN(1), _5MIN(5), _1HOUR(60), _1DAY(1440), _1WEEK(-1), _1MONTH(-1);
 
 	private int interval;
@@ -55,6 +56,40 @@ public enum TimeFormat {
 			}
 		}
 		return null;
+	}
+
+	public boolean isHigherTimeFormatThan(TimeFormat timeFormat) {
+		if (timeFormat == null) {
+			throw new RuntimeException("null time format supplied to check isHigherTimeFormat.");
+		}
+		if (this.equals(timeFormat)) {
+			return false;
+		}
+		for (int i = 0; i < values().length; i++) {
+			if (values()[i].equals(timeFormat)) {
+				return true;
+			} else if (values()[i].equals(this)) {
+				return false;
+			}
+		}
+		throw new RuntimeException("Unable to determine if the supplied timeFormat " + timeFormat.getProperty() + " is higher than " + this.getProperty());
+	}
+
+	public boolean isLowerTimeFormatThan(TimeFormat timeFormat) {
+		if (timeFormat == null) {
+			throw new RuntimeException("null time format supplied to check isLowerTimeFormat.");
+		}
+		if (this.equals(timeFormat)) {
+			return false;
+		}
+		for (int i = 0; i < values().length; i++) {
+			if (values()[i].equals(this)) {
+				return true;
+			} else if (values()[i].equals(timeFormat)) {
+				return false;
+			}
+		}
+		throw new RuntimeException("Unable to determine if the supplied timeFormat " + timeFormat.getProperty() + " is higher than " + this.getProperty());
 	}
 
 	@Override

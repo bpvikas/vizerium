@@ -230,6 +230,20 @@ public class Trade {
 		}
 	}
 
+	public float getCurrentUnrealisedPL(UnitPriceData unitPriceData) {
+		if (exitDateTime == null || exitPrice == 0.0f) {
+			if (TradeAction.LONG.equals(action)) {
+				currentUnrealisedPL = unitPriceData.getClose() - entryPrice;
+			}
+			if (TradeAction.SHORT.equals(action)) {
+				currentUnrealisedPL = entryPrice - unitPriceData.getClose();
+			}
+		} else {
+			currentUnrealisedPL = 0.0f;
+		}
+		return currentUnrealisedPL;
+	}
+
 	public float getMaxUnrealisedLoss() {
 		return maxUnrealisedLoss;
 	}
