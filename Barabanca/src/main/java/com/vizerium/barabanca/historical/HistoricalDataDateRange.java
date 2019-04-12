@@ -1,6 +1,7 @@
 package com.vizerium.barabanca.historical;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -51,7 +52,12 @@ public class HistoricalDataDateRange {
 				}
 			};
 
-			dateRangeProperties.load(new FileReader(propertyFilePath));
+			File dateRangePropertiesFile = new File(propertyFilePath);
+			if (!dateRangePropertiesFile.exists()) {
+				dateRangePropertiesFile.createNewFile();
+			}
+
+			dateRangeProperties.load(new FileReader(dateRangePropertiesFile));
 		} catch (IOException e) {
 			logger.error("Unable to load historical data date ranges.", e);
 			throw new RuntimeException(e);

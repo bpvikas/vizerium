@@ -78,70 +78,60 @@ public class HistoricalRawDataParserTest {
 		test03F_1MonthFileCreation();
 	}
 
-	@Test
 	public void test03A_1MinFileCreation() {
 		unit.createTimeSeriesDataFiles(TimeFormat._1MIN);
 	}
 
-	@Test
 	public void test03B_5MinFileCreation() {
 		unit.createTimeSeriesDataFiles(TimeFormat._5MIN);
 	}
 
-	@Test
 	public void test03C_1HourFileCreation() {
 		unit.createTimeSeriesDataFiles(TimeFormat._1HOUR);
 	}
 
-	@Test
 	public void test03D_1DayFileCreation() {
 		unit.createTimeSeriesDataFiles(TimeFormat._1DAY);
 	}
 
-	@Test
 	public void test03E_1WeekFileCreation() {
 		unit.createMultiDayTimeSeriesDataFiles(TimeFormat._1WEEK);
 	}
 
-	@Test
 	public void test03F_1MonthFileCreation() {
 		unit.createMultiDayTimeSeriesDataFiles(TimeFormat._1MONTH);
 	}
 
 	@Test
 	public void test04_UpdateMovingAveragesInAllTimeFormatsDataFiles() {
+		test04A_UpdateMovingAveragesIn1MinDataFiles();
+		test04B_UpdateMovingAveragesIn5MinDataFiles();
 		test04C_UpdateMovingAveragesIn1HourDataFiles();
 		test04D_UpdateMovingAveragesIn1DayDataFiles();
 		test04E_UpdateMovingAveragesIn1WeekDataFiles();
 		test04F_UpdateMovingAveragesIn1MonthDataFiles();
 	}
 
-	@Test
 	public void test04A_UpdateMovingAveragesIn1MinDataFiles() {
 		unit.updateStandardMovingAveragesInTimeSeriesDataFiles(TimeFormat._1MIN);
 	}
 
-	@Test
 	public void test04B_UpdateMovingAveragesIn5MinDataFiles() {
 		unit.updateStandardMovingAveragesInTimeSeriesDataFiles(TimeFormat._5MIN);
 	}
 
-	@Test
 	public void test04C_UpdateMovingAveragesIn1HourDataFiles() {
 		unit.updateStandardMovingAveragesInTimeSeriesDataFiles(TimeFormat._1HOUR);
 	}
 
-	@Test
 	public void test04D_UpdateMovingAveragesIn1DayDataFiles() {
 		unit.updateStandardMovingAveragesInTimeSeriesDataFiles(TimeFormat._1DAY);
 	}
 
-	@Test
 	public void test04E_UpdateMovingAveragesIn1WeekDataFiles() {
 		unit.updateStandardMovingAveragesInTimeSeriesDataFiles(TimeFormat._1WEEK);
 	}
 
-	@Test
 	public void test04F_UpdateMovingAveragesIn1MonthDataFiles() {
 		unit.updateStandardMovingAveragesInTimeSeriesDataFiles(TimeFormat._1MONTH);
 	}

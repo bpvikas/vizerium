@@ -30,7 +30,7 @@ import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.indicators.MovingAverageCalculator;
 import com.vizerium.commons.indicators.StandardMovingAverages;
 import com.vizerium.commons.io.FileUtils;
-import com.vizerium.commons.util.FloatArrayList;
+import com.vizerium.commons.util.NumberFormats;
 
 public class HistoricalRawDataParser {
 
@@ -72,6 +72,9 @@ public class HistoricalRawDataParser {
 			localRawDataFileStream.close();
 
 			File extractDirectory = new File(parsedExtractedDataDirectoryPath);
+			if (!extractDirectory.exists()) {
+				extractDirectory.mkdir();
+			}
 			for (File extractFile : extractDirectory.listFiles()) {
 				if (extractFile.isDirectory()) {
 					for (File extractSubFile : extractFile.listFiles()) {
@@ -254,8 +257,8 @@ public class HistoricalRawDataParser {
 						if (!timeFormatForScripDirectory.exists()) {
 							timeFormatForScripDirectory.mkdir();
 						}
-						BufferedWriter bw = new BufferedWriter(new FileWriter(extractedDataDirectoryPath + timeFormat.getProperty() + "/" + scripName + "/"
-								+ parsedExtractedDataFile.getName()));
+						BufferedWriter bw = new BufferedWriter(
+								new FileWriter(extractedDataDirectoryPath + timeFormat.getProperty() + "/" + scripName + "/" + parsedExtractedDataFile.getName()));
 
 						for (LocalDate currentDate : currentMonthUnitPrices.keySet()) {
 							List<UnitPriceData> currentDateUnitPricesForIntervalCalculation = currentMonthUnitPrices.get(currentDate);
@@ -263,9 +266,10 @@ public class HistoricalRawDataParser {
 							// The below if (>=4) condition is for a special check on date 2009/5/18 when the 2009 election results caused an upper circuit and the NSE had to
 							// halt trading for the day within 1 minute twice.
 							if (currentDateUnitPricesForIntervalCalculation.size() >= 4) {
-								StartTimingPattern currentDateStartTimePattern = StartTimingPattern.isValid(currentDate, new LocalTime[] {
-										currentDateUnitPricesForIntervalCalculation.get(0).getTime(), currentDateUnitPricesForIntervalCalculation.get(1).getTime(),
-										currentDateUnitPricesForIntervalCalculation.get(2).getTime(), currentDateUnitPricesForIntervalCalculation.get(3).getTime() });
+								StartTimingPattern currentDateStartTimePattern = StartTimingPattern.isValid(currentDate,
+										new LocalTime[] { currentDateUnitPricesForIntervalCalculation.get(0).getTime(),
+												currentDateUnitPricesForIntervalCalculation.get(1).getTime(), currentDateUnitPricesForIntervalCalculation.get(2).getTime(),
+												currentDateUnitPricesForIntervalCalculation.get(3).getTime() });
 
 								for (int i = 0; i < currentDateStartTimePattern.getTradingStartTimePosition(); i++) {
 									currentDateUnitPricesForIntervalCalculation.remove(0);
@@ -311,33 +315,82 @@ public class HistoricalRawDataParser {
 	}
 
 	public void updateStandardMovingAveragesInTimeSeriesDataFiles(TimeFormat timeFormat) {
+		logger.debug("Reading all " + timeFormat + " files for updating moving averages.");
 		try {
 			File timeSeriesDirectory = new File(extractedDataDirectoryPath + timeFormat.getProperty() + "/");
 			for (File timeSeriesScripDataDirectory : timeSeriesDirectory.listFiles()) {
-				FloatArrayList closingPrices = new FloatArrayList();
+
+				List<UnitPriceData> scripUnitPrices = new ArrayList<UnitPriceData>();
 				for (File timeSeriesScripDataFile : timeSeriesScripDataDirectory.listFiles()) {
 					BufferedReader br = new BufferedReader(new FileReader(timeSeriesScripDataFile));
 					String dataLine = null;
-					List<UnitPriceData> currentMonthUnitPrices = new ArrayList<UnitPriceData>();
 					while (StringUtils.isNotBlank(dataLine = br.readLine())) {
 						String[] dataLineDetails = dataLine.split(",");
 						UnitPriceData unitPriceData = new UnitPriceData(dataLineDetails);
-						closingPrices.add(unitPriceData.getClose());
-						calculateExponentialMovingAverage(closingPrices, unitPriceData);
-						currentMonthUnitPrices.add(unitPriceData);
+						scripUnitPrices.add(unitPriceData);
 					}
 					br.close();
+				}
+				logger.debug("Finished reading all input files required to update moving averages. ");
+				if (scripUnitPrices.size() > 0) {
+					float[] closingPrices = new float[scripUnitPrices.size()];
+					int l = 0;
+					for (UnitPriceData scripUnitPrice : scripUnitPrices) {
+						closingPrices[l++] = scripUnitPrice.getClose();
+					}
+					logger.debug("Created closing prices array.");
 
-					BufferedWriter bw = new BufferedWriter(new FileWriter(timeSeriesScripDataFile));
-					for (int i = 0; i < currentMonthUnitPrices.size(); i++) {
-						UnitPriceData unitPriceData = currentMonthUnitPrices.get(i);
-						bw.write(unitPriceData.toString() + unitPriceData.printMovingAverages());
-						if (i != currentMonthUnitPrices.size() - 1) {
-							bw.newLine();
+					float[][] movingAverages = new float[StandardMovingAverages.values().length][];
+					int[] standardMovingAverages = StandardMovingAverages.getAllStandardMAsSorted();
+					int k = 0;
+					for (int standardMA : standardMovingAverages) {
+						movingAverages[k++] = MovingAverageCalculator.calculateArrayEMA(closingPrices, standardMA);
+					}
+					logger.debug("Calculated all moving averages.");
+
+					for (int i = 0; i < scripUnitPrices.size(); i++) {
+						for (int j = 0; j < standardMovingAverages.length; j++) {
+							scripUnitPrices.get(i).setMovingAverage(standardMovingAverages[j], movingAverages[j][i]);
 						}
 					}
-					bw.flush();
-					bw.close();
+					logger.debug("Updated all moving averages into unit prices.");
+
+					String scripName = scripUnitPrices.get(0).getScripName();
+					if (timeFormat.getInterval() < 0) {
+						BufferedWriter bw = new BufferedWriter(new FileWriter(extractedDataDirectoryPath + timeFormat.getProperty() + "/" + scripName + "/" + scripName + ".txt"));
+						for (int i = 0; i < scripUnitPrices.size(); i++) {
+							bw.write(scripUnitPrices.get(i).toString() + scripUnitPrices.get(i).printMovingAverages());
+							if (i != scripUnitPrices.size() - 1) {
+								bw.newLine();
+							}
+						}
+						bw.flush();
+						bw.close();
+
+					} else {
+						String scripNameYearMonth = getUnitPriceScripNameYearMonth(scripUnitPrices.get(0));
+						BufferedWriter bw = new BufferedWriter(
+								new FileWriter(extractedDataDirectoryPath + timeFormat.getProperty() + "/" + scripName + "/" + scripNameYearMonth + ".txt"));
+						for (int i = 0; i < scripUnitPrices.size(); i++) {
+							if (scripNameYearMonth.equals(getUnitPriceScripNameYearMonth(scripUnitPrices.get(i)))) {
+								bw.write(scripUnitPrices.get(i).toString() + scripUnitPrices.get(i).printMovingAverages());
+								if ((i + 1 < scripUnitPrices.size()) && scripNameYearMonth.equals(getUnitPriceScripNameYearMonth(scripUnitPrices.get(i + 1)))) {
+									bw.newLine();
+								}
+							} else {
+								bw.flush();
+								bw.close();
+								logger.debug("Updated moving averages for " + scripNameYearMonth);
+								scripNameYearMonth = getUnitPriceScripNameYearMonth(scripUnitPrices.get(i));
+								bw = new BufferedWriter(
+										new FileWriter(extractedDataDirectoryPath + timeFormat.getProperty() + "/" + scripName + "/" + scripNameYearMonth + ".txt"));
+								bw.write(scripUnitPrices.get(i).toString() + scripUnitPrices.get(i).printMovingAverages());
+								bw.newLine();
+							}
+						}
+						bw.flush();
+						bw.close();
+					}
 				}
 			}
 		} catch (IOException ioe) {
@@ -346,12 +399,11 @@ public class HistoricalRawDataParser {
 		}
 	}
 
-	private void calculateExponentialMovingAverage(FloatArrayList closingPrices, UnitPriceData unitPriceData) {
-		float[] closingPricesArray = closingPrices.toArray();
-		for (int ma : StandardMovingAverages.getAllStandardMAsSorted()) {
-			float ema = MovingAverageCalculator.calculateEMA(closingPricesArray, ma);
-			unitPriceData.setMovingAverage(ma, ema);
-		}
+	private String getUnitPriceScripNameYearMonth(UnitPriceData unitPrice) {
+		String scripName = unitPrice.getScripName();
+		LocalDate scripUnitPriceLocalDate = unitPrice.getDate();
+		String yearMonth = String.valueOf(scripUnitPriceLocalDate.getYear()) + NumberFormats.getForMonth().format(scripUnitPriceLocalDate.getMonthValue());
+		return scripName + yearMonth;
 	}
 
 	public void createMultiDayTimeSeriesDataFiles(TimeFormat timeFormat) {
