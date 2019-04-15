@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Vizerium, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.vizerium.commons.indicators;
 
 import java.util.Arrays;
@@ -111,16 +127,17 @@ public class MovingAverageCalculator implements IndicatorCalculator<MovingAverag
 
 	public static float[] calculateArrayWMA(float[] closingPrices, int numberOfPeriods) {
 		float[] wmaArray = new float[closingPrices.length];
-		for (int j = 0; j < closingPrices.length; j++) {
-			if (j < numberOfPeriods - 1) {
+		if (wmaArray.length < numberOfPeriods) {
+			for (int j = 0; j < wmaArray.length; j++) {
 				wmaArray[j] = 0.0f;
-			} else {
-				float wma = calculateSMA(Arrays.copyOfRange(closingPrices, 0, numberOfPeriods), numberOfPeriods);
-
-				for (int i = numberOfPeriods; i <= j; i++) {
-					wma = (wma * (numberOfPeriods - 1) + closingPrices[i]) / numberOfPeriods;
-				}
-				wmaArray[j] = wma;
+			}
+		} else {
+			for (int j = 0; j < numberOfPeriods - 1; j++) {
+				wmaArray[j] = 0.0f;
+			}
+			wmaArray[numberOfPeriods - 1] = calculateSMA(Arrays.copyOfRange(closingPrices, 0, numberOfPeriods), numberOfPeriods);
+			for (int i = numberOfPeriods; i < wmaArray.length; i++) {
+				wmaArray[i] = (wmaArray[i - 1] * (numberOfPeriods - 1) + closingPrices[i]) / numberOfPeriods;
 			}
 		}
 		return wmaArray;

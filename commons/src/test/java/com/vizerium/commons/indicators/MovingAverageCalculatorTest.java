@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Vizerium, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.vizerium.commons.indicators;
 
 import java.io.BufferedReader;
@@ -56,10 +72,10 @@ public class MovingAverageCalculatorTest {
 		int count = 70;
 		float[][] closingPricesAndMovingAverages = createClosingPricesAndMovingAveragesData(count);
 		float[] smaArray = MovingAverageCalculator.calculateArraySMA(closingPricesAndMovingAverages[0], 14);
+		Assert.assertEquals(closingPricesAndMovingAverages[0].length, smaArray.length);
 		for (int i = 0; i < closingPricesAndMovingAverages[0].length; i++) {
 			Assert.assertEquals(closingPricesAndMovingAverages[1][i], smaArray[i], delta);
 		}
-		Assert.assertEquals(closingPricesAndMovingAverages[0].length, smaArray.length);
 	}
 
 	@Test
@@ -67,10 +83,10 @@ public class MovingAverageCalculatorTest {
 		int count = 80;
 		float[][] closingPricesAndMovingAverages = createClosingPricesAndMovingAveragesData(count);
 		float[] emaArray = MovingAverageCalculator.calculateArrayEMA(closingPricesAndMovingAverages[0], 14);
+		Assert.assertEquals(closingPricesAndMovingAverages[0].length, emaArray.length);
 		for (int i = 0; i < closingPricesAndMovingAverages[0].length; i++) {
 			Assert.assertEquals(closingPricesAndMovingAverages[2][i], emaArray[i], delta);
 		}
-		Assert.assertEquals(closingPricesAndMovingAverages[0].length, emaArray.length);
 	}
 
 	@Test
@@ -78,10 +94,10 @@ public class MovingAverageCalculatorTest {
 		int count = 90;
 		float[][] closingPricesAndMovingAverages = createClosingPricesAndMovingAveragesData(count);
 		float[] wmaArray = MovingAverageCalculator.calculateArrayWMA(closingPricesAndMovingAverages[0], 14);
+		Assert.assertEquals(closingPricesAndMovingAverages[0].length, wmaArray.length);
 		for (int i = 0; i < closingPricesAndMovingAverages[0].length; i++) {
 			Assert.assertEquals(closingPricesAndMovingAverages[3][i], wmaArray[i], delta);
 		}
-		Assert.assertEquals(closingPricesAndMovingAverages[0].length, wmaArray.length);
 	}
 
 	@Test
@@ -91,14 +107,14 @@ public class MovingAverageCalculatorTest {
 		float[] smaArray = MovingAverageCalculator.calculateArrayMA(MovingAverageType.SIMPLE, closingPricesAndMovingAverages[0], 14);
 		float[] emaArray = MovingAverageCalculator.calculateArrayMA(MovingAverageType.EXPONENTIAL, closingPricesAndMovingAverages[0], 14);
 		float[] wmaArray = MovingAverageCalculator.calculateArrayMA(MovingAverageType.WELLESWILDER, closingPricesAndMovingAverages[0], 14);
+		Assert.assertEquals(closingPricesAndMovingAverages[0].length, smaArray.length);
+		Assert.assertEquals(closingPricesAndMovingAverages[0].length, emaArray.length);
+		Assert.assertEquals(closingPricesAndMovingAverages[0].length, wmaArray.length);
 		for (int i = 0; i < closingPricesAndMovingAverages[0].length; i++) {
 			Assert.assertEquals(closingPricesAndMovingAverages[1][i], smaArray[i], delta);
 			Assert.assertEquals(closingPricesAndMovingAverages[2][i], emaArray[i], delta);
 			Assert.assertEquals(closingPricesAndMovingAverages[3][i], wmaArray[i], delta);
 		}
-		Assert.assertEquals(closingPricesAndMovingAverages[0].length, smaArray.length);
-		Assert.assertEquals(closingPricesAndMovingAverages[0].length, emaArray.length);
-		Assert.assertEquals(closingPricesAndMovingAverages[0].length, wmaArray.length);
 	}
 
 	private float[][] createClosingPricesAndMovingAveragesData(int count) {
