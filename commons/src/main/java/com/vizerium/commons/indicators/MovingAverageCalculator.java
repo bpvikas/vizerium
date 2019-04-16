@@ -92,15 +92,17 @@ public class MovingAverageCalculator implements IndicatorCalculator<MovingAverag
 
 	public static float[] calculateArraySMA(float[] closingPrices, int numberOfPeriods) {
 		float[] smaArray = new float[closingPrices.length];
-		for (int j = 0; j < closingPrices.length; j++) {
-			if (j < numberOfPeriods - 1) {
+		if (smaArray.length < numberOfPeriods) {
+			for (int j = 0; j < smaArray.length; j++) {
 				smaArray[j] = 0.0f;
-			} else {
-				float sma = 0.0f;
-				for (int i = j - (numberOfPeriods - 1); i <= j; i++) {
-					sma += closingPrices[i];
-				}
-				smaArray[j] = sma / numberOfPeriods;
+			}
+		} else {
+			for (int j = 0; j < numberOfPeriods - 1; j++) {
+				smaArray[j] = 0.0f;
+			}
+			smaArray[numberOfPeriods - 1] = calculateSMA(Arrays.copyOfRange(closingPrices, 0, numberOfPeriods), numberOfPeriods);
+			for (int i = numberOfPeriods; i < smaArray.length; i++) {
+				smaArray[i] = ((smaArray[i - 1] * numberOfPeriods) - closingPrices[i - numberOfPeriods] + closingPrices[i]) / numberOfPeriods;
 			}
 		}
 		return smaArray;

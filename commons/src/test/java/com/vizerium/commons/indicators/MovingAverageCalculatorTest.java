@@ -29,7 +29,7 @@ import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MovingAverageCalculatorTest {
 
-	private static final float delta = 0.01f;
+	private static final float delta = 0.006f;
 
 	@Test
 	public void test01_CalculateSMA() {
