@@ -17,10 +17,12 @@
 package com.vizerium.barabanca.historical.renko;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.OptionalDouble;
-import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
+
+import com.vizerium.barabanca.historical.renko.Reversal.ReversalType;
 
 public class RenkoRange extends ArrayList<Renko> {
 
@@ -94,8 +96,8 @@ public class RenkoRange extends ArrayList<Renko> {
 		throw new RuntimeException("Could not determine previous low from RenkoRange.");
 	}
 
-	public TreeMap<Renko, Float> getAllReversals() {
-		TreeMap<Renko, Float> reversalsMap = new TreeMap<Renko, Float>();
+	public List<Reversal> getAllReversals() {
+		List<Reversal> reversalsList = new ArrayList<Reversal>();
 
 		// get all top and bottom reversals
 		for (int i = 0; i < size() - 2; i++) {
@@ -104,13 +106,13 @@ public class RenkoRange extends ArrayList<Renko> {
 			Renko thirdRenko = get(i + 2);
 
 			if (firstRenko.getHigherPrice() < secondRenko.getHigherPrice() && secondRenko.getHigherPrice() > thirdRenko.getHigherPrice()) {
-				reversalsMap.put(secondRenko, secondRenko.getHigherPrice() + secondRenko.getBrickSize());
+				reversalsList.add(new Reversal(secondRenko, secondRenko.getHigherPrice() + secondRenko.getBrickSize(), ReversalType.TOP));
 			}
 
 			if (firstRenko.getLowerPrice() > secondRenko.getLowerPrice() && secondRenko.getLowerPrice() < thirdRenko.getLowerPrice()) {
-				reversalsMap.put(secondRenko, secondRenko.getLowerPrice() - secondRenko.getBrickSize());
+				reversalsList.add(new Reversal(secondRenko, secondRenko.getLowerPrice() - secondRenko.getBrickSize(), ReversalType.BOTTOM));
 			}
 		}
-		return reversalsMap;
+		return reversalsList;
 	}
 }

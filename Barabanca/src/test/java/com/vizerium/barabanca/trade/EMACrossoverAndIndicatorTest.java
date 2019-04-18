@@ -30,7 +30,7 @@ import com.vizerium.commons.trade.TradeAction;
 
 public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 
-	private static final Logger logger = Logger.getLogger(EMACrossoverTest.class);
+	private static final Logger logger = Logger.getLogger(EMACrossoverAndIndicatorTest.class);
 
 	protected abstract MovingAverage getFastMA();
 
