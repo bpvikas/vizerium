@@ -29,6 +29,10 @@ import org.junit.runners.MethodSorters;
 import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 
+/*
+ * The purpose of this JUnit test case is to identify on how many days, the intra-day price on the 1min chart decides to cross the 
+ * 100ema or 200ema on the 1 minute chart. 
+ */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MACloseCrossoverTest {
 
@@ -115,7 +119,8 @@ public class MACloseCrossoverTest {
 			return new int[] { totalNumberOfDays, numberOfDaysOfCloseMACrossover };
 
 		} else {
-			throw new RuntimeException("Unable to get unit prices.");
+			throw new RuntimeException(
+					"Unable to get unit prices for " + scripName + " from " + startDateTime + " to " + endDateTime + " in " + timeFormat.toString() + " format.");
 		}
 	}
 

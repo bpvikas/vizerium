@@ -128,7 +128,18 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 				tradeBook.addLongTrade(current);
 				float previousLow = historicalDataReader.getPreviousN(current.getScripName(), current.getTimeFormat().getHigherTimeFormat(), current.getDateTime(), 1).get(0)
 						.getLow();
-				tradeBook.last().setExitStopLoss(previousLow * 0.999f); // The opening SL is set 0.1% below yesterday low for long trades.
+				tradeBook.last().setExitStopLoss(Float.max(previousLow * 0.999f, current.getTradedValue() * 0.999f));
+				// The opening SL is set 0.1% below yesterday low for long trades.
+				// The Holy Grail which hiked the profitability by more than 50% is setting the stop loss to current.getTradedValue() * 0.999f
+				// NEED TO EXIT LOSS MAKING TRADES EXTREMELY FAST 
+				// Tested for lower values, and the results are as below.
+				// None - 110362 / 5193
+				// 0.6% - 127854 / 5273
+				// 0.5% - 132693 / 5309
+				// 0.4% - 136913 / 5353
+				// 0.3% - 142860 / 5424
+				// 0.2% - 149715 / 5553
+				// 0.1% - 165011 / 5702
 			}
 
 			// Still checking the feasibility of the idea below
@@ -208,7 +219,18 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 				tradeBook.addShortTrade(current);
 				float previousHigh = historicalDataReader.getPreviousN(current.getScripName(), current.getTimeFormat().getHigherTimeFormat(), current.getDateTime(), 1).get(0)
 						.getHigh();
-				tradeBook.last().setExitStopLoss(previousHigh * 1.001f); // The opening SL is set 0.1% above yesterday high for short trades.
+				tradeBook.last().setExitStopLoss(Float.min(previousHigh * 1.001f, current.getTradedValue() * 1.001f));
+				// The opening SL is set 0.1% above yesterday high for short trades.
+				// The Holy Grail which hiked the profitability by more than 50% is setting the stop loss to current.getTradedValue() * 1.001f. 
+				// NEED TO EXIT LOSS MAKING TRADES EXTREMELY FAST 
+				// Tested for higher values, and the results are as below.
+				// None - 110362 / 5193
+				// 0.6% - 127854 / 5273
+				// 0.5% - 132693 / 5309
+				// 0.4% - 136913 / 5353
+				// 0.3% - 142860 / 5424
+				// 0.2% - 149715 / 5553
+				// 0.1% - 165011 / 5702
 			}
 
 			// Still checking the feasibility of the idea below

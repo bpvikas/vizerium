@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -136,6 +137,8 @@ public class EventCandleIdentificationTest {
 			logger.info("19th vigintile is " + candleSizes[19 * candleSizes.length / 20]);
 			logger.info("96th centile is " + candleSizes[96 * candleSizes.length / 100]);
 			logger.info("99th centile is " + candleSizes[99 * candleSizes.length / 100]);
+		} else {
+			Assert.fail("Unable to get unit prices for " + scripName + " from " + startDateTime + " to " + endDateTime + " in " + timeFormat.toString() + " format.");
 		}
 	}
 }

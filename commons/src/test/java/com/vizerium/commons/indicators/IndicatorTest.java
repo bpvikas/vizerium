@@ -60,9 +60,9 @@ public class IndicatorTest {
 
 	@Test
 	public void testClassName() {
-		System.out.println("CanonicalName -> " + this.getClass().getCanonicalName());
-		System.out.println("Name -> " + this.getClass().getName());
-		System.out.println("SimpleName -> " + this.getClass().getSimpleName());
-		System.out.println("TypeName -> " + this.getClass().getTypeName());
+		Assert.assertEquals("com.vizerium.commons.indicators.IndicatorTest", this.getClass().getCanonicalName());
+		Assert.assertEquals("com.vizerium.commons.indicators.IndicatorTest", this.getClass().getName());
+		Assert.assertEquals("IndicatorTest", this.getClass().getSimpleName());
+		Assert.assertEquals("com.vizerium.commons.indicators.IndicatorTest", this.getClass().getTypeName());
 	}
 }
