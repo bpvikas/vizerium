@@ -50,7 +50,7 @@ existingposition4=
 existingposition5=
 
 #Option Chain datasource, values are web, localhtml
-option.chain.remote.datasource=
+option.chain.remote.datasource=localhtml
 
 #Location where option chains are stored locally for processing, values are csv, db
 option.chain.local.datasource=csv
@@ -64,7 +64,7 @@ historical.data.local.datasource=csv
 minimum.openinterest=
 
 # The premium limit on every order. Helps in reducing the cost incurred in a single trade.
-maximum.option.premium=400.00
+maximum.option.premium=3500.00
 
 #Margin for sell orders. Total margin to be maintained for sell orders.
 sell.order.margin=12.5
@@ -74,7 +74,7 @@ investing.amount=400000.00
 
 #max positions to be held(including existing positions)
 #Currently, this value can be "no of existing positions + 3" for 512 MB Java memory
-max.option.positions=2
+max.option.positions=
 
 #number of lots to be held for a particular option
 max.option.lots=1

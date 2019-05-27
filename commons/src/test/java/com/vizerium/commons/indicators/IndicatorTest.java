@@ -16,8 +16,13 @@
 
 package com.vizerium.commons.indicators;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -64,5 +69,19 @@ public class IndicatorTest {
 		Assert.assertEquals("com.vizerium.commons.indicators.IndicatorTest", this.getClass().getName());
 		Assert.assertEquals("IndicatorTest", this.getClass().getSimpleName());
 		Assert.assertEquals("com.vizerium.commons.indicators.IndicatorTest", this.getClass().getTypeName());
+	}
+
+	@Test
+	public void getFileTimes() {
+		// String fileName = "C:/Users/sahil/Desktop/3.png";
+		String fileName = "This PC/Q6 plus/Internal storage/DCIM/Camera/Indicator_panel_blocking.png";
+		Path p = Paths.get(fileName);
+		try {
+			Map<String, Object> fileAttributes = Files.readAttributes(p, "*");
+			System.out.println("Setting creationTime from : " + fileAttributes.get("creationTime") + " to lastModifiedTime: " + fileAttributes.get("lastModifiedTime"));
+			// Files.setAttribute(p, "creationTime", fileAttributes.get("lastModifiedTime"));
+		} catch (IOException e) {
+			System.err.println("Cannot change the creation time. " + e);
+		}
 	}
 }

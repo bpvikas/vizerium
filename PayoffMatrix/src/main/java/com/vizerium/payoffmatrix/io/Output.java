@@ -19,6 +19,7 @@ package com.vizerium.payoffmatrix.io;
 import java.util.Arrays;
 
 import com.vizerium.payoffmatrix.comparator.BestRiskRewardRatioPayoffMatrixComparator;
+import com.vizerium.payoffmatrix.comparator.HighestAveragePayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.HighestProfitProbabilityPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.MaximumProfitPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.MinimumLossPayoffMatrixComparator;
@@ -41,6 +42,10 @@ public class Output {
 	private OptionStrategiesWithPayoff[] minNegativePayoffs;
 
 	private OptionStrategiesWithPayoff[] bestRiskRewardRatioPayoffs;
+
+	private OptionStrategiesWithPayoff[] highestAveragePayoffs;
+
+	private String underlyingName;
 
 	private Range underlyingRange;
 
@@ -81,6 +86,7 @@ public class Output {
 		maxPositivePayoffs = new OptionStrategiesWithPayoff[analysisPayoffsLengths];
 		minNegativePayoffs = new OptionStrategiesWithPayoff[analysisPayoffsLengths];
 		bestRiskRewardRatioPayoffs = new OptionStrategiesWithPayoff[analysisPayoffsLengths];
+		highestAveragePayoffs = new OptionStrategiesWithPayoff[analysisPayoffsLengths];
 
 		Arrays.sort(optionStrategiesWithPayoffs, new HighestProfitProbabilityPayoffMatrixComparator());
 		System.arraycopy(optionStrategiesWithPayoffs, 0, highestProfitProbabilityPayoffs, 0, highestProfitProbabilityPayoffs.length);
@@ -90,6 +96,16 @@ public class Output {
 		System.arraycopy(optionStrategiesWithPayoffs, 0, minNegativePayoffs, 0, minNegativePayoffs.length);
 		Arrays.sort(optionStrategiesWithPayoffs, new BestRiskRewardRatioPayoffMatrixComparator());
 		System.arraycopy(optionStrategiesWithPayoffs, 0, bestRiskRewardRatioPayoffs, 0, bestRiskRewardRatioPayoffs.length);
+		Arrays.sort(optionStrategiesWithPayoffs, new HighestAveragePayoffMatrixComparator());
+		System.arraycopy(optionStrategiesWithPayoffs, 0, highestAveragePayoffs, 0, highestAveragePayoffs.length);
+	}
+
+	public String getUnderlyingName() {
+		return underlyingName;
+	}
+
+	public void setUnderlyingName(String underlyingName) {
+		this.underlyingName = underlyingName;
 	}
 
 	public Range getUnderlyingRange() {
@@ -111,7 +127,7 @@ public class Output {
 	@Override
 	public String toString() {
 		return "Output " + System.lineSeparator() + printExistingPositionPayoff() + printHighestProfitProbabilityPayoffs() + printMaxPositivePayoffs() + printMinNegativePayoffs()
-				+ printBestRiskRewardRatioPayoffs();
+				+ printBestRiskRewardRatioPayoffs() + printHighestAveragePayoffs();
 	}
 
 	private String printExistingPositionPayoff() {
@@ -134,15 +150,19 @@ public class Output {
 		return printPayoffs("bestRiskRewardRatioPayoffs", bestRiskRewardRatioPayoffs);
 	}
 
+	private String printHighestAveragePayoffs() {
+		return printPayoffs("highestAveragePayoffs", highestAveragePayoffs);
+	}
+
 	private String printPayoffs(String payoffName, OptionStrategiesWithPayoff[] payoffs) {
-		String printPayoff = System.lineSeparator() + "***************************************" + System.lineSeparator() + payoffName + " : " + System.lineSeparator()
-				+ "***************************************" + System.lineSeparator();
+		String printPayoff = System.lineSeparator() + "***************************************" + System.lineSeparator() + underlyingName + " " + payoffName + " : "
+				+ System.lineSeparator() + "***************************************" + System.lineSeparator();
 		if (payoffs != null && payoffs.length > 0) {
 			for (OptionStrategiesWithPayoff payoff : payoffs) {
 				printPayoff += payoff;
 				printPayoff += System.lineSeparator();
 			}
-			PayoffReportXlsx.createReport(payoffName, payoffs, optionStrategiesCount, underlyingRange);
+			PayoffReportXlsx.createReport(underlyingName, payoffName, payoffs, optionStrategiesCount, underlyingRange);
 		}
 		return printPayoff;
 	}

@@ -51,13 +51,14 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 			while (optionChainIterator.hasNext()) {
 				List<OptionSpread> optionSpreads = optionChainIterator.next();
 
-				logger.info("Option Spreads being evaluated are : ");
-				String optionsSpreadString = "";
-				for (OptionSpread optionSpread : optionSpreads) {
-					optionsSpreadString += (optionSpread);
+				if (logger.isDebugEnabled()) {
+					logger.debug("Option Spreads being evaluated are : ");
+					String optionsSpreadString = "";
+					for (OptionSpread optionSpread : optionSpreads) {
+						optionsSpreadString += (optionSpread);
+					}
+					logger.debug(optionsSpreadString);
 				}
-				logger.info(optionsSpreadString);
-
 				if (containsOppositeActionsForSameStrikeAndSeries(optionSpreads)) {
 					continue;
 				}
@@ -89,7 +90,9 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 					payoffs.add(new Payoff(underlyingPrice, netPayoff));
 				}
 				PayoffMatrix payoffMatrix = new PayoffMatrix(payoffs.toArray(new Payoff[payoffs.size()]), criteria.getVolatility().getUnderlyingValue());
-				logger.info(payoffMatrix);
+				if (logger.isDebugEnabled()) {
+					logger.debug(payoffMatrix);
+				}
 				if (payoffMatrix.getMinNegativePayoff().getPayoff() > (criteria.getMaxLoss() * -1)) {
 					allOptionsWithPayoff.add(new OptionStrategiesWithPayoff(optionSpreads.toArray(new OptionSpread[optionSpreads.size()]), payoffMatrix));
 				}
@@ -130,7 +133,8 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 		for (Option existingOption : existingPositions) {
 			for (Option optionChainOption : optionChain) {
 				if ((optionChainOption.getStrike() == existingOption.getStrike()) && (optionChainOption.getType().equals(existingOption.getType()))
-						&& (optionChainOption.getExpiryDate().equals(existingOption.getExpiryDate())) && optionChainOption.getTradeAction().equals(existingOption.getTradeAction())) {
+						&& (optionChainOption.getExpiryDate().equals(existingOption.getExpiryDate()))
+						&& optionChainOption.getTradeAction().equals(existingOption.getTradeAction())) {
 					optionChainOption.setExisting(true);
 				}
 			}

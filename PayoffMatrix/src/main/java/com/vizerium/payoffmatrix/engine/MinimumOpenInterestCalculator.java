@@ -18,9 +18,13 @@ package com.vizerium.payoffmatrix.engine;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.vizerium.payoffmatrix.option.Option;
 
 public class MinimumOpenInterestCalculator {
+
+	private static Logger logger = Logger.getLogger(MinimumOpenInterestCalculator.class);
 
 	public static int calculateMinimumOpenInterest(List<Option> optionChain) {
 
@@ -30,6 +34,8 @@ public class MinimumOpenInterestCalculator {
 		}
 		float openInterestLogNaturalMean = openInterestLogNaturalSum / optionChain.size();
 
-		return (int) Math.exp(openInterestLogNaturalMean);
+		int minimumOpenInterest = (int) Math.exp(openInterestLogNaturalMean);
+		logger.info("Auto-calculated minimum OI: " + minimumOpenInterest);
+		return minimumOpenInterest;
 	}
 }

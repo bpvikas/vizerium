@@ -1,7 +1,7 @@
 underlying.volatility.standardDeviationMultiple=1.488
 
 # contract.duration can be "month" when you are trading the Index. 
-contract.duration=month
+contract.duration=week
 
 # contract.series Default is near, possible values are "near", "mid", "far"
 contract.series=near
@@ -15,12 +15,9 @@ existingposition3=
 existingposition4=
 existingposition5=
 
-#Option Chain datasource, values are web, localhtml
-option.chain.remote.datasource=localhtml
-
 #max positions to be held(including existing positions)
 #Currently, this value can be "no of existing positions + 3" for 512 MB Java memory
-max.option.positions=3
+max.option.positions=4
 
 #max spread positions to be held
 #Currently, this value can be 2 for 512 MB Java memory

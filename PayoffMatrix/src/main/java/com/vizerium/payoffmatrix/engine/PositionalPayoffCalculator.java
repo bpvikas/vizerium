@@ -50,12 +50,14 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 				List<Option> newPositions = optionChainIterator.next();
 				Option[] newAndExistingPositions = ArrayUtils.addAll(criteria.getExistingPositions(), newPositions.toArray(new Option[newPositions.size()]));
 
-				logger.info("Options being evaluated are : ");
-				String optionsString = "";
-				for (Option newOrExistingPosition : newAndExistingPositions) {
-					optionsString += (newOrExistingPosition);
+				if (logger.isDebugEnabled()) {
+					logger.debug("Options being evaluated are : ");
+					String optionsString = "";
+					for (Option newOrExistingPosition : newAndExistingPositions) {
+						optionsString += (newOrExistingPosition);
+					}
+					logger.debug(optionsString);
 				}
-				logger.info(optionsString);
 				if (containsOppositeActionsForSameStrikeAndSeries(newPositions)) {
 					continue;
 				}
@@ -86,13 +88,16 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 					payoffs.add(new Payoff(underlyingPrice, netPayoff));
 				}
 				PayoffMatrix payoffMatrix = new PayoffMatrix(payoffs.toArray(new Payoff[payoffs.size()]), criteria.getVolatility().getUnderlyingValue());
-				logger.info(payoffMatrix);
+				if (logger.isDebugEnabled()) {
+					logger.debug(payoffMatrix);
+				}
 				if (payoffMatrix.getMinNegativePayoff().getPayoff() > (criteria.getMaxLoss() * -1)) {
 					allOptionsWithPayoff.add(new OptionStrategiesWithPayoff(newAndExistingPositions, payoffMatrix));
 				}
 			}
 		}
 		Output output = new Output(allOptionsWithPayoff.toArray(new OptionStrategiesWithPayoff[allOptionsWithPayoff.size()]));
+		output.setUnderlyingName(criteria.getUnderlyingName());
 		output.setUnderlyingRange(criteria.getVolatility().getUnderlyingRange());
 		output.setOptionStrategiesCount(criteria.getMaxOptionOpenPositions());
 		return output;

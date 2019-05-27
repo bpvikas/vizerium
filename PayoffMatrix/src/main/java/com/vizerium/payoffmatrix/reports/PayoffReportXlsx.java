@@ -51,8 +51,8 @@ public class PayoffReportXlsx {
 
 	private static final int initialColNum = 69; // column "E"
 
-	public static void createReport(String payoffName, OptionStrategiesWithPayoff[] payoffs, int optionStrategiesCount, Range underlyingRange) {
-		Workbook workbook = getReportTemplate();
+	public static void createReport(String underlyingName, String payoffName, OptionStrategiesWithPayoff[] payoffs, int optionStrategiesCount, Range underlyingRange) {
+		Workbook workbook = getReportTemplate(underlyingName);
 		try {
 			int dataSheetNum = initialOpenPositionDataSheetNumber;
 			for (OptionStrategiesWithPayoff payoff : payoffs) {
@@ -64,16 +64,16 @@ public class PayoffReportXlsx {
 					}
 				}
 			}
-			revaluateFormulaAndCreateOutputFile(workbook, payoffName, optionStrategiesCount, underlyingRange);
+			revaluateFormulaAndCreateOutputFile(workbook, payoffName, optionStrategiesCount, underlyingName, underlyingRange);
 		} catch (Exception e) {
 			logger.error("An error occurred while generating the report.", e);
 			throw new RuntimeException(e);
 		}
 	}
 
-	private static Workbook getReportTemplate() {
+	private static Workbook getReportTemplate(String underlyingName) {
 		try {
-			File reportTemplate = FileUtils.getLastModifiedFileInDirectory(reportLocation, ".xlsx");
+			File reportTemplate = FileUtils.getLastModifiedFileInDirectory(reportLocation, underlyingName + ".xlsx");
 			FileInputStream reportTemplateFileInput = new FileInputStream(reportTemplate);
 			return new XSSFWorkbook(reportTemplateFileInput);
 		} catch (Exception e) {
@@ -126,12 +126,13 @@ public class PayoffReportXlsx {
 		cell.setCellValue(option.getNumberOfLots());
 	}
 
-	private static void revaluateFormulaAndCreateOutputFile(Workbook workbook, String outputFileName, int optionStrategiesCount, Range underlyingRange) {
+	private static void revaluateFormulaAndCreateOutputFile(Workbook workbook, String outputFileName, int optionStrategiesCount, String underlyingName, Range underlyingRange) {
 		XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
 
-		String currentReportDirectoryPath = reportLocation + System.getProperty("application.run.datetime") + "_" + System.getProperty("application.strategy.name") + "_"
-				+ String.valueOf(optionStrategiesCount) + System.getProperty("application.strategy.name").toLowerCase().substring(0, 3) + "_" + (int) underlyingRange.getLow()
-				+ "_" + (int) underlyingRange.getHigh() + "/";
+		String currentReportDirectoryPath = reportLocation + System.getProperty("application.run.datetime") + "_" + underlyingName + "_"
+				+ System.getProperty("application.strategy.name") + "_" + String.valueOf(optionStrategiesCount)
+				+ System.getProperty("application.strategy.name").toLowerCase().substring(0, 3) + "_" + (int) underlyingRange.getLow() + "_" + (int) underlyingRange.getHigh()
+				+ "/";
 		File currentReportDirectory = new File(currentReportDirectoryPath);
 		if (!currentReportDirectory.exists()) {
 			currentReportDirectory.mkdir();

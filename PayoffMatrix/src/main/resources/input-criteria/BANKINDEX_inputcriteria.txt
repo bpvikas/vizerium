@@ -1,4 +1,4 @@
-underlying.volatility.standardDeviationMultiple=1.182
+underlying.volatility.standardDeviationMultiple=1.582
 
 # The upper and lower end of the range of the underlying.
 # If this is provided, then the standard deviation calculations are ignored.
@@ -20,21 +20,18 @@ existingposition3=
 existingposition4=
 existingposition5=
 
-#Option Chain datasource, values are web, localhtml
-option.chain.remote.datasource=localhtml
-
 #max positions to be held(including existing positions)
 #Currently, this value can be "no of existing positions + 3" for 512 MB Java memory
-max.option.positions=2
+max.option.positions=4
 
 #max spread positions to be held
 #Currently, this value can be 2 for 512 MB Java memory
 max.option.spread.positions=2
 
-#The lot size (e.g. 40 for the Bank Index)
-lotsize=40
+#The lot size (e.g. 20 for the Bank Index)
+lotsize=20
 
 #If not provided, taken as the Index default of the next Thursday of the current settlement.
 #If it is a holiday, then please manually enter the date here
 #format DDMMYYYY
-expiryDate=17102018
+expiryDate=
