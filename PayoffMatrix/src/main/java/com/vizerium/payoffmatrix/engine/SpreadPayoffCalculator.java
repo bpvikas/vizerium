@@ -40,11 +40,14 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 		Option[] optionChain = filterOptionChainForEvaluatingNewPositions(optionDataStore.readOptionChainData(criteria), criteria);
 		OptionSpread[] optionSpreadChain = createOptionSpreadsFromSingleOptions(optionChain, criteria.getExistingPositions());
 
-		List<OptionStrategiesWithPayoff> allOptionsWithPayoff = new ArrayList<OptionStrategiesWithPayoff>(optionSpreadChain.length * 2);
-
 		float underlyingRangeTop = criteria.getVolatility().getUnderlyingRange().getHigh();
 		float underlyingRangeBottom = criteria.getVolatility().getUnderlyingRange().getLow();
 		float underlyingRangeStep = criteria.getVolatility().getUnderlyingRange().getStep();
+
+		Output output = new Output();
+		output.setUnderlyingName(criteria.getUnderlyingName());
+		output.setUnderlyingRange(criteria.getVolatility().getUnderlyingRange());
+		output.setOptionStrategiesCount(criteria.getMaxOptionSpreadOpenPositions());
 
 		for (int j = 0; j <= criteria.getMaxOptionSpreadOpenPositions(); j++) {
 			OptionChainIterator<OptionSpread> optionChainIterator = new OptionChainIterator<OptionSpread>(optionSpreadChain, j);
@@ -62,7 +65,15 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 				if (containsOppositeActionsForSameStrikeAndSeries(optionSpreads)) {
 					continue;
 				}
-				List<Payoff> payoffs = new ArrayList<Payoff>();
+
+				int payoffsSize = 0;
+				// This for loop is a bit lame to get to the size of payoffs, but wanted to get the accurate count without having to write too complicated code.
+				for (float underlyingPrice = underlyingRangeBottom; underlyingPrice <= underlyingRangeTop; underlyingPrice += underlyingRangeStep) {
+					++payoffsSize;
+				}
+				float[][] payoffs = new float[payoffsSize][];
+
+				int payoffCounter = 0;
 				for (float underlyingPrice = underlyingRangeBottom; underlyingPrice <= underlyingRangeTop; underlyingPrice += underlyingRangeStep) {
 					float netPayoff = 0.0f;
 					for (OptionSpread optionSpread : optionSpreads) {
@@ -87,20 +98,15 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 							}
 						}
 					}
-					payoffs.add(new Payoff(underlyingPrice, netPayoff));
+					payoffs[payoffCounter++] = new float[] { underlyingPrice, netPayoff };
 				}
-				PayoffMatrix payoffMatrix = new PayoffMatrix(payoffs.toArray(new Payoff[payoffs.size()]), criteria.getVolatility().getUnderlyingValue());
+				PayoffMatrix payoffMatrix = new PayoffMatrix(payoffs, criteria.getVolatility().getUnderlyingValue());
 				if (logger.isDebugEnabled()) {
 					logger.debug(payoffMatrix);
 				}
-				if (payoffMatrix.getMinNegativePayoff().getPayoff() > (criteria.getMaxLoss() * -1)) {
-					allOptionsWithPayoff.add(new OptionStrategiesWithPayoff(optionSpreads.toArray(new OptionSpread[optionSpreads.size()]), payoffMatrix));
-				}
+				output.performPayoffAnalysis(new OptionStrategiesWithPayoff(optionSpreads.toArray(new OptionSpread[optionSpreads.size()]), payoffMatrix));
 			}
 		}
-		Output output = new Output(allOptionsWithPayoff.toArray(new OptionStrategiesWithPayoff[allOptionsWithPayoff.size()]));
-		output.setUnderlyingRange(criteria.getVolatility().getUnderlyingRange());
-		output.setOptionStrategiesCount(criteria.getMaxOptionSpreadOpenPositions());
 		return output;
 	}
 

@@ -38,11 +38,15 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 	public Output calculatePayoff(Criteria criteria, OptionDataStore optionDataStore) {
 
 		Option[] optionChain = filterOptionChainForEvaluatingNewPositions(optionDataStore.readOptionChainData(criteria), criteria);
-		List<OptionStrategiesWithPayoff> allOptionsWithPayoff = new ArrayList<OptionStrategiesWithPayoff>(optionChain.length * 2);
 
 		float underlyingRangeTop = criteria.getVolatility().getUnderlyingRange().getHigh();
 		float underlyingRangeBottom = criteria.getVolatility().getUnderlyingRange().getLow();
 		float underlyingRangeStep = criteria.getVolatility().getUnderlyingRange().getStep();
+
+		Output output = new Output();
+		output.setUnderlyingName(criteria.getUnderlyingName());
+		output.setUnderlyingRange(criteria.getVolatility().getUnderlyingRange());
+		output.setOptionStrategiesCount(criteria.getMaxOptionOpenPositions());
 
 		for (int j = 0; j <= criteria.getMaxOptionOpenPositions() - criteria.getExistingPositions().length; j++) {
 			OptionChainIterator<Option> optionChainIterator = new OptionChainIterator<Option>(optionChain, j);
@@ -62,7 +66,14 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 					continue;
 				}
 
-				List<Payoff> payoffs = new ArrayList<Payoff>();
+				int payoffsSize = 0;
+				// This for loop is a bit lame to get to the size of payoffs, but wanted to get the accurate count without having to write too complicated code.
+				for (float underlyingPrice = underlyingRangeBottom; underlyingPrice <= underlyingRangeTop; underlyingPrice += underlyingRangeStep) {
+					++payoffsSize;
+				}
+				float[][] payoffs = new float[payoffsSize][];
+
+				int payoffCounter = 0;
 				for (float underlyingPrice = underlyingRangeBottom; underlyingPrice <= underlyingRangeTop; underlyingPrice += underlyingRangeStep) {
 					float netPayoff = 0.0f;
 					for (Option newOrExistingPosition : newAndExistingPositions) {
@@ -85,21 +96,16 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 							}
 						}
 					}
-					payoffs.add(new Payoff(underlyingPrice, netPayoff));
+					payoffs[payoffCounter++] = new float[] { underlyingPrice, netPayoff };
 				}
-				PayoffMatrix payoffMatrix = new PayoffMatrix(payoffs.toArray(new Payoff[payoffs.size()]), criteria.getVolatility().getUnderlyingValue());
+				PayoffMatrix payoffMatrix = new PayoffMatrix(payoffs, criteria.getVolatility().getUnderlyingValue());
 				if (logger.isDebugEnabled()) {
 					logger.debug(payoffMatrix);
 				}
-				if (payoffMatrix.getMinNegativePayoff().getPayoff() > (criteria.getMaxLoss() * -1)) {
-					allOptionsWithPayoff.add(new OptionStrategiesWithPayoff(newAndExistingPositions, payoffMatrix));
-				}
+				output.performPayoffAnalysis(new OptionStrategiesWithPayoff(newAndExistingPositions, payoffMatrix));
 			}
 		}
-		Output output = new Output(allOptionsWithPayoff.toArray(new OptionStrategiesWithPayoff[allOptionsWithPayoff.size()]));
-		output.setUnderlyingName(criteria.getUnderlyingName());
-		output.setUnderlyingRange(criteria.getVolatility().getUnderlyingRange());
-		output.setOptionStrategiesCount(criteria.getMaxOptionOpenPositions());
+		output.finale();
 		return output;
 	}
 

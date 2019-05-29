@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class CsvHistoricalDataVolatilityCalculator_IndexMonth_Test extends CsvHistoricalDataVolatilityCalculatorTest {
+public class CsvHistoricalDataVolatilityCalculator_BankIndexMonth_Test extends CsvHistoricalDataVolatilityCalculatorTest {
 
 	private CsvHistoricalDataVolatilityCalculator unit;
 
@@ -34,7 +34,7 @@ public class CsvHistoricalDataVolatilityCalculator_IndexMonth_Test extends CsvHi
 
 	@Before
 	public void setup() {
-		unit = new CsvHistoricalDataVolatilityCalculator("INDEX");
+		unit = new CsvHistoricalDataVolatilityCalculator("BANKINDEX");
 	}
 
 	@Test

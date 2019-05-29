@@ -24,6 +24,6 @@ public class MinimumLossPayoffMatrixComparator implements Comparator<OptionStrat
 
 	@Override
 	public int compare(OptionStrategiesWithPayoff o1, OptionStrategiesWithPayoff o2) {
-		return Comparator.comparing(OptionStrategiesWithPayoff::getMinNegativePayoff).compare(o2, o1);
+		return Comparator.comparing(OptionStrategiesWithPayoff::getNegativePayoffSum).thenComparing(OptionStrategiesWithPayoff::getPositivePayoffSum).compare(o2, o1);
 	}
 }

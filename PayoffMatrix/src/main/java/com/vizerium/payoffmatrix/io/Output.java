@@ -16,7 +16,7 @@
 
 package com.vizerium.payoffmatrix.io;
 
-import java.util.Arrays;
+import java.util.TreeSet;
 
 import com.vizerium.payoffmatrix.comparator.BestRiskRewardRatioPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.HighestAveragePayoffMatrixComparator;
@@ -31,19 +31,17 @@ public class Output {
 
 	public static int analysisPayoffsLengths = 7;
 
-	private OptionStrategiesWithPayoff[] optionStrategiesWithPayoffs;
-
 	private OptionStrategiesWithPayoff existingPositionPayoff;
 
-	private OptionStrategiesWithPayoff[] highestProfitProbabilityPayoffs;
+	private TreeSet<OptionStrategiesWithPayoff> highestProfitProbabilityPayoffs = new TreeSet<OptionStrategiesWithPayoff>(new HighestProfitProbabilityPayoffMatrixComparator());
 
-	private OptionStrategiesWithPayoff[] maxPositivePayoffs;
+	private TreeSet<OptionStrategiesWithPayoff> maxPositivePayoffs = new TreeSet<OptionStrategiesWithPayoff>(new MaximumProfitPayoffMatrixComparator());
 
-	private OptionStrategiesWithPayoff[] minNegativePayoffs;
+	private TreeSet<OptionStrategiesWithPayoff> minNegativePayoffs = new TreeSet<OptionStrategiesWithPayoff>(new MinimumLossPayoffMatrixComparator());
 
-	private OptionStrategiesWithPayoff[] bestRiskRewardRatioPayoffs;
+	private TreeSet<OptionStrategiesWithPayoff> bestRiskRewardRatioPayoffs = new TreeSet<OptionStrategiesWithPayoff>(new BestRiskRewardRatioPayoffMatrixComparator());
 
-	private OptionStrategiesWithPayoff[] highestAveragePayoffs;
+	private TreeSet<OptionStrategiesWithPayoff> highestAveragePayoffs = new TreeSet<OptionStrategiesWithPayoff>(new HighestAveragePayoffMatrixComparator());
 
 	private String underlyingName;
 
@@ -55,49 +53,23 @@ public class Output {
 
 	}
 
-	public Output(OptionStrategiesWithPayoff[] optionStrategiesWithPayoffs) {
-		super();
-		this.optionStrategiesWithPayoffs = optionStrategiesWithPayoffs;
-		performPayoffAnalysis();
-	}
-
-	public OptionStrategiesWithPayoff[] getOptionsWithPayoffs() {
-		return optionStrategiesWithPayoffs;
-	}
-
-	public void setOptionsWithPayoffs(OptionStrategiesWithPayoff[] optionStrategiesWithPayoffs) {
-		this.optionStrategiesWithPayoffs = optionStrategiesWithPayoffs;
-		performPayoffAnalysis();
-	}
-
-	public void performPayoffAnalysis() {
-		for (OptionStrategiesWithPayoff optionStrategiesWithPayoff : optionStrategiesWithPayoffs) {
-			if (optionStrategiesWithPayoff.isExistingOpenPosition()) {
-				existingPositionPayoff = optionStrategiesWithPayoff;
-				break;
-			}
+	public void performPayoffAnalysis(OptionStrategiesWithPayoff optionStrategiesWithPayoff) {
+		if (optionStrategiesWithPayoff.isExistingOpenPosition()) {
+			existingPositionPayoff = optionStrategiesWithPayoff;
 		}
 
-		if (analysisPayoffsLengths > optionStrategiesWithPayoffs.length) {
-			analysisPayoffsLengths = optionStrategiesWithPayoffs.length;
+		compareToExistingPayoffs(highestAveragePayoffs, optionStrategiesWithPayoff);
+		compareToExistingPayoffs(highestProfitProbabilityPayoffs, optionStrategiesWithPayoff);
+		compareToExistingPayoffs(maxPositivePayoffs, optionStrategiesWithPayoff);
+		compareToExistingPayoffs(minNegativePayoffs, optionStrategiesWithPayoff);
+		compareToExistingPayoffs(bestRiskRewardRatioPayoffs, optionStrategiesWithPayoff);
+	}
+
+	private void compareToExistingPayoffs(TreeSet<OptionStrategiesWithPayoff> payoffs, OptionStrategiesWithPayoff optionStrategiesWithPayoff) {
+		payoffs.add(optionStrategiesWithPayoff);
+		if (payoffs.size() > analysisPayoffsLengths) {
+			payoffs.pollLast(); // pollLast retrieves and removes the last entry in the TreeSet.
 		}
-
-		highestProfitProbabilityPayoffs = new OptionStrategiesWithPayoff[analysisPayoffsLengths];
-		maxPositivePayoffs = new OptionStrategiesWithPayoff[analysisPayoffsLengths];
-		minNegativePayoffs = new OptionStrategiesWithPayoff[analysisPayoffsLengths];
-		bestRiskRewardRatioPayoffs = new OptionStrategiesWithPayoff[analysisPayoffsLengths];
-		highestAveragePayoffs = new OptionStrategiesWithPayoff[analysisPayoffsLengths];
-
-		Arrays.sort(optionStrategiesWithPayoffs, new HighestProfitProbabilityPayoffMatrixComparator());
-		System.arraycopy(optionStrategiesWithPayoffs, 0, highestProfitProbabilityPayoffs, 0, highestProfitProbabilityPayoffs.length);
-		Arrays.sort(optionStrategiesWithPayoffs, new MaximumProfitPayoffMatrixComparator());
-		System.arraycopy(optionStrategiesWithPayoffs, 0, maxPositivePayoffs, 0, maxPositivePayoffs.length);
-		Arrays.sort(optionStrategiesWithPayoffs, new MinimumLossPayoffMatrixComparator());
-		System.arraycopy(optionStrategiesWithPayoffs, 0, minNegativePayoffs, 0, minNegativePayoffs.length);
-		Arrays.sort(optionStrategiesWithPayoffs, new BestRiskRewardRatioPayoffMatrixComparator());
-		System.arraycopy(optionStrategiesWithPayoffs, 0, bestRiskRewardRatioPayoffs, 0, bestRiskRewardRatioPayoffs.length);
-		Arrays.sort(optionStrategiesWithPayoffs, new HighestAveragePayoffMatrixComparator());
-		System.arraycopy(optionStrategiesWithPayoffs, 0, highestAveragePayoffs, 0, highestAveragePayoffs.length);
 	}
 
 	public String getUnderlyingName() {
@@ -131,7 +103,13 @@ public class Output {
 	}
 
 	private String printExistingPositionPayoff() {
-		return printPayoffs("existingPositionPayoff", new OptionStrategiesWithPayoff[] { existingPositionPayoff });
+		if (existingPositionPayoff == null) {
+			return System.lineSeparator();
+		} else {
+			TreeSet<OptionStrategiesWithPayoff> existingPositionPayoffSet = new TreeSet<OptionStrategiesWithPayoff>(new HighestAveragePayoffMatrixComparator());
+			existingPositionPayoffSet.add(existingPositionPayoff);
+			return printPayoffs("existingPositionPayoff", existingPositionPayoffSet);
+		}
 	}
 
 	private String printHighestProfitProbabilityPayoffs() {
@@ -154,10 +132,10 @@ public class Output {
 		return printPayoffs("highestAveragePayoffs", highestAveragePayoffs);
 	}
 
-	private String printPayoffs(String payoffName, OptionStrategiesWithPayoff[] payoffs) {
+	private String printPayoffs(String payoffName, TreeSet<OptionStrategiesWithPayoff> payoffs) {
 		String printPayoff = System.lineSeparator() + "***************************************" + System.lineSeparator() + underlyingName + " " + payoffName + " : "
 				+ System.lineSeparator() + "***************************************" + System.lineSeparator();
-		if (payoffs != null && payoffs.length > 0) {
+		if (payoffs != null && payoffs.size() > 0) {
 			for (OptionStrategiesWithPayoff payoff : payoffs) {
 				printPayoff += payoff;
 				printPayoff += System.lineSeparator();
@@ -165,5 +143,10 @@ public class Output {
 			PayoffReportXlsx.createReport(underlyingName, payoffName, payoffs, optionStrategiesCount, underlyingRange);
 		}
 		return printPayoff;
+	}
+
+	public void finale() {
+		// This method does nothing. I just wanted to put a breakpoint at a place where I can see all final results together.
+		int a = 5;
 	}
 }

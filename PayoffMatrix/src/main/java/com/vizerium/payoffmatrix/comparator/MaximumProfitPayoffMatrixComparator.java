@@ -24,6 +24,6 @@ public class MaximumProfitPayoffMatrixComparator implements Comparator<OptionStr
 
 	@Override
 	public int compare(OptionStrategiesWithPayoff o1, OptionStrategiesWithPayoff o2) {
-		return Comparator.comparing(OptionStrategiesWithPayoff::getMaxPositivePayoff).compare(o2, o1);
+		return Comparator.comparing(OptionStrategiesWithPayoff::getPositivePayoffSum).thenComparing(OptionStrategiesWithPayoff::getNegativePayoffSum).compare(o2, o1);
 	}
 }

@@ -162,8 +162,8 @@ public abstract class Option implements Cloneable, Serializable, OptionStrategy 
 	}
 
 	public float getPremiumPaidReceived() {
-		return tradeAction == TradeAction.SHORT ? ((existing ? tradedPremium : currentPremium) * numberOfLots * lotSize) : ((existing ? tradedPremium : currentPremium)
-				* numberOfLots * lotSize * -1);
+		return tradeAction == TradeAction.SHORT ? ((existing ? tradedPremium : currentPremium) * numberOfLots * lotSize)
+				: ((existing ? tradedPremium : currentPremium) * numberOfLots * lotSize * -1);
 	}
 
 	public abstract OptionType getType();

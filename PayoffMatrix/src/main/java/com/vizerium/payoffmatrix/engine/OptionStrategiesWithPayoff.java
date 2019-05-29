@@ -50,12 +50,12 @@ public class OptionStrategiesWithPayoff {
 		this.payoffMatrix = payoffMatrix;
 	}
 
-	public float getMaxPositivePayoff() {
-		return payoffMatrix.getMaxPositivePayoff().getPayoff();
+	public float getPositivePayoffSum() {
+		return payoffMatrix.getPositivePayoffSum();
 	}
 
-	public float getMinNegativePayoff() {
-		return payoffMatrix.getMinNegativePayoff().getPayoff();
+	public float getNegativePayoffSum() {
+		return payoffMatrix.getNegativePayoffSum();
 	}
 
 	public float getProfitProbability() {
@@ -67,7 +67,6 @@ public class OptionStrategiesWithPayoff {
 	}
 
 	public float getRiskRewardRatio() {
-		// This is best used only for Spread positions.
 		return payoffMatrix.getRiskRewardRatio();
 	}
 

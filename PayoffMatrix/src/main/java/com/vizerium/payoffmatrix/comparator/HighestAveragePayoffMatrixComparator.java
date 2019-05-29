@@ -24,6 +24,6 @@ public class HighestAveragePayoffMatrixComparator implements Comparator<OptionSt
 
 	@Override
 	public int compare(OptionStrategiesWithPayoff o1, OptionStrategiesWithPayoff o2) {
-		return Comparator.comparing(OptionStrategiesWithPayoff::getPayoffAverage).compare(o2, o1);
+		return Comparator.comparing(OptionStrategiesWithPayoff::getPayoffAverage).thenComparing(OptionStrategiesWithPayoff::getPositivePayoffSum).compare(o2, o1);
 	}
 }

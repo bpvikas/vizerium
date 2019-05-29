@@ -46,6 +46,186 @@ public class CsvHistoricalDataVolatilityCalculator_Index2Week_Test extends CsvHi
 	}
 
 	@Test
+	public void test201201ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2012, 1);
+	}
+
+	@Test
+	public void test201202ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2012, 2);
+	}
+
+	@Test
+	public void test201203ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2012, 3);
+	}
+
+	@Test
+	public void test201204ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2012, 4);
+	}
+
+	@Test
+	public void test201205ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2012, 5);
+	}
+
+	@Test
+	public void test201206ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2012, 6);
+	}
+
+	@Test
+	public void test201207ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2012, 7);
+	}
+
+	@Test
+	public void test201208ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2012, 8);
+	}
+
+	@Test
+	public void test201209ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2012, 9);
+	}
+
+	@Test
+	public void test201210ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2012, 10);
+	}
+
+	@Test
+	public void test201211ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2012, 11);
+	}
+
+	@Test
+	public void test201212ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2012, 12);
+	}
+
+	@Test
+	public void test201301ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2013, 1);
+	}
+
+	@Test
+	public void test201302ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2013, 2);
+	}
+
+	@Test
+	public void test201303ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2013, 3);
+	}
+
+	@Test
+	public void test201304ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2013, 4);
+	}
+
+	@Test
+	public void test201305ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2013, 5);
+	}
+
+	@Test
+	public void test201306ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2013, 6);
+	}
+
+	@Test
+	public void test201307ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2013, 7);
+	}
+
+	@Test
+	public void test201308ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2013, 8);
+	}
+
+	@Test
+	public void test201309ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2013, 9);
+	}
+
+	@Test
+	public void test201310ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2013, 10);
+	}
+
+	@Test
+	public void test201311ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2013, 11);
+	}
+
+	@Test
+	public void test201312ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2013, 12);
+	}
+
+	@Test
+	public void test201401ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2014, 1);
+	}
+
+	@Test
+	public void test201402ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2014, 2);
+	}
+
+	@Test
+	public void test201403ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2014, 3);
+	}
+
+	@Test
+	public void test201404ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2014, 4);
+	}
+
+	@Test
+	public void test201405ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2014, 5);
+	}
+
+	@Test
+	public void test201406ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2014, 6);
+	}
+
+	@Test
+	public void test201407ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2014, 7);
+	}
+
+	@Test
+	public void test201408ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2014, 8);
+	}
+
+	@Test
+	public void test201409ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2014, 9);
+	}
+
+	@Test
+	public void test201410ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2014, 10);
+	}
+
+	@Test
+	public void test201411ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2014, 11);
+	}
+
+	@Test
+	public void test201412ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2014, 12);
+	}
+
+	@Test
 	public void test201501ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
 		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2015, 1);
 	}
@@ -273,6 +453,36 @@ public class CsvHistoricalDataVolatilityCalculator_Index2Week_Test extends CsvHi
 	@Test
 	public void test201810ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
 		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2018, 10);
+	}
+
+	@Test
+	public void test201811ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2018, 11);
+	}
+
+	@Test
+	public void test201812ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2018, 12);
+	}
+
+	@Test
+	public void test201901ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2019, 1);
+	}
+
+	@Test
+	public void test201902ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2019, 2);
+	}
+
+	@Test
+	public void test201903ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2019, 3);
+	}
+
+	@Test
+	public void test201904ExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior() {
+		testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(2019, 4);
 	}
 
 	private void testNextMonthExpiryDateIsAtWhichStandardDeviationBasedOnDataTill2WeeksPrior(int year, int month) {

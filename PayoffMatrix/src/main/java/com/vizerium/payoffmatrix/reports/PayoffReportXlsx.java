@@ -19,6 +19,7 @@ package com.vizerium.payoffmatrix.reports;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -51,7 +52,7 @@ public class PayoffReportXlsx {
 
 	private static final int initialColNum = 69; // column "E"
 
-	public static void createReport(String underlyingName, String payoffName, OptionStrategiesWithPayoff[] payoffs, int optionStrategiesCount, Range underlyingRange) {
+	public static void createReport(String underlyingName, String payoffName, TreeSet<OptionStrategiesWithPayoff> payoffs, int optionStrategiesCount, Range underlyingRange) {
 		Workbook workbook = getReportTemplate(underlyingName);
 		try {
 			int dataSheetNum = initialOpenPositionDataSheetNumber;
