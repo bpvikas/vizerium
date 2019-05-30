@@ -129,16 +129,20 @@ public class PayoffMatrix {
 		maxPositivePayoff = payoffs[0];
 		minNegativePayoff = payoffs[0];
 
+		float underlyingPriceRange = payoffs[payoffs.length - 1][0] - payoffs[0][0];
+		// The weightage is calculated by deciding how far the price is from the midpoint, which would approximately be the current underlying Price.
+		float rangeMidPoint = payoffs[0][0] + underlyingPriceRange / 2.0f;
+
 		for (float[] payoff : payoffs) {
 			if (payoff[1] > 0.0f) {
 				++positivePayoffsCount;
-				positivePayoffSum += payoff[1];
+				positivePayoffSum += payoff[1] * Math.abs(1 - (Math.abs(rangeMidPoint - payoff[0]) / (underlyingPriceRange / 2.0f)));
 			} else {
 				++negativePayoffsCount;
-				negativePayoffSum += payoff[1];
+				negativePayoffSum += payoff[1] * Math.abs(1 - (Math.abs(rangeMidPoint - payoff[0]) / (underlyingPriceRange / 2.0f)));
 			}
 
-			payoffSum += payoff[1];
+			payoffSum += payoff[1] * Math.abs(1 - (Math.abs(rangeMidPoint - payoff[0]) / (underlyingPriceRange / 2.0f)));
 
 			if (payoff[1] > maxPositivePayoff[1]) {
 				maxPositivePayoff = payoff;

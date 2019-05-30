@@ -73,7 +73,6 @@ sell.order.margin=12.5
 investing.amount=400000.00
 
 #max positions to be held(including existing positions)
-#Currently, this value can be "no of existing positions + 3" for 512 MB Java memory
 max.option.positions=
 
 #number of lots to be held for a particular option

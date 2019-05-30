@@ -88,7 +88,9 @@ public class ExpiryDateCalculator {
 		} else {
 			throw new RuntimeException("Unable to determine contractPeriodDuration, whether NEAR, MID or FAR.");
 		}
-		logger.info(localDate + " " + contractSeries.name() + " " + contractDuration.name() + " " + expiryLocalDate);
+		if (logger.isInfoEnabled()) {
+			logger.info(localDate + " " + contractSeries.name() + " " + contractDuration.name() + " " + expiryLocalDate);
+		}
 		return expiryLocalDate;
 	}
 }

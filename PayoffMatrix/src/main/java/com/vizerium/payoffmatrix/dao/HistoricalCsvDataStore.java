@@ -175,7 +175,9 @@ public class HistoricalCsvDataStore implements HistoricalDataStore {
 		boolean newCsvHistoricalDataLinePreExists = false;
 		for (String csvHistoricalDataLine : csvHistoricalDataLines) {
 			if (csvHistoricalDataLine.indexOf(dateString) > 0) {
-				logger.info("Data for " + underlyingName + " for date " + dateString + " already exists.");
+				if (logger.isInfoEnabled()) {
+					logger.info("Data for " + underlyingName + " for date " + dateString + " already exists.");
+				}
 				newCsvHistoricalDataLinePreExists = true;
 				break;
 			}

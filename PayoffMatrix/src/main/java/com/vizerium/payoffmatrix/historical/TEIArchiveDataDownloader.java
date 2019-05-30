@@ -72,7 +72,9 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 		}
 
 		for (LocalDate date = fromDate; date.compareTo(toDate) <= 0; date = date.plusDays(1)) {
-			logger.info(date + " " + date.getDayOfWeek());
+			if (logger.isInfoEnabled()) {
+				logger.info(date + " " + date.getDayOfWeek());
+			}
 			try {
 				if (Exchanges.get("TEI").isHoliday(date)) {
 					continue;
@@ -80,7 +82,9 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 
 				File localRawDataFile = new File(FileUtils.directoryPath + "underlying-raw-data/" + "cm" + localFileDateFormat.format(date) + ".zip");
 				if (localRawDataFile.exists()) {
-					logger.info("Raw data file already exists.");
+					if (logger.isInfoEnabled()) {
+						logger.info("Raw data file already exists.");
+					}
 					continue;
 				}
 
@@ -90,8 +94,9 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 				String historicalDataUrlString = new StringBuilder("/SEITIUQE/lacirotsih/tnetnoc/moc.aidniesn//:sptth").reverse().toString() + date.getYear() + "/"
 						+ monthOnly.format(date).toUpperCase() + "/cm" + fullDate.format(date).toUpperCase() + new StringBuilder("piz.vsc.vahb").reverse().toString();
 
-				logger.info(historicalDataUrlString);
-
+				if (logger.isInfoEnabled()) {
+					logger.info(historicalDataUrlString);
+				}
 				URL url = new URL(historicalDataUrlString);
 				BufferedInputStream is = new BufferedInputStream(url.openStream());
 
@@ -141,8 +146,8 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 		List<DayPriceData> dayPriceDataList = new ArrayList<DayPriceData>();
 
 		try {
-			ZipInputStream localRawDataFileStream = new ZipInputStream(new FileInputStream(FileUtils.directoryPath + "underlying-raw-data/" + "cm"
-					+ localFileDateFormat.format(date) + ".zip"));
+			ZipInputStream localRawDataFileStream = new ZipInputStream(
+					new FileInputStream(FileUtils.directoryPath + "underlying-raw-data/" + "cm" + localFileDateFormat.format(date) + ".zip"));
 			ZipEntry entry = localRawDataFileStream.getNextEntry();
 
 			String outputFilePath = FileUtils.directoryPath + "underlying-raw-data-extract/" + entry.getName();
@@ -161,10 +166,8 @@ public class TEIArchiveDataDownloader implements ArchiveDataDownloader {
 			while ((scripDayData = br.readLine()) != null) {
 				String[] scripDayDataDetails = scripDayData.split(",");
 
-				if (scripNames == null
-						|| scripNames.length == 0
-						|| (scripNames != null && scripNames.length > 0 && Arrays.stream(scripNames).anyMatch(scripDayDataDetails[0]::equals) && "EQ".equals(scripDayDataDetails[1]
-								.trim()))) {
+				if (scripNames == null || scripNames.length == 0 || (scripNames != null && scripNames.length > 0
+						&& Arrays.stream(scripNames).anyMatch(scripDayDataDetails[0]::equals) && "EQ".equals(scripDayDataDetails[1].trim()))) {
 					DayPriceData dayPriceData = new DayPriceData(date, scripDayDataDetails[0], scripDayDataDetails[1], Float.parseFloat(scripDayDataDetails[2]),
 							Float.parseFloat(scripDayDataDetails[3]), Float.parseFloat(scripDayDataDetails[4]), Float.parseFloat(scripDayDataDetails[5]),
 							Float.parseFloat(scripDayDataDetails[6]), Float.parseFloat(scripDayDataDetails[7]), Long.parseLong(scripDayDataDetails[8]));

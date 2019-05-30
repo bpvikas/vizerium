@@ -16,6 +16,8 @@
 
 package com.vizerium.payoffmatrix.io;
 
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.TreeSet;
 
 import com.vizerium.payoffmatrix.comparator.BestRiskRewardRatioPayoffMatrixComparator;
@@ -24,12 +26,19 @@ import com.vizerium.payoffmatrix.comparator.HighestProfitProbabilityPayoffMatrix
 import com.vizerium.payoffmatrix.comparator.MaximumProfitPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.MinimumLossPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.engine.OptionStrategiesWithPayoff;
+import com.vizerium.payoffmatrix.engine.PayoffCalculator;
 import com.vizerium.payoffmatrix.reports.PayoffReportXlsx;
 import com.vizerium.payoffmatrix.volatility.Range;
 
 public class Output {
 
 	public static int analysisPayoffsLengths = 7;
+
+	private long countAnalysedOptionStrategies = 0L;
+
+	private LocalTime analysisStartTime = null;
+
+	private LocalTime analysisEndTime = null;
 
 	private OptionStrategiesWithPayoff existingPositionPayoff;
 
@@ -50,23 +59,31 @@ public class Output {
 	private int optionStrategiesCount;
 
 	public Output() {
-
+		analysisStartTime = LocalTime.now();
 	}
 
 	public void performPayoffAnalysis(OptionStrategiesWithPayoff optionStrategiesWithPayoff) {
+		++countAnalysedOptionStrategies;
 		if (optionStrategiesWithPayoff.isExistingOpenPosition()) {
 			existingPositionPayoff = optionStrategiesWithPayoff;
 		}
-		compareToExistingPayoffs(highestAveragePayoffs, optionStrategiesWithPayoff);
-		if (optionStrategiesWithPayoff.getProfitProbability() < 0.9f) {
-			compareToExistingPayoffs(highestProfitProbabilityPayoffs, optionStrategiesWithPayoff);
-		}
-		compareToExistingPayoffs(maxPositivePayoffs, optionStrategiesWithPayoff);
-		if (optionStrategiesWithPayoff.getNegativePayoffSum() < -2.0f) {
-			compareToExistingPayoffs(minNegativePayoffs, optionStrategiesWithPayoff);
-		}
-		if (optionStrategiesWithPayoff.getRiskRewardRatio() > 0.1f) {
-			compareToExistingPayoffs(bestRiskRewardRatioPayoffs, optionStrategiesWithPayoff);
+
+		if (optionStrategiesWithPayoff.getRiskRewardRatio() < 1.0f) {
+			compareToExistingPayoffs(highestAveragePayoffs, optionStrategiesWithPayoff);
+
+			if (optionStrategiesWithPayoff.getProfitProbability() < 0.95f) {
+				compareToExistingPayoffs(highestProfitProbabilityPayoffs, optionStrategiesWithPayoff);
+			}
+
+			compareToExistingPayoffs(maxPositivePayoffs, optionStrategiesWithPayoff);
+
+			if (optionStrategiesWithPayoff.getNegativePayoffSum() < -2.0f) {
+				compareToExistingPayoffs(minNegativePayoffs, optionStrategiesWithPayoff);
+			}
+
+			if (optionStrategiesWithPayoff.getRiskRewardRatio() > 0.08f) {
+				compareToExistingPayoffs(bestRiskRewardRatioPayoffs, optionStrategiesWithPayoff);
+			}
 		}
 	}
 
@@ -103,8 +120,9 @@ public class Output {
 
 	@Override
 	public String toString() {
-		return "Output " + System.lineSeparator() + printExistingPositionPayoff() + printHighestProfitProbabilityPayoffs() + printMaxPositivePayoffs() + printMinNegativePayoffs()
-				+ printBestRiskRewardRatioPayoffs() + printHighestAveragePayoffs();
+		return "Output - Analysed " + countAnalysedOptionStrategies + " in " + ChronoUnit.SECONDS.between(analysisStartTime, analysisEndTime) + " seconds, after eliminating "
+				+ PayoffCalculator.countOptionWithOppositeActions + " same option with opposite actions." + System.lineSeparator() + printExistingPositionPayoff()
+				+ printHighestProfitProbabilityPayoffs() + printMaxPositivePayoffs() + printMinNegativePayoffs() + printBestRiskRewardRatioPayoffs() + printHighestAveragePayoffs();
 	}
 
 	private String printExistingPositionPayoff() {
@@ -151,7 +169,6 @@ public class Output {
 	}
 
 	public void finale() {
-		// This method does nothing. I just wanted to put a breakpoint at a place where I can see all final results together.
-		int a = 5;
+		analysisEndTime = LocalTime.now();
 	}
 }

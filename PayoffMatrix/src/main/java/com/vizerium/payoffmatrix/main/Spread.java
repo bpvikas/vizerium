@@ -49,7 +49,9 @@ public class Spread {
 
 		SpreadPayoffCalculator payoffCalculator = new SpreadPayoffCalculator();
 		Output output = payoffCalculator.calculatePayoff(criteria, optionDataStore);
-		logger.info(criteria);
-		logger.info(output);
+		if (logger.isInfoEnabled()) {
+			logger.info(criteria);
+			logger.info(output);
+		}
 	}
 }

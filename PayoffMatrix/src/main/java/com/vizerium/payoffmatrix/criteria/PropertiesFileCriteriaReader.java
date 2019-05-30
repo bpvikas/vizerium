@@ -115,8 +115,9 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 			logger.error("An error occurred while reading input criteria properties file.", e);
 			throw new RuntimeException(e);
 		}
-
-		logger.info("The input values are : " + criteria);
+		if (logger.isInfoEnabled()) {
+			logger.info("The input values are : " + criteria);
+		}
 		return criteria;
 	}
 

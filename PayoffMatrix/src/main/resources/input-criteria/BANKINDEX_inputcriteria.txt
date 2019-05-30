@@ -22,11 +22,9 @@ existingposition4=
 existingposition5=
 
 #max positions to be held(including existing positions)
-#Currently, this value can be "no of existing positions + 3" for 512 MB Java memory
-max.option.positions=4
+max.option.positions=6
 
 #max spread positions to be held
-#Currently, this value can be 2 for 512 MB Java memory
 max.option.spread.positions=2
 
 #The lot size (e.g. 20 for the Bank Index)

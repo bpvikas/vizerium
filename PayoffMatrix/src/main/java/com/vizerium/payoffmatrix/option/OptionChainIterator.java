@@ -27,6 +27,8 @@ public class OptionChainIterator<E extends OptionStrategy> implements Iterator<L
 
 	private static final Logger logger = Logger.getLogger(OptionChainIterator.class);
 
+	private static long logCounter = 0L;
+
 	private int selectionSetSize;
 
 	private int[] cpos; // currentPosition
@@ -120,6 +122,10 @@ public class OptionChainIterator<E extends OptionStrategy> implements Iterator<L
 		for (int i = 0; i < cpos.length; i++) {
 			currentPositionString += (cpos[i] + " ");
 		}
-		logger.info(currentPositionString);
+		if (++logCounter % 400000 == 0) {
+			if (logger.isInfoEnabled()) {
+				logger.info(currentPositionString);
+			}
+		}
 	}
 }

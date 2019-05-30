@@ -198,6 +198,16 @@ public class PayoffReportXlsx {
 		row = pivotChartSheet.getRow(cr.getRow());
 		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
 		cell.setCellValue(payoffMatrix.getMinNegativePayoff()[0]);
+
+		cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(rowNum += 2));
+		row = pivotChartSheet.getRow(cr.getRow());
+		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		cell.setCellValue(payoffMatrix.getPositivePayoffSum());
+
+		cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(++rowNum));
+		row = pivotChartSheet.getRow(cr.getRow());
+		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		cell.setCellValue(payoffMatrix.getNegativePayoffSum());
 	}
 
 	private static void revaluateFormulaAndCreateOutputFile(Workbook workbook, String outputFileName, int optionStrategiesCount, String underlyingName, Range underlyingRange) {

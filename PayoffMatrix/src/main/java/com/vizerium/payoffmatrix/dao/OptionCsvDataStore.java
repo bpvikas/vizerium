@@ -47,7 +47,9 @@ public class OptionCsvDataStore implements OptionDataStore {
 		BufferedReader br = null;
 		try {
 			File csvFile = FileUtils.getLastModifiedFileInDirectory(FileUtils.directoryPath + "optionchain-localcsv/", criteria.getUnderlyingName() + ".csv");
-			logger.info(csvFile.getAbsolutePath());
+			if (logger.isInfoEnabled()) {
+				logger.info(csvFile.getAbsolutePath());
+			}
 			br = new BufferedReader(new FileReader(csvFile));
 			String[] headers = br.readLine().split(",");
 

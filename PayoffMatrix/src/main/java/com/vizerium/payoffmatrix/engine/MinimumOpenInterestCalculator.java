@@ -35,7 +35,9 @@ public class MinimumOpenInterestCalculator {
 		float openInterestLogNaturalMean = openInterestLogNaturalSum / optionChain.size();
 
 		int minimumOpenInterest = (int) Math.exp(openInterestLogNaturalMean);
-		logger.info("Auto-calculated minimum OI: " + minimumOpenInterest);
+		if (logger.isInfoEnabled()) {
+			logger.info("Auto-calculated minimum OI: " + minimumOpenInterest);
+		}
 		return minimumOpenInterest;
 	}
 }

@@ -31,6 +31,8 @@ public abstract class PayoffCalculator {
 
 	private static Logger logger = Logger.getLogger(PayoffCalculator.class);
 
+	public static long countOptionWithOppositeActions = 0L;
+
 	public abstract Option[] filterOptionChainForEvaluatingNewPositions(Option[] optionChain, Criteria criteria);
 
 	public abstract Output calculatePayoff(Criteria criteria, OptionDataStore optionDataStore);
@@ -48,7 +50,10 @@ public abstract class PayoffCalculator {
 						&& currentOptions.get(i).getContractSeries().equals(currentOptions.get(j).getContractSeries())
 						&& currentOptions.get(i).getNumberOfLots() == currentOptions.get(j).getNumberOfLots()
 						&& !(currentOptions.get(i).getTradeAction().equals(currentOptions.get(j).getTradeAction()))) {
-					logger.info("Same option with opposite actions. " + currentOptions.get(i) + " " + currentOptions.get(j));
+					if (logger.isDebugEnabled()) {
+						logger.debug("Same option with opposite actions. " + currentOptions.get(i) + " " + currentOptions.get(j));
+					}
+					++countOptionWithOppositeActions;
 					return true;
 				}
 			}

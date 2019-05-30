@@ -70,6 +70,10 @@ public class OptionStrategiesWithPayoff {
 		return payoffMatrix.getRiskRewardRatio();
 	}
 
+	public float getRewardRiskRatio() {
+		return 1.0f / payoffMatrix.getRiskRewardRatio();
+	}
+
 	public float getTotalPremium() {
 		float totalPremium = 0;
 		for (OptionStrategy optionStrategy : optionStrategies) {

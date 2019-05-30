@@ -107,6 +107,7 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 				output.performPayoffAnalysis(new OptionStrategiesWithPayoff(optionSpreads.toArray(new OptionSpread[optionSpreads.size()]), payoffMatrix));
 			}
 		}
+		output.finale();
 		return output;
 	}
 

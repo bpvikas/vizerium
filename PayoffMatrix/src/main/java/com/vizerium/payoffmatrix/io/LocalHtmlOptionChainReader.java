@@ -55,10 +55,14 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 			String optionChainDateString = "";
 			for (Element e : spanElements) {
 				if (e.text().contains("Underlying Index")) {
-					logger.info(e.text());
+					if (logger.isInfoEnabled()) {
+						logger.info(e.text());
+					}
 					underlyingPrice = e.text().substring(e.text().lastIndexOf(' ') + 1).replace(",", "");
 				} else if (e.text().contains("IST")) {
-					logger.info(e.text());
+					if (logger.isInfoEnabled()) {
+						logger.info(e.text());
+					}
 					optionChainDateString = e.text().substring(6, e.text().lastIndexOf(" "));
 				}
 				if (!StringUtils.isAnyBlank(underlyingPrice, optionChainDateString)) {
@@ -71,8 +75,9 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss");
 			LocalDate optionChainDate = LocalDateTime.parse(optionChainDateString, formatter).toLocalDate();
-			logger.info(underlyingPrice + " $$ " + optionChainDate);
-
+			if (logger.isInfoEnabled()) {
+				logger.info(underlyingPrice + " $$ " + optionChainDate);
+			}
 			Element optionChainData = htmlDoc.getElementById("octable");
 
 			Element optionChainDataTitle = optionChainData.select("thead").select("tr").get(1);
@@ -81,8 +86,9 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 			for (Element e : optionChainDataTitleElements) {
 				headerString += (e.text() + ",");
 			}
-			logger.info(headerString);
-
+			if (logger.isInfoEnabled()) {
+				logger.info(headerString);
+			}
 			List<Option> optionChain = new ArrayList<Option>();
 
 			Elements optionChainDataRows = optionChainData.select("tr");
