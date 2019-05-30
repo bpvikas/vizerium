@@ -1,9 +1,10 @@
-underlying.volatility.standardDeviationMultiple=1.582
+underlying.volatility.standardDeviationMultiple=1.235
 
 # The upper and lower end of the range of the underlying.
 # If this is provided, then the standard deviation calculations are ignored.
 underlying.range.top=
 underlying.range.bottom=
+underlying.range.step=25
 
 # contract.duration can be "week", when you are trading the BankIndex. 
 contract.duration=week

@@ -102,8 +102,8 @@ public class OptionStrategiesWithPayoff {
 				optionsString += (optionStrategy + " ");
 			}
 			return "OptionsWithPayoff with optionStrategies [" + optionsString + "]" + System.lineSeparator() + "for premium paid/received " + getTotalPremium()
-					+ " with payoff at " + System.lineSeparator() + payoffMatrix + System.lineSeparator() + "Payoff at each underlying " + System.lineSeparator()
-					+ payoffMatrix.getPayoffAtEachUnderlyingPrice();
+					+ " with payoff at " + System.lineSeparator() + payoffMatrix;
+			// + System.lineSeparator() + "Payoff at each underlying " + System.lineSeparator() + payoffMatrix.getPayoffAtEachUnderlyingPrice();
 		} else {
 			return "No option strategies present.";
 		}

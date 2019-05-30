@@ -34,6 +34,7 @@ public class PayoffMatrix {
 	private int negativePayoffsCount = 0;
 
 	private float positivePayoffSum = 0.0f;
+
 	private float negativePayoffSum = 0.0f;
 
 	private float[] maxPositivePayoff;
@@ -67,6 +68,18 @@ public class PayoffMatrix {
 		performPayoffAnalysis();
 	}
 
+	public float getUnderlyingCurrentPrice() {
+		return underlyingCurrentPrice;
+	}
+
+	public float getPositivePayoffsCount() {
+		return positivePayoffsCount;
+	}
+
+	public float getNegativePayoffsCount() {
+		return negativePayoffsCount;
+	}
+
 	public float getPositivePayoffSum() {
 		return positivePayoffSum;
 	}
@@ -85,6 +98,14 @@ public class PayoffMatrix {
 
 	public float getRiskRewardRatio() {
 		return riskRewardRatio;
+	}
+
+	public float[] getMaxPositivePayoff() {
+		return maxPositivePayoff;
+	}
+
+	public float[] getMinNegativePayoff() {
+		return minNegativePayoff;
 	}
 
 	public String getRiskRewardRatioAsString() {

@@ -35,6 +35,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.vizerium.commons.io.FileUtils;
 import com.vizerium.commons.trade.TradeAction;
 import com.vizerium.payoffmatrix.engine.OptionStrategiesWithPayoff;
+import com.vizerium.payoffmatrix.engine.PayoffMatrix;
 import com.vizerium.payoffmatrix.io.Output;
 import com.vizerium.payoffmatrix.option.Option;
 import com.vizerium.payoffmatrix.option.OptionStrategy;
@@ -48,22 +49,29 @@ public class PayoffReportXlsx {
 
 	private static int initialOpenPositionDataSheetNumber = Output.analysisPayoffsLengths;
 
-	private static final int initialRowNum = 1;
+	private static final int openPositionDataSheetInitialRowNum = 1;
 
-	private static final int initialColNum = 69; // column "E"
+	private static final int openPositionDataSheetInitialColNum = (int) 'E'; // 69 is column 'E'
+
+	private static final int pivotChartSheetInitialRowNum = 3;
+
+	private static final int pivotChartSheetInitialColNum = (int) 'Y'; // 89 is column 'E'
 
 	public static void createReport(String underlyingName, String payoffName, TreeSet<OptionStrategiesWithPayoff> payoffs, int optionStrategiesCount, Range underlyingRange) {
 		Workbook workbook = getReportTemplate(underlyingName);
 		try {
 			int dataSheetNum = initialOpenPositionDataSheetNumber;
 			for (OptionStrategiesWithPayoff payoff : payoffs) {
-				Sheet dataSheet = workbook.getSheetAt(dataSheetNum++);
-				int colNum = initialColNum;
+				Sheet dataSheet = workbook.getSheetAt(dataSheetNum);
+				int colNum = openPositionDataSheetInitialColNum;
 				for (OptionStrategy optionStrategy : payoff.getOptions()) {
 					for (Option option : optionStrategy.getOptions()) {
 						updateOptionDetailsInOpenPositionDataSheet(dataSheet, colNum++, option);
 					}
 				}
+				Sheet pivotChartSheet = workbook.getSheetAt(dataSheetNum - Output.analysisPayoffsLengths);
+				updatePayoffMatrixDetailsInPivotChartSheet(pivotChartSheet, payoff.getPayoffMatrix(), underlyingRange);
+				dataSheetNum++;
 			}
 			revaluateFormulaAndCreateOutputFile(workbook, payoffName, optionStrategiesCount, underlyingName, underlyingRange);
 		} catch (Exception e) {
@@ -84,7 +92,7 @@ public class PayoffReportXlsx {
 	}
 
 	private static void updateOptionDetailsInOpenPositionDataSheet(Sheet dataSheet, int colNum, Option option) {
-		int rowNum = initialRowNum;
+		int rowNum = openPositionDataSheetInitialRowNum;
 		CellReference cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(rowNum));
 		Row row = dataSheet.getRow(cr.getRow());
 		Cell cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
@@ -127,6 +135,71 @@ public class PayoffReportXlsx {
 		cell.setCellValue(option.getNumberOfLots());
 	}
 
+	private static void updatePayoffMatrixDetailsInPivotChartSheet(Sheet pivotChartSheet, PayoffMatrix payoffMatrix, Range underlyingRange) {
+		int rowNum = pivotChartSheetInitialRowNum;
+		int colNum = pivotChartSheetInitialColNum;
+
+		CellReference cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(rowNum));
+		Row row = pivotChartSheet.getRow(cr.getRow());
+		Cell cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		cell.setCellValue(payoffMatrix.getUnderlyingCurrentPrice());
+
+		cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(++rowNum));
+		row = pivotChartSheet.getRow(cr.getRow());
+		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		cell.setCellValue(underlyingRange.getHigh());
+
+		cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(++rowNum));
+		row = pivotChartSheet.getRow(cr.getRow());
+		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		cell.setCellValue(underlyingRange.getLow());
+
+		cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(rowNum += 2));
+		row = pivotChartSheet.getRow(cr.getRow());
+		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		cell.setCellValue(payoffMatrix.getPositivePayoffsCount());
+
+		cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(++rowNum));
+		row = pivotChartSheet.getRow(cr.getRow());
+		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		cell.setCellValue(payoffMatrix.getNegativePayoffsCount());
+
+		cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(rowNum += 2));
+		row = pivotChartSheet.getRow(cr.getRow());
+		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		cell.setCellValue(payoffMatrix.getProfitProbability());
+
+		cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(++rowNum));
+		row = pivotChartSheet.getRow(cr.getRow());
+		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		cell.setCellValue(payoffMatrix.getRiskRewardRatioAsString());
+
+		cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(++rowNum));
+		row = pivotChartSheet.getRow(cr.getRow());
+		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		cell.setCellValue(payoffMatrix.getPayoffAverage());
+
+		cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(rowNum += 2));
+		row = pivotChartSheet.getRow(cr.getRow());
+		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		cell.setCellValue(payoffMatrix.getMaxPositivePayoff()[1]);
+
+		cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(++rowNum));
+		row = pivotChartSheet.getRow(cr.getRow());
+		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		cell.setCellValue(payoffMatrix.getMaxPositivePayoff()[0]);
+
+		cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(rowNum += 2));
+		row = pivotChartSheet.getRow(cr.getRow());
+		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		cell.setCellValue(payoffMatrix.getMinNegativePayoff()[1]);
+
+		cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(++rowNum));
+		row = pivotChartSheet.getRow(cr.getRow());
+		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		cell.setCellValue(payoffMatrix.getMinNegativePayoff()[0]);
+	}
+
 	private static void revaluateFormulaAndCreateOutputFile(Workbook workbook, String outputFileName, int optionStrategiesCount, String underlyingName, Range underlyingRange) {
 		XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
 
@@ -142,7 +215,7 @@ public class PayoffReportXlsx {
 		FileOutputStream currentReport = null;
 		if (StringUtils.isNotBlank(outputFileName)) {
 			try {
-				currentReport = new FileOutputStream(currentReportDirectoryPath + outputFileName + ".xlsx");
+				currentReport = new FileOutputStream(currentReportDirectoryPath + outputFileName + "_" + System.getProperty("application.run.datetime") + ".xlsx");
 				workbook.write(currentReport);
 			} catch (Exception e) {
 				logger.error("An error occurred while writing output report file.", e);

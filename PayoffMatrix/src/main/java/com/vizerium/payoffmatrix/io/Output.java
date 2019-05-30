@@ -57,12 +57,17 @@ public class Output {
 		if (optionStrategiesWithPayoff.isExistingOpenPosition()) {
 			existingPositionPayoff = optionStrategiesWithPayoff;
 		}
-
 		compareToExistingPayoffs(highestAveragePayoffs, optionStrategiesWithPayoff);
-		compareToExistingPayoffs(highestProfitProbabilityPayoffs, optionStrategiesWithPayoff);
+		if (optionStrategiesWithPayoff.getProfitProbability() < 0.9f) {
+			compareToExistingPayoffs(highestProfitProbabilityPayoffs, optionStrategiesWithPayoff);
+		}
 		compareToExistingPayoffs(maxPositivePayoffs, optionStrategiesWithPayoff);
-		compareToExistingPayoffs(minNegativePayoffs, optionStrategiesWithPayoff);
-		compareToExistingPayoffs(bestRiskRewardRatioPayoffs, optionStrategiesWithPayoff);
+		if (optionStrategiesWithPayoff.getNegativePayoffSum() < -2.0f) {
+			compareToExistingPayoffs(minNegativePayoffs, optionStrategiesWithPayoff);
+		}
+		if (optionStrategiesWithPayoff.getRiskRewardRatio() > 0.1f) {
+			compareToExistingPayoffs(bestRiskRewardRatioPayoffs, optionStrategiesWithPayoff);
+		}
 	}
 
 	private void compareToExistingPayoffs(TreeSet<OptionStrategiesWithPayoff> payoffs, OptionStrategiesWithPayoff optionStrategiesWithPayoff) {
