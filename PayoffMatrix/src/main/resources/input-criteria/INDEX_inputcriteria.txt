@@ -4,7 +4,7 @@ underlying.volatility.standardDeviationMultiple=1.477
 contract.duration=week
 
 # contract.series Default is near, possible values are "near", "mid", "far"
-contract.series=mid
+contract.series=near
 
 #Any existing positions that needs to be considered in the payoff, with the premium prices at which they were purchased or sold.
 #Format CE/PE,Strike,BUY/SELL,Lots,Premium Paid,Traded Date(DDMMYYYY), NEAR/MID/FAR
