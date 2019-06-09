@@ -65,6 +65,8 @@ public class Criteria {
 
 	private int lotSize;
 
+	private float riskFreeInterestRate;
+
 	public String getUnderlyingName() {
 		return underlyingName;
 	}
@@ -212,13 +214,22 @@ public class Criteria {
 		this.lotSize = lotSize;
 	}
 
+	public float getRiskFreeInterestRate() {
+		return riskFreeInterestRate;
+	}
+
+	public void setRiskFreeInterestRate(float riskFreeInterestRate) {
+		this.riskFreeInterestRate = riskFreeInterestRate;
+	}
+
 	@Override
 	public String toString() {
 		return "Criteria [underlyingName=" + underlyingName + ", volatility=" + volatility + ", maxLoss=" + maxLoss + ", tradingBias=" + tradingBias + ", contractSeries="
 				+ contractSeries + ", expiryDate=" + expiryDate + ", existingPositions=" + Arrays.toString(existingPositions) + ", remoteDatasource=" + remoteDatasource
 				+ ", localDatasource=" + localDatasource + ", minOpenInterest=" + minOpenInterest + ", maxOptionPremium=" + maxOptionPremium + ", sellOrderMargin="
 				+ sellOrderMargin + ", investibleAmount=" + investibleAmount + ", maxOptionOpenPositions=" + maxOptionOpenPositions + ", maxOptionSpreadOpenPositions="
-				+ maxOptionSpreadOpenPositions + ", maxOptionNumberOfLots=" + maxOptionNumberOfLots + ", lotSize=" + lotSize + "]";
+				+ maxOptionSpreadOpenPositions + ", maxOptionNumberOfLots=" + maxOptionNumberOfLots + ", lotSize=" + lotSize + ", riskFreeInterestRate=" + riskFreeInterestRate
+				+ "]";
 	}
 
 }

@@ -75,6 +75,11 @@ public class OptionSpread implements OptionStrategy {
 	}
 
 	@Override
+	public double getDelta() {
+		return optionOne.getDelta() + optionTwo.getDelta();
+	}
+
+	@Override
 	public String toString() {
 		return "OptionSpread [optionOne=" + optionOne + ", optionTwo=" + optionTwo + "]";
 	}

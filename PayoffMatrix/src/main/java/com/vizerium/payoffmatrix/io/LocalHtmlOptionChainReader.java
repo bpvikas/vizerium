@@ -104,20 +104,24 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 				}
 
 				String callOI = optionChainDataRow.select("td").get(1).text().trim().replace(",", "");
+				String callIV = optionChainDataRow.select("td").get(4).text().trim().replace(",", "");
 				String callLtp = optionChainDataRow.select("td").get(5).text().trim().replace(",", "");
 				String strike = optionChainDataRow.select("td").get(11).getAllElements().get(0).getAllElements().get(0).text().trim().replace(",", "");
 				String putLtp = optionChainDataRow.select("td").get(17).text().trim().replace(",", "");
+				String putIV = optionChainDataRow.select("td").get(18).text().trim().replace(",", "");
 				String putOI = optionChainDataRow.select("td").get(21).text().trim().replace(",", "");
 
-				if (StringUtils.isAnyBlank(callOI, callLtp, strike, putLtp, putOI) || StringUtils.equals(callOI, "-") || (Integer.parseInt(callOI) < 3000)
-						|| StringUtils.equals(callLtp, "-") || StringUtils.equals(strike, "-") || StringUtils.equals(putLtp, "-") || StringUtils.equals(putOI, "-")
-						|| (Integer.parseInt(putOI) < 3000)) {
+				if (StringUtils.isNoneBlank(callOI, callIV, callLtp, strike) && !StringUtils.equals(callOI, "-") && (Integer.parseInt(callOI) >= 3000)
+						&& !StringUtils.equals(callIV, "-") && !StringUtils.equals(callLtp, "-") && !StringUtils.equals(strike, "-")) {
 					// Adding the 3000 check here as there are many options in the Index option chain which are in few 100s and disturb the minimum Open Interest calculation
-					continue;
+					optionChain.add(new CallOption(strike, callOI, callLtp, Float.parseFloat(callIV) / 100.0f, underlyingPrice, optionChainDate, criteria.getLotSize()));
 				}
 
-				optionChain.add(new CallOption(strike, callOI, callLtp, underlyingPrice, optionChainDate, criteria.getLotSize()));
-				optionChain.add(new PutOption(strike, putOI, putLtp, underlyingPrice, optionChainDate, criteria.getLotSize()));
+				if (StringUtils.isNoneBlank(strike, putLtp, putIV, putOI) && !StringUtils.equals(strike, "-") && !StringUtils.equals(putLtp, "-") && !StringUtils.equals(putIV, "-")
+						&& !StringUtils.equals(putOI, "-") && (Integer.parseInt(putOI) >= 3000)) {
+					// Adding the 3000 check here as there are many options in the Index option chain which are in few 100s and disturb the minimum Open Interest calculation
+					optionChain.add(new PutOption(strike, putOI, putLtp, Float.parseFloat(putIV) / 100.0f, underlyingPrice, optionChainDate, criteria.getLotSize()));
+				}
 			}
 
 			if (criteria.getMinOpenInterest() <= 0) {

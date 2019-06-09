@@ -27,10 +27,13 @@ public class OptionStrategiesWithPayoff {
 
 	private boolean existingOpenPosition;
 
+	private double positionDelta;
+
 	public OptionStrategiesWithPayoff(OptionStrategy[] newAndExistingPositions, PayoffMatrix payoffMatrix) {
 		this.optionStrategies = newAndExistingPositions;
 		this.payoffMatrix = payoffMatrix;
 		setExistingOpenPosition();
+		calculatePositionDelta();
 	}
 
 	public OptionStrategy[] getOptions() {
@@ -40,6 +43,7 @@ public class OptionStrategiesWithPayoff {
 	public void setOptions(OptionStrategy[] optionStrategies) {
 		this.optionStrategies = optionStrategies;
 		setExistingOpenPosition();
+		calculatePositionDelta();
 	}
 
 	public PayoffMatrix getPayoffMatrix() {
@@ -96,6 +100,17 @@ public class OptionStrategiesWithPayoff {
 
 	public boolean isExistingOpenPosition() {
 		return existingOpenPosition;
+	}
+
+	public double getPositionDelta() {
+		return positionDelta;
+	}
+
+	public void calculatePositionDelta() {
+		positionDelta = 0.0;
+		for (OptionStrategy optionStrategy : optionStrategies) {
+			positionDelta += optionStrategy.getDelta();
+		}
 	}
 
 	@Override

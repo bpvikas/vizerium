@@ -22,4 +22,6 @@ public interface OptionStrategy {
 
 	Option[] getOptions();
 
+	double getDelta();
+
 }

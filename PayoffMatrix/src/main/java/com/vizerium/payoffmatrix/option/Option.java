@@ -53,6 +53,10 @@ public abstract class Option implements Cloneable, Serializable, OptionStrategy 
 
 	protected int lotSize;
 
+	protected float impliedVolatility;
+
+	protected float riskFreeInterestRate;
+
 	public float getUnderlyingPrice() {
 		return underlyingPrice;
 	}
@@ -157,6 +161,26 @@ public abstract class Option implements Cloneable, Serializable, OptionStrategy 
 		this.lotSize = lotSize;
 	}
 
+	public float getImpliedVolatility() {
+		return impliedVolatility;
+	}
+
+	public void setImpliedVolatility(float impliedVolatility) {
+		// The impliedVolatility is used for Black-Scholes option greeks calculations for which it needs to be a decimal between 0 and 1.
+		if (impliedVolatility < 0.0f) {
+			throw new RuntimeException("Implied Volatility cannot be -ve.");
+		}
+		this.impliedVolatility = impliedVolatility;
+	}
+
+	public float getRiskFreeInterestRate() {
+		return riskFreeInterestRate;
+	}
+
+	public void setRiskFreeInterestRate(float riskFreeInterestRate) {
+		this.riskFreeInterestRate = riskFreeInterestRate;
+	}
+
 	public void setType(OptionType type) {
 		this.type = type;
 	}
@@ -187,12 +211,14 @@ public abstract class Option implements Cloneable, Serializable, OptionStrategy 
 	@Override
 	public String toString() {
 		return (int) strike + type.getShortName() + "," + (existing ? "existing," : "new,") + (existing ? tradedPremium : currentPremium) + ","
-				+ (existing ? tradedDate.toString() : currentPremiumDate.toString()) + "," + tradeAction.name() + "," + numberOfLots + "lot(s)," + lotSize + " ";
+				+ (existing ? tradedDate.toString() : currentPremiumDate.toString()) + "," + tradeAction.name() + "," + numberOfLots + "lot(s)," + lotSize + ",IV"
+				+ impliedVolatility + " ";
 	}
 
 	public String toFullString() {
 		return "Option [openInterest=" + openInterest + ", currentPremium=" + currentPremium + ", tradedPremium=" + tradedPremium + ", strike=" + strike + ", type=" + type
 				+ ", existing=" + existing + ", underlyingPrice=" + underlyingPrice + ", contractSeries=" + contractSeries + ", expiryDate=" + expiryDate + ", tradedDate="
-				+ tradedDate + ", currentPremiumDate=" + currentPremiumDate + ", tradeAction=" + tradeAction + ", numberOfLots=" + numberOfLots + ", lotSize=" + lotSize + "]";
+				+ tradedDate + ", currentPremiumDate=" + currentPremiumDate + ", tradeAction=" + tradeAction + ", numberOfLots=" + numberOfLots + ", lotSize=" + lotSize
+				+ ", impliedVolatility=" + impliedVolatility + ", riskFreeInterestRate=" + riskFreeInterestRate + "]";
 	}
 }

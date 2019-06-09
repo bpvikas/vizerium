@@ -111,6 +111,12 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 
 			criteria.setLotSize(Integer.parseInt(criteriaProperties.getProperty("lotsize")));
 
+			String criteriaRiskFreeInterestRate = criteriaProperties.getProperty("riskfree.interest.rate");
+			if (StringUtils.isBlank(criteriaRiskFreeInterestRate)) {
+				criteriaRiskFreeInterestRate = criteriaProperties.getProperty("riskfree.interest.rate.default");
+			}
+			criteria.setRiskFreeInterestRate(Float.parseFloat(criteriaRiskFreeInterestRate.trim()) / 100.0f);
+
 		} catch (IOException e) {
 			logger.error("An error occurred while reading input criteria properties file.", e);
 			throw new RuntimeException(e);

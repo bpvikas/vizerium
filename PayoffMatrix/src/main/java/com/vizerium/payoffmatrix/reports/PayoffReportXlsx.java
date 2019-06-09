@@ -55,7 +55,7 @@ public class PayoffReportXlsx {
 
 	private static final int pivotChartSheetInitialRowNum = 3;
 
-	private static final int pivotChartSheetInitialColNum = (int) 'Y'; // 89 is column 'E'
+	private static final int pivotChartSheetInitialColNum = (int) 'Y'; // 89 is column 'Y'
 
 	public static void createReport(String underlyingName, String payoffName, TreeSet<OptionStrategiesWithPayoff> payoffs, int optionStrategiesCount, Range underlyingRange) {
 		Workbook workbook = getReportTemplate(underlyingName);
@@ -70,7 +70,7 @@ public class PayoffReportXlsx {
 					}
 				}
 				Sheet pivotChartSheet = workbook.getSheetAt(dataSheetNum - Output.analysisPayoffsLengths);
-				updatePayoffMatrixDetailsInPivotChartSheet(pivotChartSheet, payoff.getPayoffMatrix(), underlyingRange);
+				updatePayoffMatrixDetailsInPivotChartSheet(pivotChartSheet, payoff.getPayoffMatrix(), underlyingRange, payoff.getPositionDelta());
 				dataSheetNum++;
 			}
 			revaluateFormulaAndCreateOutputFile(workbook, payoffName, optionStrategiesCount, underlyingName, underlyingRange);
@@ -135,7 +135,7 @@ public class PayoffReportXlsx {
 		cell.setCellValue(option.getNumberOfLots());
 	}
 
-	private static void updatePayoffMatrixDetailsInPivotChartSheet(Sheet pivotChartSheet, PayoffMatrix payoffMatrix, Range underlyingRange) {
+	private static void updatePayoffMatrixDetailsInPivotChartSheet(Sheet pivotChartSheet, PayoffMatrix payoffMatrix, Range underlyingRange, double positionDelta) {
 		int rowNum = pivotChartSheetInitialRowNum;
 		int colNum = pivotChartSheetInitialColNum;
 
@@ -208,6 +208,11 @@ public class PayoffReportXlsx {
 		row = pivotChartSheet.getRow(cr.getRow());
 		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
 		cell.setCellValue(payoffMatrix.getNegativePayoffSum());
+
+		cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(rowNum += 2));
+		row = pivotChartSheet.getRow(cr.getRow());
+		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		cell.setCellValue(positionDelta);
 	}
 
 	private static void revaluateFormulaAndCreateOutputFile(Workbook workbook, String outputFileName, int optionStrategiesCount, String underlyingName, Range underlyingRange) {

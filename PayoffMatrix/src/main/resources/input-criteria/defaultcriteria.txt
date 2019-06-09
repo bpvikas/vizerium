@@ -19,6 +19,13 @@ underlying.range.bottom=
 #For e.g. if the value is 25, payoff will be calculated at 10000, 10025, 10050, 10100, and so on.
 underlying.range.step=25
 
+#This is used while calculating the Option Greeks values using the Black Scholes equation
+#One of two values will be considered, the priority is
+# 1. Value is populated in this property file from RBI home page, https://www.rbi.org.in/ > Current Rates Section > GSec Market > 91 day T-bills > e.g. 6.0668% as on 8/Jun/19
+# 2. 10% default interest rate used on TEI Option chain webpage which is applied while calculating implied volatility.
+riskfree.interest.rate=
+riskfree.interest.rate.default=10
+
 #The exchange
 exchange=TEI
 
@@ -78,5 +85,5 @@ max.option.positions=
 #number of lots to be held for a particular option
 max.option.lots=1
 
-#The lot size (e.g. 75 for the Index or 40 for the Bank Index)
+#The lot size (e.g. 75 for the Index or 20 for the Bank Index)
 lotsize=

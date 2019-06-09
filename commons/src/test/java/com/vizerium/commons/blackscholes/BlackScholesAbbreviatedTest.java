@@ -21,6 +21,7 @@ import org.junit.Test;
 
 public class BlackScholesAbbreviatedTest {
 
+	// This one is the closest to the Option Pricing calculations on Zerodha at https://zerodha.com/tools/black-scholes/
 	@Test
 	public void testGetCallPriceGreeks() {
 		double c[] = BlackScholesAbbreviated.getCallPriceGreeks(11843.75, 11900, 0.1552, 6.0 / 365.0, 0.0606);
@@ -42,5 +43,4 @@ public class BlackScholesAbbreviatedTest {
 		Assert.assertEquals(0.0017, p[4], 0.0001); // gamma
 		Assert.assertEquals(5.963, p[5], 0.001); // vega
 	}
-
 }

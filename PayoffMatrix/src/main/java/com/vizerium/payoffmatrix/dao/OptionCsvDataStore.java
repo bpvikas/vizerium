@@ -64,7 +64,7 @@ public class OptionCsvDataStore implements OptionDataStore {
 			String csvLine = null;
 			while ((csvLine = br.readLine()) != null) {
 				String[] optionChainDetails = csvLine.split(",");
-				if (optionChainDetails.length != 4) {
+				if (optionChainDetails.length != 5) {
 					throw new RuntimeException("Option Chain details obtained from CSV may not be correct. " + csvLine);
 				}
 
@@ -82,7 +82,10 @@ public class OptionCsvDataStore implements OptionDataStore {
 				option.setStrike(Float.parseFloat(optionChainDetails[0]));
 				option.setCurrentPremium(Float.parseFloat(optionChainDetails[2]));
 				option.setOpenInterest(Integer.parseInt(optionChainDetails[3]));
+				option.setImpliedVolatility(Float.parseFloat(optionChainDetails[4]));
+				option.setRiskFreeInterestRate(criteria.getRiskFreeInterestRate());
 				option.setCurrentPremiumDate(currentPremiumDate);
+				option.setExpiryDate(criteria.getExpiryDate());
 				option.setUnderlyingPrice(underlyingPrice);
 				option.setLotSize(lotSize);
 
@@ -118,7 +121,8 @@ public class OptionCsvDataStore implements OptionDataStore {
 			bw.newLine();
 
 			for (Option option : optionChain) {
-				bw.write(option.getStrike() + "," + option.getType().name() + "," + option.getCurrentPremium() + "," + option.getOpenInterest());
+				bw.write(option.getStrike() + "," + option.getType().name() + "," + option.getCurrentPremium() + "," + option.getOpenInterest() + ","
+						+ option.getImpliedVolatility());
 				bw.newLine();
 			}
 			bw.flush();

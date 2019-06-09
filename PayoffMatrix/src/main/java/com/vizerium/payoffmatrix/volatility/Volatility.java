@@ -60,7 +60,7 @@ public class Volatility {
 
 	public void setStandardDeviationFromImpliedVolatility(float impliedVolatility) {
 		// This can be set to the implied volatility calculated over a year (252 working days)
-		this.standardDeviation = impliedVolatility / 100 / (float) Math.sqrt(252);
+		this.standardDeviation = impliedVolatility / 100.0f / (float) Math.sqrt(252);
 	}
 
 	public void setStandardDeviationFromImpliedVolatility(String impliedVolatility) {

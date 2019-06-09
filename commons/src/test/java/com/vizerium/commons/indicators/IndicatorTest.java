@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -83,5 +85,13 @@ public class IndicatorTest {
 		} catch (IOException e) {
 			System.err.println("Cannot change the creation time. " + e);
 		}
+	}
+
+	@Test
+	public void testDaysBetween() {
+		LocalDate fromDate = LocalDate.of(2019, 6, 9);
+		LocalDate toDate = LocalDate.of(2019, 6, 13);
+
+		System.out.println(ChronoUnit.DAYS.between(fromDate, toDate));
 	}
 }
