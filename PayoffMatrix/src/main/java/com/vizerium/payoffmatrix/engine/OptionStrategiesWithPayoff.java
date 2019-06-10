@@ -16,6 +16,9 @@
 
 package com.vizerium.payoffmatrix.engine;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 import com.vizerium.payoffmatrix.option.Option;
 import com.vizerium.payoffmatrix.option.OptionStrategy;
 
@@ -66,6 +69,19 @@ public class OptionStrategiesWithPayoff {
 		return payoffMatrix.getProfitProbability();
 	}
 
+	/*
+	 * This method was introduced for comparison in the {@link com.vizerium.payoffmatrix.comparator.HighestProfitProbabilityPayoffMatrixComparator}.
+	 * In the firstRound, only those combinations which had 100% profit were topping the charts. (positivePayoffs = totalPayoffs as negativePayoffs would be 0).
+	 * But the problem, with these was that the average payoffs were very poor.
+	 * So, the idea is to round off the profitProbability to the nearest multiples of 0.1. That way, we can check all combinations from 0.9 to 1.0, and then do a 
+	 * second comparison with the highest total positive payoffs. 
+	 */
+	public float getProfitProbabilityRounded() {
+		DecimalFormat df = new DecimalFormat("0.0");
+		df.setRoundingMode(RoundingMode.UP);
+		return Float.parseFloat(df.format(getProfitProbability()));
+	}
+
 	public float getPayoffAverage() {
 		return payoffMatrix.getPayoffAverage();
 	}
@@ -74,8 +90,25 @@ public class OptionStrategiesWithPayoff {
 		return payoffMatrix.getRiskRewardRatio();
 	}
 
-	public float getRewardRiskRatio() {
-		return 1.0f / payoffMatrix.getRiskRewardRatio();
+	/*
+	 * This method was introduced for comparison in the {@link com.vizerium.payoffmatrix.comparator.BestRiskRewardRatioPayoffMatrixComparator}. 
+	 * The next problem which occurred here was that there were many RR Ratios like 1:5000, 1:10000, 1:8500, and such weird fractions. So, these would come up tops in the 
+	 * actual comparison but but but, they would have very poor average payoffs. So, the idea is to round off the riskRewardRatio up to the nearest multiples of 0.1. 
+	 * And then do a second comparison with higher total positive payoffs.
+	 */
+	public float getRewardRiskRatioRounded() {
+		float rewardRiskRatio = 0.0f;
+
+		// This first if condition is to handle the case where +ve numbers less than 0.01 round off to 0 instead of 1 even if RoundingMode.UP is used.
+		// Unit tests for this are written in IndicatorTest.testRounding()
+		if (getRiskRewardRatio() >= 0.0f && getRiskRewardRatio() < 0.01f) {
+			rewardRiskRatio = 1.0f / 0.1f;
+		} else {
+			DecimalFormat df = new DecimalFormat("0.0");
+			df.setRoundingMode(RoundingMode.UP);
+			rewardRiskRatio = 1.0f / Float.parseFloat(df.format(getRiskRewardRatio()));
+		}
+		return rewardRiskRatio;
 	}
 
 	public float getTotalPremium() {

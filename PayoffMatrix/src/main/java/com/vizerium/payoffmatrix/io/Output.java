@@ -71,9 +71,7 @@ public class Output {
 		if (optionStrategiesWithPayoff.getRiskRewardRatio() < 1.0f) {
 			compareToExistingPayoffs(highestAveragePayoffs, optionStrategiesWithPayoff);
 
-			if (optionStrategiesWithPayoff.getProfitProbability() < 0.95f) {
-				compareToExistingPayoffs(highestProfitProbabilityPayoffs, optionStrategiesWithPayoff);
-			}
+			compareToExistingPayoffs(highestProfitProbabilityPayoffs, optionStrategiesWithPayoff);
 
 			compareToExistingPayoffs(maxPositivePayoffs, optionStrategiesWithPayoff);
 
@@ -81,9 +79,7 @@ public class Output {
 				compareToExistingPayoffs(minNegativePayoffs, optionStrategiesWithPayoff);
 			}
 
-			if (optionStrategiesWithPayoff.getRiskRewardRatio() > 0.08f) {
-				compareToExistingPayoffs(bestRiskRewardRatioPayoffs, optionStrategiesWithPayoff);
-			}
+			compareToExistingPayoffs(bestRiskRewardRatioPayoffs, optionStrategiesWithPayoff);
 		}
 	}
 

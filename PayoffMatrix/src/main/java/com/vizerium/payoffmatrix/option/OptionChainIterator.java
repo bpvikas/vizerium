@@ -122,7 +122,7 @@ public class OptionChainIterator<E extends OptionStrategy> implements Iterator<L
 		for (int i = 0; i < cpos.length; i++) {
 			currentPositionString += (cpos[i] + " ");
 		}
-		if (++logCounter % 400000 == 0) {
+		if (++logCounter % 500000 == 0) {
 			if (logger.isInfoEnabled()) {
 				logger.info(currentPositionString);
 			}
