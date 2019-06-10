@@ -61,13 +61,16 @@ public abstract class PayoffCalculator {
 		return false;
 	}
 
-	protected void updateCurrentPremiumAndDateInExistingPositions(Option[] optionChain, Option[] existingPositions) {
+	protected void updateCurrentDetailsInExistingPositions(Option[] optionChain, Option[] existingPositions) {
 		for (int i = 0; i < existingPositions.length; i++) {
 			for (int j = 0; j < optionChain.length; j++) {
 				if (existingPositions[i].getStrike() == optionChain[j].getStrike() && existingPositions[i].getType().equals(optionChain[j].getType())
 						&& existingPositions[i].getContractSeries().equals(optionChain[j].getContractSeries())) {
 					existingPositions[i].setCurrentPremium(optionChain[j].getCurrentPremium());
 					existingPositions[i].setCurrentPremiumDate(optionChain[j].getCurrentPremiumDate());
+					existingPositions[i].setRiskFreeInterestRate(optionChain[j].getRiskFreeInterestRate());
+					existingPositions[i].setImpliedVolatility(optionChain[j].getImpliedVolatility());
+					existingPositions[i].setUnderlyingPrice(optionChain[j].getUnderlyingPrice());
 					break;
 				}
 			}

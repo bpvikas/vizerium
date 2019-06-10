@@ -17,12 +17,8 @@
 package com.vizerium.payoffmatrix.option;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 import org.apache.commons.lang3.SerializationUtils;
-
-import com.vizerium.commons.blackscholes.BlackScholes;
-import com.vizerium.commons.trade.TradeAction;
 
 public class PutOption extends Option {
 
@@ -70,13 +66,6 @@ public class PutOption extends Option {
 	public float getLongPayoffAtExpiryForTradedPremium(float underlyingSpotPrice) {
 		// max (0, strike - spot) - premium
 		return (Math.max(0, strike - underlyingSpotPrice) - tradedPremium) * numberOfLots * lotSize;
-	}
-
-	@Override
-	public double getDelta() {
-		double timeToExpiryInYears = (ChronoUnit.DAYS.between(currentPremiumDate, expiryDate) + 1) / 365.0;
-		return BlackScholes.getPutPriceGreeks(underlyingPrice, strike, riskFreeInterestRate, impliedVolatility, timeToExpiryInYears)[1] * numberOfLots
-				* ((tradeAction.equals(TradeAction.LONG) ? 1 : -1));
 	}
 
 	@Override

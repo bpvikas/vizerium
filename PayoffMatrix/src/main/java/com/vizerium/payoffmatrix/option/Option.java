@@ -18,7 +18,9 @@ package com.vizerium.payoffmatrix.option;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
+import com.vizerium.commons.blackscholes.BlackScholes;
 import com.vizerium.commons.trade.TradeAction;
 
 public abstract class Option implements Cloneable, Serializable, OptionStrategy {
@@ -56,6 +58,8 @@ public abstract class Option implements Cloneable, Serializable, OptionStrategy 
 	protected float impliedVolatility;
 
 	protected float riskFreeInterestRate;
+
+	protected double[] greeks;
 
 	public float getUnderlyingPrice() {
 		return underlyingPrice;
@@ -181,13 +185,68 @@ public abstract class Option implements Cloneable, Serializable, OptionStrategy 
 		this.riskFreeInterestRate = riskFreeInterestRate;
 	}
 
-	public void setType(OptionType type) {
-		this.type = type;
+	public double[] getGreeks() {
+		return greeks;
+	}
+
+	public void calculateGreeks() {
+		if (type == null || currentPremiumDate == null || expiryDate == null || Float.isNaN(underlyingPrice) || underlyingPrice == 0.0f || Float.isNaN(strike) || strike == 0.0f
+				|| Float.isNaN(riskFreeInterestRate) || riskFreeInterestRate == 0.0f || Float.isNaN(impliedVolatility) || impliedVolatility == 0.0f || numberOfLots == 0
+				|| tradeAction == null) {
+			throw new RuntimeException("Unable to calculate option greeks as one of the input values is null. ");
+		}
+
+		double timeToExpiryInYears = (ChronoUnit.DAYS.between(currentPremiumDate, expiryDate) + 1) / 365.0;
+		greeks = BlackScholes.getPriceGreeks(type.equals(OptionType.CALL), underlyingPrice, strike, riskFreeInterestRate, impliedVolatility, timeToExpiryInYears);
+
+		for (int i = 0; i < greeks.length; i++) {
+			greeks[i] = greeks[i] * numberOfLots * ((tradeAction.equals(TradeAction.LONG) ? 1 : -1));
+		}
+	}
+
+	@Override
+	public double getDelta() {
+		if (greeks == null || greeks.length != 6) {
+			calculateGreeks();
+		}
+		return greeks[1];
+	}
+
+	public double getTheta() {
+		if (greeks == null || greeks.length != 6) {
+			calculateGreeks();
+		}
+		return greeks[2];
+	}
+
+	public double getRho() {
+		if (greeks == null || greeks.length != 6) {
+			calculateGreeks();
+		}
+		return greeks[3];
+	}
+
+	public double getGamma() {
+		if (greeks == null || greeks.length != 6) {
+			calculateGreeks();
+		}
+		return greeks[4];
+	}
+
+	public double getVega() {
+		if (greeks == null || greeks.length != 6) {
+			calculateGreeks();
+		}
+		return greeks[5];
 	}
 
 	public float getPremiumPaidReceived() {
 		return tradeAction == TradeAction.SHORT ? ((existing ? tradedPremium : currentPremium) * numberOfLots * lotSize)
 				: ((existing ? tradedPremium : currentPremium) * numberOfLots * lotSize * -1);
+	}
+
+	public void setType(OptionType type) {
+		this.type = type;
 	}
 
 	public abstract OptionType getType();

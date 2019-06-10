@@ -116,4 +116,12 @@ public class BlackScholes {
 
 		return p;
 	}
+
+	public static double[] getPriceGreeks(boolean isCallOption, double s, double x, double r, double sigma, double t) {
+		if (isCallOption) {
+			return getCallPriceGreeks(s, x, r, sigma, t);
+		} else {
+			return getPutPriceGreeks(s, x, r, sigma, t);
+		}
+	}
 }

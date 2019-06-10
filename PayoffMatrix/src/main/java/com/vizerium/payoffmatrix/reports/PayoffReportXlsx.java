@@ -82,7 +82,7 @@ public class PayoffReportXlsx {
 
 	private static Workbook getReportTemplate(String underlyingName) {
 		try {
-			File reportTemplate = FileUtils.getLastModifiedFileInDirectory(reportLocation, underlyingName + ".xlsx");
+			File reportTemplate = FileUtils.getLastModifiedFileInDirectory(reportLocation, "_" + underlyingName + ".xlsx");
 			FileInputStream reportTemplateFileInput = new FileInputStream(reportTemplate);
 			return new XSSFWorkbook(reportTemplateFileInput);
 		} catch (Exception e) {

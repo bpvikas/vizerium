@@ -38,7 +38,7 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 	public Output calculatePayoff(Criteria criteria, OptionDataStore optionDataStore) {
 
 		Option[] optionChain = filterOptionChainForEvaluatingNewPositions(optionDataStore.readOptionChainData(criteria), criteria);
-		updateCurrentPremiumAndDateInExistingPositions(optionChain, criteria.getExistingPositions());
+		updateCurrentDetailsInExistingPositions(optionChain, criteria.getExistingPositions());
 
 		float underlyingRangeTop = criteria.getVolatility().getUnderlyingRange().getHigh();
 		float underlyingRangeBottom = criteria.getVolatility().getUnderlyingRange().getLow();

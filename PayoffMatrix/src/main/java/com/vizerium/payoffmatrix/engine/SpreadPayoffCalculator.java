@@ -38,7 +38,7 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 	public Output calculatePayoff(Criteria criteria, OptionDataStore optionDataStore) {
 
 		Option[] optionChain = filterOptionChainForEvaluatingNewPositions(optionDataStore.readOptionChainData(criteria), criteria);
-		updateCurrentPremiumAndDateInExistingPositions(optionChain, criteria.getExistingPositions());
+		updateCurrentDetailsInExistingPositions(optionChain, criteria.getExistingPositions());
 		OptionSpread[] optionSpreadChain = createOptionSpreadsFromSingleOptions(optionChain, criteria.getExistingPositions());
 
 		float underlyingRangeTop = criteria.getVolatility().getUnderlyingRange().getHigh();
