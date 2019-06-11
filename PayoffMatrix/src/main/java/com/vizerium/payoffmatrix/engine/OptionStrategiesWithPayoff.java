@@ -75,8 +75,10 @@ public class OptionStrategiesWithPayoff {
 	 * But the problem, with these was that the average payoffs were very poor.
 	 * So, the idea is to round off the profitProbability to the nearest multiples of 0.1. That way, we can check all combinations from 0.9 to 1.0, and then do a 
 	 * second comparison with the highest total positive payoffs. 
+	 * After running UTs, the results have top 7 entries within the 0.9 to 1 profit probability, with an average of say 27/29 recording the highest payoffs.
+	 * i.e. 27 +ve payoffs / (27 +ve and 2 -ve = 29 total payoffs)
 	 */
-	public float getProfitProbabilityRounded() {
+	public float getProfitProbabilityForComparison() {
 		DecimalFormat df = new DecimalFormat("0.0");
 		df.setRoundingMode(RoundingMode.UP);
 		return Float.parseFloat(df.format(getProfitProbability()));
@@ -95,20 +97,25 @@ public class OptionStrategiesWithPayoff {
 	 * The next problem which occurred here was that there were many RR Ratios like 1:5000, 1:10000, 1:8500, and such weird fractions. So, these would come up tops in the 
 	 * actual comparison but but but, they would have very poor average payoffs. So, the idea is to round off the riskRewardRatio up to the nearest multiples of 0.1. 
 	 * And then do a second comparison with higher total positive payoffs.
+	 * After running UTs, the results have top 7 entries within the 0.0 to 0.1 riskRewardRatio, i.e. 1:10.xx and higher riskReward.
+	 * 
 	 */
-	public float getRewardRiskRatioRounded() {
-		float rewardRiskRatio = 0.0f;
+	public float getRewardRiskRatioForComparison() {
+		float rewardRiskRatioForComparison = getRiskRewardRatio();
 
-		// This first if condition is to handle the case where +ve numbers less than 0.01 round off to 0 instead of 1 even if RoundingMode.UP is used.
-		// Unit tests for this are written in IndicatorTest.testRounding()
-		if (getRiskRewardRatio() >= 0.0f && getRiskRewardRatio() < 0.01f) {
-			rewardRiskRatio = 1.0f / 0.1f;
+		/*
+		 * This first if condition is to handle the case where +ve numbers less than 0.01 round off to 0 instead of 0.1 even if RoundingMode.UP is used.
+		 * Using the other RoundingModes like CEILING, FLOOR, etc, did not help either. Unit tests for this are written in
+		 * {@link com.vizerium.commons.indicators.IndicatorTest#testRoundingRiskRewardRatio}
+		 */
+		if (rewardRiskRatioForComparison >= 0.0f && rewardRiskRatioForComparison < 0.01f) {
+			rewardRiskRatioForComparison = 0.1f;
 		} else {
 			DecimalFormat df = new DecimalFormat("0.0");
 			df.setRoundingMode(RoundingMode.UP);
-			rewardRiskRatio = 1.0f / Float.parseFloat(df.format(getRiskRewardRatio()));
+			rewardRiskRatioForComparison = Float.parseFloat(df.format(rewardRiskRatioForComparison));
 		}
-		return rewardRiskRatio;
+		return 1.0f / rewardRiskRatioForComparison;
 	}
 
 	public float getTotalPremium() {
@@ -133,6 +140,24 @@ public class OptionStrategiesWithPayoff {
 
 	public boolean isExistingOpenPosition() {
 		return existingOpenPosition;
+	}
+
+	public double getPositionDeltaForComparison() {
+		double positionDeltaForComparison = Math.abs(positionDelta);
+
+		/*
+		 * This first if condition is to handle the case where +ve numbers less than 0.001 round off to 0 instead of 0.01 even if RoundingMode.UP is used.
+		 * Using the other RoundingModes like CEILING, FLOOR, etc, did not help either. Unit tests for this are written in
+		 * {@link com.vizerium.commons.indicators.IndicatorTest#testRoundingPositionDelta}
+		 */
+		if (positionDeltaForComparison >= 0.0f && positionDeltaForComparison < 0.001f) {
+			positionDeltaForComparison = 0.01f;
+		} else {
+			DecimalFormat df = new DecimalFormat("0.00");
+			df.setRoundingMode(RoundingMode.UP);
+			positionDeltaForComparison = Float.parseFloat(df.format(positionDeltaForComparison));
+		}
+		return 1.0 / positionDeltaForComparison;
 	}
 
 	public double getPositionDelta() {

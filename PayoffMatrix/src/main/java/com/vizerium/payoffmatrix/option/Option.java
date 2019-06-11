@@ -22,6 +22,7 @@ import java.time.temporal.ChronoUnit;
 
 import com.vizerium.commons.blackscholes.BlackScholes;
 import com.vizerium.commons.trade.TradeAction;
+import com.vizerium.commons.util.NumberFormats;
 
 public abstract class Option implements Cloneable, Serializable, OptionStrategy {
 
@@ -270,8 +271,8 @@ public abstract class Option implements Cloneable, Serializable, OptionStrategy 
 	@Override
 	public String toString() {
 		return (int) strike + type.getShortName() + "," + (existing ? "existing," : "new,") + (existing ? tradedPremium : currentPremium) + ","
-				+ (existing ? tradedDate.toString() : currentPremiumDate.toString()) + "," + tradeAction.name() + "," + numberOfLots + "lot(s)," + lotSize + ",IV"
-				+ impliedVolatility + " ";
+				+ (existing ? tradedDate.toString() : currentPremiumDate.toString()) + "," + tradeAction.name() + "," + numberOfLots + "lot(s)," + lotSize + ",Iv"
+				+ NumberFormats.getForMovingAverage().format(impliedVolatility) + ",del" + NumberFormats.getForMovingAverage().format(getDelta()) + " ";
 	}
 
 	public String toFullString() {

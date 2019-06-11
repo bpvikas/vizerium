@@ -20,13 +20,18 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.TreeSet;
 
+import com.vizerium.commons.trade.TradeAction;
 import com.vizerium.payoffmatrix.comparator.BestRiskRewardRatioPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.HighestAveragePayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.HighestProfitProbabilityPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.MaximumProfitPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.MinimumLossPayoffMatrixComparator;
+import com.vizerium.payoffmatrix.comparator.MostDeltaNeutralPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.engine.OptionStrategiesWithPayoff;
 import com.vizerium.payoffmatrix.engine.PayoffCalculator;
+import com.vizerium.payoffmatrix.option.Option;
+import com.vizerium.payoffmatrix.option.OptionStrategy;
+import com.vizerium.payoffmatrix.option.OptionType;
 import com.vizerium.payoffmatrix.reports.PayoffReportXlsx;
 import com.vizerium.payoffmatrix.volatility.Range;
 
@@ -52,6 +57,8 @@ public class Output {
 
 	private TreeSet<OptionStrategiesWithPayoff> highestAveragePayoffs = new TreeSet<OptionStrategiesWithPayoff>(new HighestAveragePayoffMatrixComparator());
 
+	private TreeSet<OptionStrategiesWithPayoff> mostDeltaNeutralPayoffs = new TreeSet<OptionStrategiesWithPayoff>(new MostDeltaNeutralPayoffMatrixComparator());
+
 	private String underlyingName;
 
 	private Range underlyingRange;
@@ -68,7 +75,7 @@ public class Output {
 			existingPositionPayoff = optionStrategiesWithPayoff;
 		}
 
-		if (optionStrategiesWithPayoff.getRiskRewardRatio() < 1.0f) {
+		if ((optionStrategiesWithPayoff.getRiskRewardRatio() < 1.0f) && !allOptionsInStrategyAreOfSameTypeAndAction(optionStrategiesWithPayoff.getOptions())) {
 			compareToExistingPayoffs(highestAveragePayoffs, optionStrategiesWithPayoff);
 
 			compareToExistingPayoffs(highestProfitProbabilityPayoffs, optionStrategiesWithPayoff);
@@ -80,6 +87,8 @@ public class Output {
 			}
 
 			compareToExistingPayoffs(bestRiskRewardRatioPayoffs, optionStrategiesWithPayoff);
+
+			compareToExistingPayoffs(mostDeltaNeutralPayoffs, optionStrategiesWithPayoff);
 		}
 	}
 
@@ -114,11 +123,32 @@ public class Output {
 		this.optionStrategiesCount = optionStrategiesCount;
 	}
 
+	private boolean allOptionsInStrategyAreOfSameTypeAndAction(OptionStrategy[] optionStrategies) {
+		OptionType firstOptionType = null;
+		TradeAction firstTradeAction = null;
+
+		for (OptionStrategy optionStrategy : optionStrategies) {
+			for (Option option : optionStrategy.getOptions()) {
+				if (firstOptionType == null) {
+					firstOptionType = option.getType();
+				}
+				if (firstTradeAction == null) {
+					firstTradeAction = option.getTradeAction();
+				}
+				if (!(option.getType().equals(firstOptionType) && option.getTradeAction().equals(firstTradeAction))) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	@Override
 	public String toString() {
 		return "Output - Analysed " + countAnalysedOptionStrategies + " in " + ChronoUnit.SECONDS.between(analysisStartTime, analysisEndTime) + " seconds, after eliminating "
 				+ PayoffCalculator.countOptionWithOppositeActions + " same option with opposite actions." + System.lineSeparator() + printExistingPositionPayoff()
-				+ printHighestProfitProbabilityPayoffs() + printMaxPositivePayoffs() + printMinNegativePayoffs() + printBestRiskRewardRatioPayoffs() + printHighestAveragePayoffs();
+				+ printHighestProfitProbabilityPayoffs() + printMaxPositivePayoffs() + printMinNegativePayoffs() + printBestRiskRewardRatioPayoffs() + printHighestAveragePayoffs()
+				+ printMostDeltaNeutralPayoffs();
 	}
 
 	private String printExistingPositionPayoff() {
@@ -149,6 +179,10 @@ public class Output {
 
 	private String printHighestAveragePayoffs() {
 		return printPayoffs("highestAveragePayoffs", highestAveragePayoffs);
+	}
+
+	private String printMostDeltaNeutralPayoffs() {
+		return printPayoffs("mostDeltaNeutralPayoffs", mostDeltaNeutralPayoffs);
 	}
 
 	private String printPayoffs(String payoffName, TreeSet<OptionStrategiesWithPayoff> payoffs) {

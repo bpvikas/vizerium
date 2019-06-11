@@ -98,7 +98,7 @@ public class IndicatorTest {
 	}
 
 	@Test
-	public void testRounding() {
+	public void testRoundingRiskRewardRatio() {
 		double f1 = 0.0000003;
 		double f2 = 0.009;
 		double f3 = 0.0099;
@@ -116,6 +116,34 @@ public class IndicatorTest {
 		System.out.println(f2 + " -> " + Float.parseFloat(df.format(f2)));
 		System.out.println(f3 + " -> " + Float.parseFloat(df.format(f3)));
 		System.out.println(f4 + " -> " + Float.parseFloat(df.format(f4)));
+		System.out.println(f5 + " -> " + Float.parseFloat(df.format(f5)));
+		System.out.println(f6 + " -> " + Float.parseFloat(df.format(f6)));
+		System.out.println(f7 + " -> " + Float.parseFloat(df.format(f7)));
+		System.out.println(f8 + " -> " + Float.parseFloat(df.format(f8)));
+		System.out.println(f9 + " -> " + Float.parseFloat(df.format(f9)));
+	}
+
+	@Test
+	public void testRoundingPositionDelta() {
+		double f1 = 0.00000003;
+		double f2 = 0.0009;
+		double f3 = 0.00099;
+		double f4 = 0.001;
+		double f4a = 0.0011;
+		double f5 = 0.002;
+		double f6 = 0.005;
+		double f7 = 0.008;
+		double f8 = 0.042;
+		double f9 = 0.081;
+
+		DecimalFormat df = new DecimalFormat("0.00");
+		df.setRoundingMode(RoundingMode.UP);
+
+		System.out.println(f1 + " -> " + Float.parseFloat(df.format(f1)));
+		System.out.println(f2 + " -> " + Float.parseFloat(df.format(f2)));
+		System.out.println(f3 + " -> " + Float.parseFloat(df.format(f3)));
+		System.out.println(f4 + " -> " + Float.parseFloat(df.format(f4)));
+		System.out.println(f4a + " -> " + Float.parseFloat(df.format(f4a)));
 		System.out.println(f5 + " -> " + Float.parseFloat(df.format(f5)));
 		System.out.println(f6 + " -> " + Float.parseFloat(df.format(f6)));
 		System.out.println(f7 + " -> " + Float.parseFloat(df.format(f7)));

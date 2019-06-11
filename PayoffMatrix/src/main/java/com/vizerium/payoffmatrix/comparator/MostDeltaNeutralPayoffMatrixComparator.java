@@ -20,10 +20,10 @@ import java.util.Comparator;
 
 import com.vizerium.payoffmatrix.engine.OptionStrategiesWithPayoff;
 
-public class BestRiskRewardRatioPayoffMatrixComparator implements Comparator<OptionStrategiesWithPayoff> {
+public class MostDeltaNeutralPayoffMatrixComparator implements Comparator<OptionStrategiesWithPayoff> {
 
 	@Override
 	public int compare(OptionStrategiesWithPayoff o1, OptionStrategiesWithPayoff o2) {
-		return Comparator.comparing(OptionStrategiesWithPayoff::getRewardRiskRatioForComparison).thenComparing(OptionStrategiesWithPayoff::getPositivePayoffSum).compare(o2, o1);
+		return Comparator.comparing(OptionStrategiesWithPayoff::getPositionDeltaForComparison).thenComparing(OptionStrategiesWithPayoff::getPositivePayoffSum).compare(o2, o1);
 	}
 }

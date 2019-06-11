@@ -24,6 +24,6 @@ public class HighestProfitProbabilityPayoffMatrixComparator implements Comparato
 
 	@Override
 	public int compare(OptionStrategiesWithPayoff o1, OptionStrategiesWithPayoff o2) {
-		return Comparator.comparing(OptionStrategiesWithPayoff::getProfitProbabilityRounded).thenComparing(OptionStrategiesWithPayoff::getPositivePayoffSum).compare(o2, o1);
+		return Comparator.comparing(OptionStrategiesWithPayoff::getProfitProbabilityForComparison).thenComparing(OptionStrategiesWithPayoff::getPositivePayoffSum).compare(o2, o1);
 	}
 }
