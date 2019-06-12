@@ -24,6 +24,7 @@ public class BestRiskRewardRatioPayoffMatrixComparator implements Comparator<Opt
 
 	@Override
 	public int compare(OptionStrategiesWithPayoff o1, OptionStrategiesWithPayoff o2) {
-		return Comparator.comparing(OptionStrategiesWithPayoff::getRewardRiskRatioForComparison).thenComparing(OptionStrategiesWithPayoff::getPositivePayoffSum).compare(o2, o1);
+		return Comparator.comparing(OptionStrategiesWithPayoff::getRiskRewardRatioForComparison).reversed().thenComparing(OptionStrategiesWithPayoff::getPositivePayoffSum)
+				.compare(o2, o1);
 	}
 }

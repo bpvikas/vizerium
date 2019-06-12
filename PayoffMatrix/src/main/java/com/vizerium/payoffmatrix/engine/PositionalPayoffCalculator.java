@@ -53,7 +53,13 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 			OptionChainIterator<Option> optionChainIterator = new OptionChainIterator<Option>(optionChain, j);
 			while (optionChainIterator.hasNext()) {
 				List<Option> newPositions = optionChainIterator.next();
-				Option[] newAndExistingPositions = ArrayUtils.addAll(criteria.getExistingPositions(), newPositions.toArray(new Option[newPositions.size()]));
+
+				Option[] newAndExistingPositions = null;
+				if (criteria.getExistingPositions().length > 0) {
+					newAndExistingPositions = ArrayUtils.addAll(criteria.getExistingPositions(), newPositions.toArray(new Option[newPositions.size()]));
+				} else {
+					newAndExistingPositions = newPositions.toArray(new Option[newPositions.size()]);
+				}
 
 				if (logger.isDebugEnabled()) {
 					logger.debug("Options being evaluated are : ");

@@ -24,6 +24,7 @@ public class MostDeltaNeutralPayoffMatrixComparator implements Comparator<Option
 
 	@Override
 	public int compare(OptionStrategiesWithPayoff o1, OptionStrategiesWithPayoff o2) {
-		return Comparator.comparing(OptionStrategiesWithPayoff::getPositionDeltaForComparison).thenComparing(OptionStrategiesWithPayoff::getPositivePayoffSum).compare(o2, o1);
+		return Comparator.comparing(OptionStrategiesWithPayoff::getPositionDeltaForComparison).reversed().thenComparing(OptionStrategiesWithPayoff::getPositivePayoffSum)
+				.compare(o2, o1);
 	}
 }

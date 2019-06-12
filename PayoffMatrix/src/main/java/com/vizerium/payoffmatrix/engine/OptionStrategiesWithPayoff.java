@@ -16,9 +16,6 @@
 
 package com.vizerium.payoffmatrix.engine;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-
 import com.vizerium.payoffmatrix.option.Option;
 import com.vizerium.payoffmatrix.option.OptionStrategy;
 
@@ -79,9 +76,7 @@ public class OptionStrategiesWithPayoff {
 	 * i.e. 27 +ve payoffs / (27 +ve and 2 -ve = 29 total payoffs)
 	 */
 	public float getProfitProbabilityForComparison() {
-		DecimalFormat df = new DecimalFormat("0.0");
-		df.setRoundingMode(RoundingMode.UP);
-		return Float.parseFloat(df.format(getProfitProbability()));
+		return roundTo1Decimal(getProfitProbability());
 	}
 
 	public float getPayoffAverage() {
@@ -100,22 +95,8 @@ public class OptionStrategiesWithPayoff {
 	 * After running UTs, the results have top 7 entries within the 0.0 to 0.1 riskRewardRatio, i.e. 1:10.xx and higher riskReward.
 	 * 
 	 */
-	public float getRewardRiskRatioForComparison() {
-		float rewardRiskRatioForComparison = getRiskRewardRatio();
-
-		/*
-		 * This first if condition is to handle the case where +ve numbers less than 0.01 round off to 0 instead of 0.1 even if RoundingMode.UP is used.
-		 * Using the other RoundingModes like CEILING, FLOOR, etc, did not help either. Unit tests for this are written in
-		 * {@link com.vizerium.commons.indicators.IndicatorTest#testRoundingRiskRewardRatio}
-		 */
-		if (rewardRiskRatioForComparison >= 0.0f && rewardRiskRatioForComparison < 0.01f) {
-			rewardRiskRatioForComparison = 0.1f;
-		} else {
-			DecimalFormat df = new DecimalFormat("0.0");
-			df.setRoundingMode(RoundingMode.UP);
-			rewardRiskRatioForComparison = Float.parseFloat(df.format(rewardRiskRatioForComparison));
-		}
-		return 1.0f / rewardRiskRatioForComparison;
+	public float getRiskRewardRatioForComparison() {
+		return roundTo1Decimal(getRiskRewardRatio());
 	}
 
 	public float getTotalPremium() {
@@ -143,21 +124,7 @@ public class OptionStrategiesWithPayoff {
 	}
 
 	public double getPositionDeltaForComparison() {
-		double positionDeltaForComparison = Math.abs(positionDelta);
-
-		/*
-		 * This first if condition is to handle the case where +ve numbers less than 0.001 round off to 0 instead of 0.01 even if RoundingMode.UP is used.
-		 * Using the other RoundingModes like CEILING, FLOOR, etc, did not help either. Unit tests for this are written in
-		 * {@link com.vizerium.commons.indicators.IndicatorTest#testRoundingPositionDelta}
-		 */
-		if (positionDeltaForComparison >= 0.0f && positionDeltaForComparison < 0.001f) {
-			positionDeltaForComparison = 0.01f;
-		} else {
-			DecimalFormat df = new DecimalFormat("0.00");
-			df.setRoundingMode(RoundingMode.UP);
-			positionDeltaForComparison = Float.parseFloat(df.format(positionDeltaForComparison));
-		}
-		return 1.0 / positionDeltaForComparison;
+		return roundTo2Decimals(Math.abs(positionDelta));
 	}
 
 	public double getPositionDelta() {
@@ -169,6 +136,14 @@ public class OptionStrategiesWithPayoff {
 		for (OptionStrategy optionStrategy : optionStrategies) {
 			positionDelta += optionStrategy.getDelta();
 		}
+	}
+
+	private float roundTo1Decimal(float d) {
+		return Math.round(d * 10.0f) / 10.0f;
+	}
+
+	private double roundTo2Decimals(double d) {
+		return Math.round(d * 100.0) / 100.0;
 	}
 
 	@Override

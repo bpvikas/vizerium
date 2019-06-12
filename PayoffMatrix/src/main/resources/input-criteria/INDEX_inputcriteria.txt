@@ -9,14 +9,18 @@ contract.series=near
 #Any existing positions that needs to be considered in the payoff, with the premium prices at which they were purchased or sold.
 #Format CE/PE,Strike,BUY/SELL,Lots,Premium Paid,Traded Date(DDMMYYYY), NEAR/MID/FAR
 #Format CE,10500,short,1,98.45,04062018,near
-#existingposition1=CE,10500,short,1,195.10,28062018,mid
+#existingposition1=PE,11300,short,1,1.90,07062019,near
 existingposition2=
 existingposition3=
 existingposition4=
 existingposition5=
 
 #max positions to be held(including existing positions)
-max.option.positions=8
+# VERY IMPORTANT: SETTING BELOW VALUE TO 8 CAUSES THE PROGRAM TO RUN FOR ~100-120 MINUTES AS IT CHECKS 3.5 BILLION + COMBINATIONS, THAT EVENTUALLY
+# SETS UP A MARGIN REQUIREMENT OF 7.68 LAKHS FOR MAX 8 SHORT POSITIONS. 
+# USE A PRACTICAL VALUE OF 6 WHICH THE PROGRAM EXECUTES IN 95 SECONDS CHECKING 60 MILLION COMBINATIONS AND HAS A MARGIN REQUIREMENT OF 5.76 LAKHS 
+# AND LEAVES MONEY ON THE TABLE FOR MANAGING THE POSITION IN CASE OF ADVERSE MARKET MOVEMENTS. 
+max.option.positions=6
 
 #max spread positions to be held
 max.option.spread.positions=2

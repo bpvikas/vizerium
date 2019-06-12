@@ -25,6 +25,9 @@ public class DateRange {
 	private LocalDate endDate;
 
 	public DateRange(LocalDate startDate, LocalDate endDate) {
+		if (startDate.isAfter(endDate)) {
+			throw new RuntimeException("Start Date " + startDate + " cannot be after End Date " + endDate);
+		}
 		this.startDate = startDate;
 		this.endDate = endDate;
 	}
@@ -33,16 +36,8 @@ public class DateRange {
 		return startDate;
 	}
 
-	public void setStartDate(LocalDate startDate) {
-		this.startDate = startDate;
-	}
-
 	public LocalDate getEndDate() {
 		return endDate;
-	}
-
-	public void setEndDate(LocalDate endDate) {
-		this.endDate = endDate;
 	}
 
 	@Override
