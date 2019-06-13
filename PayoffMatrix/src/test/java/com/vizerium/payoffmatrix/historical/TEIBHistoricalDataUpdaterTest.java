@@ -33,6 +33,7 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.vizerium.commons.indicators.MovingAverageCalculator;
@@ -41,6 +42,7 @@ import com.vizerium.payoffmatrix.dao.HistoricalCsvDataStore;
 import com.vizerium.payoffmatrix.dao.HistoricalDataStore;
 import com.vizerium.payoffmatrix.volatility.DateRange;
 
+@Ignore
 public class TEIBHistoricalDataUpdaterTest {
 
 	private TEIArchiveDataDownloader archiveDataDownloader;
@@ -93,7 +95,7 @@ public class TEIBHistoricalDataUpdaterTest {
 			Workbook workbook = new XSSFWorkbook(analysisFileInput);
 			Sheet analysisSheet = workbook.getSheetAt(0);
 
-			float[] closingPrices = csvDataStore.readHistoricalClosingPrices(new DateRange(null, date));
+			float[] closingPrices = csvDataStore.readHistoricalData(new DateRange(null, date)).getClosingPrices();
 			float _5dema = MovingAverageCalculator.calculateEMA(closingPrices, 5);
 			float _9dema = MovingAverageCalculator.calculateEMA(closingPrices, 9);
 			float _13dema = MovingAverageCalculator.calculateEMA(closingPrices, 13);
@@ -102,7 +104,7 @@ public class TEIBHistoricalDataUpdaterTest {
 			float _100dema = MovingAverageCalculator.calculateEMA(closingPrices, 100);
 			float _200dema = MovingAverageCalculator.calculateEMA(closingPrices, 200);
 
-			DayPriceData dayPriceData = csvDataStore.readHistoricalData(new DateRange(date, date))[0];
+			DayPriceData dayPriceData = csvDataStore.readHistoricalData(new DateRange(date, date)).getFirst();
 
 			CellReference cr = new CellReference("A3");
 			Row dateRow = analysisSheet.getRow(cr.getRow());

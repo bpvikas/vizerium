@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.vizerium.commons.io.FileUtils;
@@ -44,16 +45,15 @@ public class HistoricalCsvDataStore implements HistoricalDataStore {
 
 	private static final NumberFormat numberformat = NumberFormats.getForPrice();
 
-	public HistoricalCsvDataStore() {
-
-	}
-
 	public HistoricalCsvDataStore(String underlyingName) {
+		if (StringUtils.isBlank(underlyingName)) {
+			throw new RuntimeException("underlyingName not supplied.");
+		}
 		this.underlyingName = underlyingName;
 	}
 
 	@Override
-	public DayPriceData[] readHistoricalData(DateRange dateRange) {
+	public HistoricalData readHistoricalData(DateRange dateRange) {
 
 		String[] historicalFileLines = readHistoricalDataFileLines(dateRange);
 
@@ -64,19 +64,7 @@ public class HistoricalCsvDataStore implements HistoricalDataStore {
 					Float.parseFloat(csvHistoricalDataDetails[2]), Float.parseFloat(csvHistoricalDataDetails[3]), Float.parseFloat(csvHistoricalDataDetails[4]),
 					Float.parseFloat(csvHistoricalDataDetails[1]));
 		}
-		return dayPriceData;
-	}
-
-	@Override
-	public float[] readHistoricalClosingPrices(DateRange dateRange) {
-		String[] historicalFileLines = readHistoricalDataFileLines(dateRange);
-
-		float[] closingPrices = new float[historicalFileLines.length];
-		for (int i = 0; i < historicalFileLines.length; i++) {
-			String[] csvHistoricalDataDetails = historicalFileLines[i].split("#");
-			closingPrices[i] = Float.parseFloat(csvHistoricalDataDetails[1]);
-		}
-		return closingPrices;
+		return new HistoricalData(dayPriceData);
 	}
 
 	private String[] readHistoricalDataFileLines(DateRange dateRange) {

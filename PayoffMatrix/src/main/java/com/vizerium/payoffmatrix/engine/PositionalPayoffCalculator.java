@@ -105,7 +105,7 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 					}
 					payoffs[payoffCounter++] = new float[] { underlyingPrice, netPayoff };
 				}
-				PayoffMatrix payoffMatrix = new PayoffMatrix(payoffs, criteria.getVolatility().getUnderlyingValue());
+				PayoffMatrix payoffMatrix = new PayoffMatrix(payoffs, criteria.getUnderlyingValue());
 				if (logger.isDebugEnabled()) {
 					logger.debug(payoffMatrix);
 				}

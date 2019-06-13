@@ -1,13 +1,12 @@
 # The volatility of the underlying. Used to calculate the range of the underlying.
 # This can be either the implied volatility (e.g. India VIX for the Index) or the historical volatility
 # For implied volatility, just populate India VIX in the variable "underlying.volatility.standardDeviation". The other values 
-# underlying.volatility.mean and underlying.last.closing.price will be calculated from the historical data.
-# If none of the values are provided, then the historical volatility auto-calculated from the 4.5 years closing prices of the underlying will be used.
+# underlying.volatility.mean will be calculated from the historical data.
+# If none of the values are provided, then the historical volatility auto-calculated from the 8.5 years closing prices of the underlying will be used.
 # The range calculation here will also take into consideration the time to expiry either from contract.duration/contract.series or from expiryDate
 #Possible values for standardDeviationMultiple are 1, 2, 3, for 1st, 2nd and 3rd standard deviation.
 
 underlying.impliedVolatility=
-underlying.last.closing.price=
 underlying.volatility.standardDeviationMultiple=
 
 # The upper and lower end of the range of the underlying.

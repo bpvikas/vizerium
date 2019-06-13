@@ -16,28 +16,13 @@
 
 package com.vizerium.payoffmatrix.volatility;
 
-import com.vizerium.payoffmatrix.dao.HistoricalCsvDataStore;
-import com.vizerium.payoffmatrix.dao.HistoricalDataStore;
+import com.vizerium.payoffmatrix.dao.HistoricalData;
 
 public class CsvHistoricalDataVolatilityCalculator implements VolatilityCalculator {
 
-	private HistoricalCsvDataStore csvDataStore;
-
-	public CsvHistoricalDataVolatilityCalculator() {
-
-	}
-
-	public CsvHistoricalDataVolatilityCalculator(String underlyingName) {
-		this.csvDataStore = new HistoricalCsvDataStore(underlyingName);
-	}
-
-	public HistoricalDataStore getHistoricalDataStore() {
-		return csvDataStore;
-	}
-
 	@Override
-	public Volatility calculateVolatility(DateRange dateRange) {
-		float[] closingPrices = csvDataStore.readHistoricalClosingPrices(dateRange);
+	public Volatility calculateVolatility(HistoricalData historicalData) {
+		float[] closingPrices = historicalData.getClosingPrices();
 		float[] logNaturalDailyReturns = calculateLogNaturalDailyReturns(closingPrices);
 
 		Volatility volatility = calculateMeanAndStandardDeviation(logNaturalDailyReturns);

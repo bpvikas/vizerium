@@ -33,12 +33,12 @@ public class PutOption extends Option {
 		this.type = OptionType.PUT;
 	}
 
-	public PutOption(String strike, String openInterest, String currentPremium, float impliedVolatility, String underlyingPrice, LocalDate currentPremiumDate, int lotSize) {
+	public PutOption(String strike, String openInterest, String currentPremium, float impliedVolatility, float underlyingPrice, LocalDate currentPremiumDate, int lotSize) {
 		this.strike = Float.parseFloat(strike);
 		this.openInterest = Integer.parseInt(openInterest);
 		this.currentPremium = Float.parseFloat(currentPremium);
 		setImpliedVolatility(impliedVolatility);
-		this.underlyingPrice = Float.parseFloat(underlyingPrice);
+		this.underlyingPrice = underlyingPrice;
 		this.currentPremiumDate = currentPremiumDate;
 		this.lotSize = lotSize;
 		this.type = OptionType.PUT;

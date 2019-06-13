@@ -19,10 +19,10 @@ package com.vizerium.payoffmatrix.historical;
 import java.time.LocalDate;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import com.vizerium.payoffmatrix.historical.TEIArchiveDataDownloader;
-
+@Ignore
 public class TEIArchiveDataDownloaderTest {
 
 	private TEIArchiveDataDownloader unit;

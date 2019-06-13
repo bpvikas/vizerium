@@ -10,19 +10,16 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vizerium.payoffmatrix.dao.HistoricalCsvDataStore;
 import com.vizerium.payoffmatrix.dao.HistoricalDataStore;
 import com.vizerium.payoffmatrix.historical.DayPriceData;
 
 public class CsvHistoricalDataVolatilityCalculator_BankIndexNDay_Test {
 
-	private CsvHistoricalDataVolatilityCalculator unit;
-
 	private NumberFormat nf = NumberFormat.getInstance();
 
 	@Before
 	public void setup() {
-		unit = new CsvHistoricalDataVolatilityCalculator("BANKINDEX");
-
 		nf.setMinimumIntegerDigits(2);
 	}
 
@@ -39,8 +36,8 @@ public class CsvHistoricalDataVolatilityCalculator_BankIndexNDay_Test {
 
 				DateRange historicalDateRange = new DateRange(expiryDate.minusWeeks(2).plusDays(1), expiryDate.minusWeeks(1));
 
-				HistoricalDataStore historicalDataStore = unit.getHistoricalDataStore();
-				DayPriceData[] historicalData = historicalDataStore.readHistoricalData(historicalDateRange);
+				HistoricalDataStore historicalDataStore = new HistoricalCsvDataStore("BANKINDEX");
+				DayPriceData[] historicalData = historicalDataStore.readHistoricalData(historicalDateRange).getDayPriceData();
 				if (historicalData.length > differenceNDays) {
 					float difference = historicalData[historicalData.length - 1].getOpen() - historicalData[historicalData.length - 1 - differenceNDays].getOpen();
 
@@ -57,7 +54,8 @@ public class CsvHistoricalDataVolatilityCalculator_BankIndexNDay_Test {
 		}
 
 		System.out.println("Difference array length: " + differenceArray.size());
-		int diffMinNegative = 0, diff_500to_400 = 0, diff_400to_300 = 0, diff_300to_200 = 0, diff_200to_100 = 0, diff_100to0 = 0, diff0to100 = 0, diff100to200 = 0, diff200to300 = 0, diff300to400 = 0, diff400to500 = 0, diffMaxPositive = 0;
+		int diffMinNegative = 0, diff_500to_400 = 0, diff_400to_300 = 0, diff_300to_200 = 0, diff_200to_100 = 0, diff_100to0 = 0, diff0to100 = 0, diff100to200 = 0,
+				diff200to300 = 0, diff300to400 = 0, diff400to500 = 0, diffMaxPositive = 0;
 		for (float difference : differenceArray) {
 			if (difference < -500.0) {
 				diffMinNegative++;

@@ -51,33 +51,43 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 			Document htmlDoc = Jsoup.parse(localHtmlFile, "UTF-8");
 
 			Elements spanElements = htmlDoc.getElementsByTag("span");
-			String underlyingPrice = "";
+			String underlyingPriceString = "";
 			String optionChainDateString = "";
 			for (Element e : spanElements) {
 				if (e.text().contains("Underlying Index")) {
 					if (logger.isInfoEnabled()) {
 						logger.info(e.text());
 					}
-					underlyingPrice = e.text().substring(e.text().lastIndexOf(' ') + 1).replace(",", "");
+					underlyingPriceString = e.text().substring(e.text().lastIndexOf(' ') + 1).replace(",", "");
 				} else if (e.text().contains("IST")) {
 					if (logger.isInfoEnabled()) {
 						logger.info(e.text());
 					}
 					optionChainDateString = e.text().substring(6, e.text().lastIndexOf(" "));
 				}
-				if (!StringUtils.isAnyBlank(underlyingPrice, optionChainDateString)) {
+				if (!StringUtils.isAnyBlank(underlyingPriceString, optionChainDateString)) {
 					break;
 				}
 			}
-			if (StringUtils.isAnyBlank(underlyingPrice, optionChainDateString)) {
-				throw new RuntimeException("Unable to determine underlyingPrice: " + underlyingPrice + " or optionChainDateString: " + optionChainDateString);
+			if (StringUtils.isAnyBlank(underlyingPriceString, optionChainDateString)) {
+				throw new RuntimeException("Unable to determine underlyingPrice: " + underlyingPriceString + " or optionChainDateString: " + optionChainDateString);
 			}
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss");
 			LocalDate optionChainDate = LocalDateTime.parse(optionChainDateString, formatter).toLocalDate();
+			float underlyingPrice = Float.parseFloat(underlyingPriceString);
 			if (logger.isInfoEnabled()) {
 				logger.info(underlyingPrice + " $$ " + optionChainDate);
 			}
+			if (!optionChainDate.equals(criteria.getHistoricalDataDateRange().getEndDate())) {
+				throw new RuntimeException(
+						"The option chain date " + optionChainDate + " does not match the historical data end date " + criteria.getHistoricalDataDateRange().getEndDate());
+			}
+			if (Math.abs(underlyingPrice - criteria.getUnderlyingValue()) / criteria.getUnderlyingValue() >= 0.005f) {
+				throw new RuntimeException("There is more than a 0.5% difference between the Option Chain price " + underlyingPrice + " and the historical data last closing Price "
+						+ criteria.getUnderlyingValue());
+			}
+
 			Element optionChainData = htmlDoc.getElementById("octable");
 
 			Element optionChainDataTitle = optionChainData.select("thead").select("tr").get(1);

@@ -32,6 +32,9 @@ import org.apache.log4j.Logger;
 
 import com.vizerium.commons.io.FileUtils;
 import com.vizerium.commons.trade.TradeAction;
+import com.vizerium.payoffmatrix.dao.HistoricalData;
+import com.vizerium.payoffmatrix.dao.HistoricalDataStore;
+import com.vizerium.payoffmatrix.dao.HistoricalDataStoreFactory;
 import com.vizerium.payoffmatrix.dao.LocalDataSource;
 import com.vizerium.payoffmatrix.dao.RemoteDataSource;
 import com.vizerium.payoffmatrix.engine.ExpiryDateCalculator;
@@ -86,7 +89,13 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 				criteria.setExpiryDate(ExpiryDateCalculator.convertToExpiryDate(criteria.getContractDuration(), criteria.getContractSeries()));
 			}
 
-			criteria.setVolatility(getVolatility(criteriaProperties, criteria.getUnderlyingName(), criteria.getExpiryDate()));
+			criteria.setHistoricalDataLocalDatasource(LocalDataSource.getByProperty(criteriaProperties.getProperty("historical.data.local.datasource")));
+			HistoricalDataStore historicaldataStore = HistoricalDataStoreFactory.getHistoricalDataStore(criteria.getHistoricalDataLocalDatasource(), criteria.getUnderlyingName());
+
+			HistoricalData historicalData = historicaldataStore.readHistoricalData(null);
+			criteria.setUnderlyingValue(historicalData.getLastClosingPrice());
+			criteria.setHistoricalDataDateRange(historicalData.getStartAndEndDates());
+			criteria.setVolatility(getVolatility(criteriaProperties, historicalData, criteria.getExpiryDate()));
 
 			criteria.setMaxLoss(Float.parseFloat(criteriaProperties.getProperty("maxLoss")));
 
@@ -94,8 +103,8 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 
 			criteria.setExistingPositions(getAllExistingPositions(criteriaProperties));
 
-			criteria.setRemoteDatasource(RemoteDataSource.getByProperty(criteriaProperties.getProperty("option.chain.remote.datasource")));
-			criteria.setLocalDatasource(LocalDataSource.getByProperty(criteriaProperties.getProperty("option.chain.local.datasource")));
+			criteria.setOptionChainRemoteDatasource(RemoteDataSource.getByProperty(criteriaProperties.getProperty("option.chain.remote.datasource")));
+			criteria.setOptionChainLocalDatasource(LocalDataSource.getByProperty(criteriaProperties.getProperty("option.chain.local.datasource")));
 
 			if (StringUtils.isNotBlank(criteriaProperties.getProperty("minimum.openinterest"))) {
 				criteria.setMinOpenInterest(Integer.parseInt(criteriaProperties.getProperty("minimum.openinterest")));
@@ -175,7 +184,7 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 		return existingOptionOpenPositions.toArray(new Option[existingOptionOpenPositions.size()]);
 	}
 
-	private Volatility getVolatility(Properties criteriaProperties, String underlyingName, LocalDate expiryDate) {
+	private Volatility getVolatility(Properties criteriaProperties, HistoricalData historicalData, LocalDate expiryDate) {
 
 		Volatility volatility = new Volatility();
 
@@ -187,17 +196,14 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 			volatility.setUnderlyingRange(new Range(underlyingRangeBottom, underlyingRangeTop, underlyingRangeStep));
 		} else {
 			String underlyingImpliedVolatility = criteriaProperties.getProperty("underlying.impliedVolatility");
-			String underlyingLastClosingPrice = criteriaProperties.getProperty("underlying.last.closing.price");
 
-			VolatilityCalculator volatilityCalculator = new CsvHistoricalDataVolatilityCalculator(underlyingName);
-			volatility = volatilityCalculator.calculateVolatility(null);
+			VolatilityCalculator volatilityCalculator = new CsvHistoricalDataVolatilityCalculator();
+			volatility = volatilityCalculator.calculateVolatility(historicalData);
 
 			if (StringUtils.isNotBlank(underlyingImpliedVolatility)) {
 				volatility.setStandardDeviationFromImpliedVolatility(underlyingImpliedVolatility);
 			}
-			if (StringUtils.isNotBlank(underlyingLastClosingPrice)) {
-				volatility.setUnderlyingValue(Float.parseFloat(underlyingLastClosingPrice));
-			}
+			volatility.setUnderlyingValue(historicalData.getLastClosingPrice());
 
 			String underlyingRangeStdDevMultiple = criteriaProperties.getProperty("underlying.volatility.standardDeviationMultiple");
 			volatility.setStandardDeviationMultiple(Float.parseFloat(underlyingRangeStdDevMultiple));

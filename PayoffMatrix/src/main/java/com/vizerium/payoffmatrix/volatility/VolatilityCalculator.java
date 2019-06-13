@@ -16,8 +16,10 @@
 
 package com.vizerium.payoffmatrix.volatility;
 
+import com.vizerium.payoffmatrix.dao.HistoricalData;
+
 public interface VolatilityCalculator {
 
-	public Volatility calculateVolatility(DateRange dateRange);
+	public Volatility calculateVolatility(HistoricalData historicalData);
 
 }

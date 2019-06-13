@@ -25,11 +25,14 @@ import com.vizerium.payoffmatrix.option.ContractDuration;
 import com.vizerium.payoffmatrix.option.ContractSeries;
 import com.vizerium.payoffmatrix.option.Option;
 import com.vizerium.payoffmatrix.option.TradingBias;
+import com.vizerium.payoffmatrix.volatility.DateRange;
 import com.vizerium.payoffmatrix.volatility.Volatility;
 
 public class Criteria {
 
 	private String underlyingName;
+
+	private float underlyingValue;
 
 	private Volatility volatility;
 
@@ -45,9 +48,13 @@ public class Criteria {
 
 	private Option[] existingPositions;
 
-	private RemoteDataSource remoteDatasource;
+	private RemoteDataSource optionChainRemoteDatasource;
 
-	private LocalDataSource localDatasource;
+	private LocalDataSource optionChainLocalDatasource;
+
+	private LocalDataSource historicalDataLocalDatasource;
+
+	private DateRange historicalDataDateRange;
 
 	private int minOpenInterest;
 
@@ -73,6 +80,14 @@ public class Criteria {
 
 	public void setUnderlyingName(String underlyingName) {
 		this.underlyingName = underlyingName;
+	}
+
+	public float getUnderlyingValue() {
+		return underlyingValue;
+	}
+
+	public void setUnderlyingValue(float underlyingValue) {
+		this.underlyingValue = underlyingValue;
 	}
 
 	public Volatility getVolatility() {
@@ -134,20 +149,36 @@ public class Criteria {
 		this.existingPositions = existingPositions;
 	}
 
-	public RemoteDataSource getRemoteDatasource() {
-		return remoteDatasource;
+	public RemoteDataSource getOptionChainRemoteDatasource() {
+		return optionChainRemoteDatasource;
 	}
 
-	public void setRemoteDatasource(RemoteDataSource remoteDatasource) {
-		this.remoteDatasource = remoteDatasource;
+	public void setOptionChainRemoteDatasource(RemoteDataSource optionChainRemoteDatasource) {
+		this.optionChainRemoteDatasource = optionChainRemoteDatasource;
 	}
 
-	public LocalDataSource getLocalDatasource() {
-		return localDatasource;
+	public LocalDataSource getOptionChainLocalDatasource() {
+		return optionChainLocalDatasource;
 	}
 
-	public void setLocalDatasource(LocalDataSource localDatasource) {
-		this.localDatasource = localDatasource;
+	public void setOptionChainLocalDatasource(LocalDataSource optionChainLocalDatasource) {
+		this.optionChainLocalDatasource = optionChainLocalDatasource;
+	}
+
+	public LocalDataSource getHistoricalDataLocalDatasource() {
+		return historicalDataLocalDatasource;
+	}
+
+	public void setHistoricalDataLocalDatasource(LocalDataSource historicalDataLocalDatasource) {
+		this.historicalDataLocalDatasource = historicalDataLocalDatasource;
+	}
+
+	public DateRange getHistoricalDataDateRange() {
+		return historicalDataDateRange;
+	}
+
+	public void setHistoricalDataDateRange(DateRange historicalDataDateRange) {
+		this.historicalDataDateRange = historicalDataDateRange;
 	}
 
 	public int getMinOpenInterest() {
@@ -224,12 +255,12 @@ public class Criteria {
 
 	@Override
 	public String toString() {
-		return "Criteria [underlyingName=" + underlyingName + ", volatility=" + volatility + ", maxLoss=" + maxLoss + ", tradingBias=" + tradingBias + ", contractSeries="
-				+ contractSeries + ", expiryDate=" + expiryDate + ", existingPositions=" + Arrays.toString(existingPositions) + ", remoteDatasource=" + remoteDatasource
-				+ ", localDatasource=" + localDatasource + ", minOpenInterest=" + minOpenInterest + ", maxOptionPremium=" + maxOptionPremium + ", sellOrderMargin="
-				+ sellOrderMargin + ", investibleAmount=" + investibleAmount + ", maxOptionOpenPositions=" + maxOptionOpenPositions + ", maxOptionSpreadOpenPositions="
-				+ maxOptionSpreadOpenPositions + ", maxOptionNumberOfLots=" + maxOptionNumberOfLots + ", lotSize=" + lotSize + ", riskFreeInterestRate=" + riskFreeInterestRate
-				+ "]";
+		return "Criteria [underlyingName=" + underlyingName + ", underlyingValue=" + underlyingValue + ", volatility=" + volatility + ", maxLoss=" + maxLoss + ", tradingBias="
+				+ tradingBias + ", contractDuration=" + contractDuration + ", contractSeries=" + contractSeries + ", expiryDate=" + expiryDate + ", existingPositions="
+				+ Arrays.toString(existingPositions) + ", optionChainRemoteDatasource=" + optionChainRemoteDatasource + ", optionChainLocalDatasource=" + optionChainLocalDatasource
+				+ ", historicalDataLocalDatasource=" + historicalDataLocalDatasource + ", historicalDataDateRange=" + historicalDataDateRange + ", minOpenInterest="
+				+ minOpenInterest + ", maxOptionPremium=" + maxOptionPremium + ", sellOrderMargin=" + sellOrderMargin + ", investibleAmount=" + investibleAmount
+				+ ", maxOptionOpenPositions=" + maxOptionOpenPositions + ", maxOptionSpreadOpenPositions=" + maxOptionSpreadOpenPositions + ", maxOptionNumberOfLots="
+				+ maxOptionNumberOfLots + ", lotSize=" + lotSize + ", riskFreeInterestRate=" + riskFreeInterestRate + "]";
 	}
-
 }

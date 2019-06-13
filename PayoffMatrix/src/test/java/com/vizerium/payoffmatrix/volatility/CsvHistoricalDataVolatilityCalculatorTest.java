@@ -20,6 +20,8 @@ import org.junit.Assert;
 
 import com.vizerium.commons.indicators.MovingAverageCalculator;
 import com.vizerium.commons.indicators.RSICalculator;
+import com.vizerium.payoffmatrix.dao.HistoricalCsvDataStore;
+import com.vizerium.payoffmatrix.dao.HistoricalData;
 import com.vizerium.payoffmatrix.dao.HistoricalDataStore;
 import com.vizerium.payoffmatrix.exchange.Exchanges;
 
@@ -28,23 +30,28 @@ public abstract class CsvHistoricalDataVolatilityCalculatorTest {
 	protected static float volatilityPercentageOverlapSum = 0.0f;
 	protected static int volatilityPercentageOverlapViolations = 0;
 
+	protected String underlyingName;
+
+	protected CsvHistoricalDataVolatilityCalculator unit = new CsvHistoricalDataVolatilityCalculator();
+
 	protected void testExpiryDateIsAtWhichStandardDeviationBasedOnDataPrior(DateRange historicalDateRange, DateRange futureDateRange, float standardDeviationMultiple) {
 
 		System.out.println("historicalDateRange : " + historicalDateRange + ", futureDateRange" + futureDateRange);
-		Volatility volatility = getUnit().calculateVolatility(historicalDateRange);
+		HistoricalDataStore csvHistoricalDataStore = new HistoricalCsvDataStore(underlyingName);
+		HistoricalData historicalData = csvHistoricalDataStore.readHistoricalData(historicalDateRange);
+		Volatility volatility = unit.calculateVolatility(historicalData);
 		volatility.setStandardDeviationMultiple(standardDeviationMultiple);
 		volatility.calculateUnderlyingRange(historicalDateRange.getEndDate(), futureDateRange.getEndDate(), Exchanges.get("TEI"), 25.0f);
 		System.out.println("Forecasted " + volatility.getUnderlyingRange());
 
-		HistoricalDataStore historicalDataStore = getUnit().getHistoricalDataStore();
-		float[] historicalClosingPrices = historicalDataStore.readHistoricalClosingPrices(historicalDateRange);
+		float[] historicalClosingPrices = historicalData.getClosingPrices();
 
 		float _9sma = MovingAverageCalculator.calculateSMA(historicalClosingPrices, 9);
 		float _26sma = MovingAverageCalculator.calculateSMA(historicalClosingPrices, 26);
 		float _9ema = MovingAverageCalculator.calculateEMA(historicalClosingPrices, 9);
 		float _26ema = MovingAverageCalculator.calculateEMA(historicalClosingPrices, 26);
 
-		BollingerBand bollingerBand = historicalDataStore.calculateBollingerBand(historicalClosingPrices, 20, 2);
+		BollingerBand bollingerBand = csvHistoricalDataStore.calculateBollingerBand(historicalClosingPrices, 20, 2);
 		float bollingerBandHigh = bollingerBand.getHigh();
 		float bollingerBandLow = bollingerBand.getLow();
 		System.out.println(bollingerBand);
@@ -52,7 +59,7 @@ public abstract class CsvHistoricalDataVolatilityCalculatorTest {
 		float rsi = rsiValues[rsiValues.length - 1];
 
 		int upperEndVolatilityViolations = 0, lowerEndVolatilityViolations = 0, upperEndBollingerViolations = 0, lowerEndBollingerViolations = 0;
-		float[] closingPrices = historicalDataStore.readHistoricalClosingPrices(futureDateRange);
+		float[] closingPrices = csvHistoricalDataStore.readHistoricalData(futureDateRange).getClosingPrices();
 		float minClosingPrice = closingPrices[0], maxClosingPrice = closingPrices[0];
 		for (float closingPrice : closingPrices) {
 			if (closingPrice > volatility.getUnderlyingRange().getHigh()) {
@@ -115,8 +122,6 @@ public abstract class CsvHistoricalDataVolatilityCalculatorTest {
 		 */
 		// @formatter:on
 	}
-
-	public abstract CsvHistoricalDataVolatilityCalculator getUnit();
 
 	private String printUpperAndLowerEndViolations(int upperEndVolatilityViolations, int lowerEndVolatilityViolations, int upperEndBollingerViolations,
 			int lowerEndBollingerViolations) {

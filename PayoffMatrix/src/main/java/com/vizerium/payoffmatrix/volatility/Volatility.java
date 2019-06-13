@@ -75,10 +75,6 @@ public class Volatility {
 		this.standardDeviationMultiple = standardDeviationMultiple;
 	}
 
-	public float getUnderlyingValue() {
-		return underlyingValue;
-	}
-
 	public void setUnderlyingValue(float underlyingValue) {
 		this.underlyingValue = underlyingValue;
 	}

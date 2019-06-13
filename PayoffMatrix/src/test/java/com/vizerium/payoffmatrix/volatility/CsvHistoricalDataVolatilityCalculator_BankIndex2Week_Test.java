@@ -26,13 +26,10 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.vizerium.payoffmatrix.volatility.CsvHistoricalDataVolatilityCalculator;
-import com.vizerium.payoffmatrix.volatility.DateRange;
+import com.vizerium.payoffmatrix.dao.HistoricalCsvDataStore;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CsvHistoricalDataVolatilityCalculator_BankIndex2Week_Test extends CsvHistoricalDataVolatilityCalculatorTest {
-
-	private CsvHistoricalDataVolatilityCalculator unit;
 
 	private float standardDeviationMultipleOfBankIndex = 1.334f;
 
@@ -40,14 +37,13 @@ public class CsvHistoricalDataVolatilityCalculator_BankIndex2Week_Test extends C
 
 	@Before
 	public void setup() {
-		unit = new CsvHistoricalDataVolatilityCalculator("BANKINDEX");
-
+		underlyingName = "BANKINDEX";
 		nf.setMinimumIntegerDigits(2);
 	}
 
 	@Test
 	public void testCalculateVolatility() {
-		unit.calculateVolatility(null);
+		unit.calculateVolatility(new HistoricalCsvDataStore(underlyingName).readHistoricalData(null));
 	}
 
 	@Test
@@ -1855,8 +1851,4 @@ public class CsvHistoricalDataVolatilityCalculator_BankIndex2Week_Test extends C
 		testExpiryDateIsAtWhichStandardDeviationBasedOnDataPrior(historicalDateRange, futureDateRange, standardDeviationMultipleOfBankIndex);
 	}
 
-	@Override
-	public CsvHistoricalDataVolatilityCalculator getUnit() {
-		return unit;
-	}
 }

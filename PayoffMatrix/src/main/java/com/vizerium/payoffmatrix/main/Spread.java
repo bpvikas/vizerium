@@ -42,9 +42,9 @@ public class Spread {
 		CriteriaReader criteriaReader = new PropertiesFileCriteriaReader();
 		Criteria criteria = criteriaReader.readCriteria();
 
-		OptionChainReader optionChainReader = OptionChainReaderFactory.getOptionChainReader(criteria.getRemoteDatasource());
+		OptionChainReader optionChainReader = OptionChainReaderFactory.getOptionChainReader(criteria.getOptionChainRemoteDatasource());
 		Option[] optionChain = optionChainReader.readOptionChain(criteria);
-		OptionDataStore optionDataStore = OptionDataStoreFactory.getOptionDataStore(criteria.getLocalDatasource());
+		OptionDataStore optionDataStore = OptionDataStoreFactory.getOptionDataStore(criteria.getOptionChainLocalDatasource());
 		optionDataStore.saveOptionChainData(criteria, optionChain);
 
 		SpreadPayoffCalculator payoffCalculator = new SpreadPayoffCalculator();
