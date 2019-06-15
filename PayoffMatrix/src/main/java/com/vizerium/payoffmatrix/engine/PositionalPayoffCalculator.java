@@ -50,6 +50,8 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 		output.setOptionStrategiesCount(criteria.getMaxOptionOpenPositions());
 		output.setUnderlyingCurrentPrice(criteria.getUnderlyingValue());
 
+		PayoffMatrix.setOIBasedRange(criteria.getOIBasedRange());
+
 		for (int j = 0; j <= criteria.getMaxOptionOpenPositions() - criteria.getExistingPositions().length; j++) {
 			OptionChainIterator<Option> optionChainIterator = new OptionChainIterator<Option>(optionChain, j);
 			while (optionChainIterator.hasNext()) {

@@ -19,8 +19,6 @@ package com.vizerium.payoffmatrix.volatility;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import com.vizerium.payoffmatrix.exchange.Exchange;
-
 public class Volatility {
 
 	private float mean;
@@ -87,14 +85,8 @@ public class Volatility {
 		this.underlyingRange = underlyingRange;
 	}
 
-	public void calculateUnderlyingRange(LocalDate fromDate, LocalDate expiryDate, Exchange exchange, float underlyingRangeStep) {
-		long daysToExpiry = ChronoUnit.DAYS.between(fromDate, expiryDate) + 1;
-
-		for (LocalDate date = fromDate; date.compareTo(expiryDate) < 0; date = date.plusDays(1)) {
-			if (exchange.isHoliday(date)) {
-				--daysToExpiry;
-			}
-		}
+	public void calculateUnderlyingRange(LocalDate fromDate, LocalDate expiryDate, float underlyingRangeStep) {
+		float daysToExpiry = ChronoUnit.DAYS.between(fromDate, expiryDate) + 0.5f;
 
 		float meanForDaystoExpiry = mean * daysToExpiry;
 		// logger.info("Mean : " + underlyingValue * Math.exp(mean));

@@ -52,6 +52,7 @@ public class Positional {
 		if (logger.isInfoEnabled()) {
 			logger.info(criteria);
 			logger.info(output);
+			output.writeReports();
 		}
 	}
 }

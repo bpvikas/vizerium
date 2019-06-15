@@ -19,6 +19,7 @@ package com.vizerium.payoffmatrix.engine;
 import java.text.NumberFormat;
 
 import com.vizerium.commons.util.NumberFormats;
+import com.vizerium.payoffmatrix.volatility.Range;
 
 public class PayoffMatrix {
 
@@ -33,9 +34,17 @@ public class PayoffMatrix {
 
 	private int negativePayoffsCount = 0;
 
+	private int positivePayoffsCountInOIRange = 0;
+
+	private int negativePayoffsCountInOIRange = 0;
+
 	private float positivePayoffSum = 0.0f;
 
+	private float positivePayoffSumInOIRange = 0.0f;
+
 	private float negativePayoffSum = 0.0f;
+
+	private float negativePayoffSumInOIRange = 0.0f;
 
 	private float[] maxPositivePayoff;
 
@@ -43,9 +52,15 @@ public class PayoffMatrix {
 
 	private float profitProbability = 0.0f;
 
+	private float profitProbabilityInOIRange = 0.0f;
+
 	private float payoffAverage = 0.0f;
 
 	private float riskRewardRatio = 0.0f;
+
+	private float riskRewardRatioInOIRange = 0.0f;
+
+	private static Range oiBasedRange;
 
 	public PayoffMatrix() {
 
@@ -73,6 +88,14 @@ public class PayoffMatrix {
 		return negativePayoffsCount;
 	}
 
+	public float getPositivePayoffsCountInOIRange() {
+		return positivePayoffsCountInOIRange;
+	}
+
+	public float getNegativePayoffsCountInOIRange() {
+		return negativePayoffsCountInOIRange;
+	}
+
 	public float getPositivePayoffSum() {
 		return positivePayoffSum;
 	}
@@ -81,8 +104,20 @@ public class PayoffMatrix {
 		return negativePayoffSum;
 	}
 
+	public float getPositivePayoffSumInOIRange() {
+		return positivePayoffSumInOIRange;
+	}
+
+	public float getNegativePayoffSumInOIRange() {
+		return negativePayoffSumInOIRange;
+	}
+
 	public float getProfitProbability() {
 		return profitProbability;
+	}
+
+	public float getProfitProbabilityInOIRange() {
+		return profitProbabilityInOIRange;
 	}
 
 	public float getPayoffAverage() {
@@ -91,6 +126,10 @@ public class PayoffMatrix {
 
 	public float getRiskRewardRatio() {
 		return riskRewardRatio;
+	}
+
+	public float getRiskRewardRatioInOIRange() {
+		return riskRewardRatioInOIRange;
 	}
 
 	public float[] getMaxPositivePayoff() {
@@ -114,28 +153,36 @@ public class PayoffMatrix {
 	public void performPayoffAnalysis() {
 		positivePayoffsCount = 0;
 		negativePayoffsCount = 0;
+		positivePayoffsCountInOIRange = 0;
+		negativePayoffsCountInOIRange = 0;
 
 		float payoffSum = 0.0f;
 		positivePayoffSum = 0.0f;
 		negativePayoffSum = 0.0f;
+		positivePayoffSumInOIRange = 0.0f;
+		negativePayoffSumInOIRange = 0.0f;
 
 		maxPositivePayoff = payoffs[0];
 		minNegativePayoff = payoffs[0];
 
-		float underlyingPriceRange = payoffs[payoffs.length - 1][0] - payoffs[0][0];
-		// The weightage is calculated by deciding how far the price is from the midpoint, which would approximately be the current underlying Price.
-		float rangeMidPoint = payoffs[0][0] + underlyingPriceRange / 2.0f;
-
 		for (float[] payoff : payoffs) {
 			if (payoff[1] > 0.0f) {
 				++positivePayoffsCount;
-				positivePayoffSum += payoff[1] * Math.abs(1 - (Math.abs(rangeMidPoint - payoff[0]) / (underlyingPriceRange / 2.0f)));
+				positivePayoffSum += payoff[1];
+				if (oiBasedRange.isInRange(payoff[0])) {
+					++positivePayoffsCountInOIRange;
+					positivePayoffSumInOIRange += payoff[1];
+				}
 			} else {
 				++negativePayoffsCount;
-				negativePayoffSum += payoff[1] * Math.abs(1 - (Math.abs(rangeMidPoint - payoff[0]) / (underlyingPriceRange / 2.0f)));
+				negativePayoffSum += payoff[1];
+				if (oiBasedRange.isInRange(payoff[0])) {
+					++negativePayoffsCountInOIRange;
+					negativePayoffSumInOIRange += payoff[1];
+				}
 			}
 
-			payoffSum += payoff[1] * Math.abs(1 - (Math.abs(rangeMidPoint - payoff[0]) / (underlyingPriceRange / 2.0f)));
+			payoffSum += payoff[1];
 
 			if (payoff[1] > maxPositivePayoff[1]) {
 				maxPositivePayoff = payoff;
@@ -145,6 +192,7 @@ public class PayoffMatrix {
 		}
 		payoffAverage = payoffSum / payoffs.length;
 		profitProbability = (float) (positivePayoffsCount) / (float) (positivePayoffsCount + negativePayoffsCount);
+		profitProbabilityInOIRange = (float) (positivePayoffsCountInOIRange) / (float) (positivePayoffsCountInOIRange + negativePayoffsCountInOIRange);
 
 		// For calculating the riskRewardRatio, with a view that we need to eventually COMPARE them, then we have multiple scenarios
 		// Scenario 1: loss 0, profit 5 v/s loss 0 profit 10, in this case, simply doing loss/profit for both cases will return riskRewardRatio = 0, and we will lose the part where
@@ -160,9 +208,16 @@ public class PayoffMatrix {
 			positivePayoffSum = 0.0001f;
 		}
 		if (negativePayoffSum == 0.0f) {
-			negativePayoffSum = -1;
+			negativePayoffSum = -1.0f;
+		}
+		if (positivePayoffSumInOIRange == 0.0f) {
+			positivePayoffSumInOIRange = 0.0001f;
+		}
+		if (negativePayoffSumInOIRange == 0.0f) {
+			negativePayoffSumInOIRange = -1.0f;
 		}
 		riskRewardRatio = Math.abs(negativePayoffSum / positivePayoffSum);
+		riskRewardRatioInOIRange = Math.abs(negativePayoffSumInOIRange / positivePayoffSumInOIRange);
 	}
 
 	public String getPayoffAtEachUnderlyingPrice() {
@@ -171,6 +226,10 @@ public class PayoffMatrix {
 			payoffAtEachUnderlyingPrice += ("Payoff " + payoff[1] + " at " + payoff[0] + System.lineSeparator());
 		}
 		return payoffAtEachUnderlyingPrice;
+	}
+
+	public static void setOIBasedRange(Range oiBasedRange) {
+		PayoffMatrix.oiBasedRange = oiBasedRange;
 	}
 
 	@Override

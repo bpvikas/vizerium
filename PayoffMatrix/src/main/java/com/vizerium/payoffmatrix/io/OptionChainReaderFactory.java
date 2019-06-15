@@ -28,9 +28,7 @@ public class OptionChainReaderFactory {
 
 	public static OptionChainReader getOptionChainReader(RemoteDataSource property) {
 		if (optionChainReader == null) {
-			if (RemoteDataSource.WEB.equals(property)) {
-				optionChainReader = new HttpOptionChainReader();
-			} else if (RemoteDataSource.LOCALHTML.equals(property)) {
+			if (RemoteDataSource.LOCALHTML.equals(property)) {
 				optionChainReader = new LocalHtmlOptionChainReader();
 			} else {
 				throw new RuntimeException("Unable to identify Remote data source to lookup option chain. " + property);

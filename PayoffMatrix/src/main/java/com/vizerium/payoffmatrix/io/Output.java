@@ -20,22 +20,23 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.TreeSet;
 
-import com.vizerium.commons.trade.TradeAction;
+import org.apache.log4j.Logger;
+
 import com.vizerium.payoffmatrix.comparator.BestRiskRewardRatioPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.HighestAveragePayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.HighestProfitProbabilityPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.MaximumProfitPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.MinimumLossPayoffMatrixComparator;
 import com.vizerium.payoffmatrix.comparator.MostDeltaNeutralPayoffMatrixComparator;
+import com.vizerium.payoffmatrix.engine.Analytics;
 import com.vizerium.payoffmatrix.engine.OptionStrategiesWithPayoff;
 import com.vizerium.payoffmatrix.engine.PayoffCalculator;
-import com.vizerium.payoffmatrix.option.Option;
-import com.vizerium.payoffmatrix.option.OptionStrategy;
-import com.vizerium.payoffmatrix.option.OptionType;
 import com.vizerium.payoffmatrix.reports.PayoffReportXlsx;
 import com.vizerium.payoffmatrix.volatility.Range;
 
 public class Output {
+
+	private static final Logger logger = Logger.getLogger(Output.class);
 
 	public static int analysisPayoffsLengths = 7;
 
@@ -77,7 +78,7 @@ public class Output {
 			existingPositionPayoff = optionStrategiesWithPayoff;
 		}
 
-		if (!allOptionsInStrategyAreOfSameOrientation(optionStrategiesWithPayoff.getOptions())) {
+		if (Analytics.applyingCustomFilters(optionStrategiesWithPayoff.getPositionDelta(), optionStrategiesWithPayoff.getPayoffMatrix())) {
 			compareToExistingPayoffs(highestAveragePayoffs, optionStrategiesWithPayoff);
 
 			compareToExistingPayoffs(highestProfitProbabilityPayoffs, optionStrategiesWithPayoff);
@@ -129,43 +130,15 @@ public class Output {
 		this.optionStrategiesCount = optionStrategiesCount;
 	}
 
-	private boolean allOptionsInStrategyAreOfSameOrientation(OptionStrategy[] optionStrategies) {
-		TradeAction firstTradeOrientation = null;
-
-		for (OptionStrategy optionStrategy : optionStrategies) {
-			for (Option option : optionStrategy.getOptions()) {
-				if (firstTradeOrientation == null) {
-					firstTradeOrientation = getOrientation(option.getType(), option.getTradeAction());
-				}
-				if (!(getOrientation(option.getType(), option.getTradeAction()).equals(firstTradeOrientation))) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	private TradeAction getOrientation(OptionType optionType, TradeAction tradeAction) {
-
-		if (optionType.equals(OptionType.CALL) && tradeAction.equals(TradeAction.LONG)) {
-			return TradeAction.LONG;
-		} else if (optionType.equals(OptionType.CALL) && tradeAction.equals(TradeAction.SHORT)) {
-			return TradeAction.SHORT;
-		} else if (optionType.equals(OptionType.PUT) && tradeAction.equals(TradeAction.LONG)) {
-			return TradeAction.SHORT;
-		} else if (optionType.equals(OptionType.PUT) && tradeAction.equals(TradeAction.SHORT)) {
-			return TradeAction.LONG;
-		} else {
-			throw new RuntimeException("Unable to determine orientation from " + optionType + " and " + tradeAction + ".");
-		}
-	}
-
 	@Override
 	public String toString() {
 		return "Output - Analysed " + countAnalysedOptionStrategies + " in " + ChronoUnit.SECONDS.between(analysisStartTime, analysisEndTime) + " seconds, after eliminating "
-				+ PayoffCalculator.countOptionWithOppositeActions + " same option with opposite actions." + System.lineSeparator() + printExistingPositionPayoff()
-				+ printHighestProfitProbabilityPayoffs() + printMaxPositivePayoffs() + printMinNegativePayoffs() + printBestRiskRewardRatioPayoffs() + printHighestAveragePayoffs()
-				+ printMostDeltaNeutralPayoffs();
+				+ PayoffCalculator.countOptionWithOppositeActions + " same option with opposite actions.";
+	}
+
+	public String writeReports() {
+		return printExistingPositionPayoff() + printHighestProfitProbabilityPayoffs() + printMaxPositivePayoffs() + printMinNegativePayoffs() + printBestRiskRewardRatioPayoffs()
+				+ printHighestAveragePayoffs() + printMostDeltaNeutralPayoffs();
 	}
 
 	private String printExistingPositionPayoff() {
@@ -203,6 +176,9 @@ public class Output {
 	}
 
 	private String printPayoffs(String payoffName, TreeSet<OptionStrategiesWithPayoff> payoffs) {
+		if (logger.isInfoEnabled()) {
+			logger.info("Printing " + payoffName);
+		}
 		String printPayoff = System.lineSeparator() + "***************************************" + System.lineSeparator() + underlyingName + " " + payoffName + " : "
 				+ System.lineSeparator() + "***************************************" + System.lineSeparator();
 		if (payoffs != null && payoffs.size() > 0) {
@@ -217,5 +193,6 @@ public class Output {
 
 	public void finale() {
 		analysisEndTime = LocalTime.now();
+		Analytics.getTrends();
 	}
 }

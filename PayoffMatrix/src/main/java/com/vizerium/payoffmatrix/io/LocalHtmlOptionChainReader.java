@@ -22,8 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -34,14 +32,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.vizerium.commons.io.FileUtils;
-import com.vizerium.payoffmatrix.comparator.MaximumOpenInterestComparator;
 import com.vizerium.payoffmatrix.criteria.Criteria;
 import com.vizerium.payoffmatrix.engine.MinimumOpenInterestCalculator;
+import com.vizerium.payoffmatrix.engine.OpenInterestRangeCalculator;
 import com.vizerium.payoffmatrix.option.CallOption;
 import com.vizerium.payoffmatrix.option.Option;
-import com.vizerium.payoffmatrix.option.OptionType;
 import com.vizerium.payoffmatrix.option.PutOption;
-import com.vizerium.payoffmatrix.volatility.Range;
 
 //Reads from the local html file copied locally
 public class LocalHtmlOptionChainReader implements OptionChainReader {
@@ -142,48 +138,12 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 			if (criteria.getMinOpenInterest() <= 0) {
 				criteria.setMinOpenInterest(MinimumOpenInterestCalculator.calculateMinimumOpenInterest(optionChain));
 			}
-
-			Collections.sort(optionChain, new MaximumOpenInterestComparator());
-			if (logger.isInfoEnabled()) {
-				logger.info("The options with maximum OI are ");
-				for (int i = 0; i <= 5; i++) {
-					logger.info(optionChain.get(i).toOptionChainDetailsString());
-				}
-
-				logger.info("Estimated Market Range based on current OI calculation : " + getMarketRangeBasedOnOI(optionChain));
-			}
+			criteria.setOIBasedRange(OpenInterestRangeCalculator.getOIBasedRange(optionChain, criteria.getUnderlyingRangeStep()));
 
 			return optionChain.toArray(new Option[optionChain.size()]);
 		} catch (IOException e) {
 			logger.error("An error occurred while parsing option chain data locally.", e);
 			throw new RuntimeException(e);
 		}
-	}
-
-	private Range getMarketRangeBasedOnOI(List<Option> oiReverseSortedOptionChain) {
-		Option highestOICallOption = null;
-		Option secondHighestOICallOption = null;
-		Option highestOIPutOption = null;
-		Option secondHighestOIPutOption = null;
-		for (Option o : oiReverseSortedOptionChain) {
-			if (highestOICallOption == null && o.getType().equals(OptionType.CALL)) {
-				highestOICallOption = o;
-			} else if (highestOICallOption != null && secondHighestOICallOption == null && o.getType().equals(OptionType.CALL)) {
-				secondHighestOICallOption = o;
-			} else if (highestOIPutOption == null && o.getType().equals(OptionType.PUT)) {
-				highestOIPutOption = o;
-			} else if (highestOIPutOption != null && secondHighestOIPutOption == null && o.getType().equals(OptionType.PUT)) {
-				secondHighestOIPutOption = o;
-			}
-
-			if (highestOICallOption != null && secondHighestOICallOption != null && highestOIPutOption != null && secondHighestOIPutOption != null) {
-				break;
-			}
-		}
-		float[] ranges = new float[] { highestOIPutOption.getStrike() - highestOIPutOption.getCurrentPremium(),
-				highestOICallOption.getStrike() + highestOICallOption.getCurrentPremium(), secondHighestOIPutOption.getStrike() - secondHighestOIPutOption.getCurrentPremium(),
-				secondHighestOICallOption.getStrike() + secondHighestOICallOption.getCurrentPremium() };
-		Arrays.sort(ranges);
-		return new Range(ranges[0], ranges[ranges.length - 1]);
 	}
 }

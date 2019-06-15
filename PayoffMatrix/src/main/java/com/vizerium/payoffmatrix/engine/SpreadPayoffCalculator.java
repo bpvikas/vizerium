@@ -51,6 +51,8 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 		output.setOptionStrategiesCount(criteria.getMaxOptionSpreadOpenPositions());
 		output.setUnderlyingCurrentPrice(criteria.getUnderlyingValue());
 
+		PayoffMatrix.setOIBasedRange(criteria.getOIBasedRange());
+
 		for (int j = 0; j <= criteria.getMaxOptionSpreadOpenPositions(); j++) {
 			OptionChainIterator<OptionSpread> optionChainIterator = new OptionChainIterator<OptionSpread>(optionSpreadChain, j);
 			while (optionChainIterator.hasNext()) {

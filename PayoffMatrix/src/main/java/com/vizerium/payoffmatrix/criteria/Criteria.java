@@ -25,6 +25,7 @@ import com.vizerium.payoffmatrix.option.ContractSeries;
 import com.vizerium.payoffmatrix.option.Option;
 import com.vizerium.payoffmatrix.option.TradingBias;
 import com.vizerium.payoffmatrix.volatility.DateRange;
+import com.vizerium.payoffmatrix.volatility.Range;
 import com.vizerium.payoffmatrix.volatility.Volatility;
 
 public class Criteria {
@@ -55,7 +56,11 @@ public class Criteria {
 
 	private DateRange historicalDataDateRange;
 
+	private int underlyingRangeStep;
+
 	private int minOpenInterest;
+
+	private Range oiBasedRange;
 
 	private float maxOptionPremium;
 
@@ -180,12 +185,28 @@ public class Criteria {
 		this.historicalDataDateRange = historicalDataDateRange;
 	}
 
+	public int getUnderlyingRangeStep() {
+		return underlyingRangeStep;
+	}
+
+	public void setUnderlyingRangeStep(int underlyingRangeStep) {
+		this.underlyingRangeStep = underlyingRangeStep;
+	}
+
 	public int getMinOpenInterest() {
 		return minOpenInterest;
 	}
 
 	public void setMinOpenInterest(int minOpenInterest) {
 		this.minOpenInterest = minOpenInterest;
+	}
+
+	public Range getOIBasedRange() {
+		return oiBasedRange;
+	}
+
+	public void setOIBasedRange(Range oiBasedRange) {
+		this.oiBasedRange = oiBasedRange;
 	}
 
 	public float getMaxOptionPremium() {
@@ -267,9 +288,10 @@ public class Criteria {
 		return "Criteria [underlyingName=" + underlyingName + ", underlyingValue=" + underlyingValue + ", volatility=" + volatility + ", maxLoss=" + maxLoss + ", tradingBias="
 				+ tradingBias + ", contractDuration=" + contractDuration + ", contractSeries=" + contractSeries + ", expiryDate=" + expiryDate + ", existingPositions="
 				+ getExistingPostionDetailsString() + ", optionChainRemoteDatasource=" + optionChainRemoteDatasource + ", optionChainLocalDatasource=" + optionChainLocalDatasource
-				+ ", historicalDataLocalDatasource=" + historicalDataLocalDatasource + ", historicalDataDateRange=" + historicalDataDateRange + ", minOpenInterest="
-				+ minOpenInterest + ", maxOptionPremium=" + maxOptionPremium + ", sellOrderMargin=" + sellOrderMargin + ", investibleAmount=" + investibleAmount
-				+ ", maxOptionOpenPositions=" + maxOptionOpenPositions + ", maxOptionSpreadOpenPositions=" + maxOptionSpreadOpenPositions + ", maxOptionNumberOfLots="
-				+ maxOptionNumberOfLots + ", lotSize=" + lotSize + ", riskFreeInterestRate=" + riskFreeInterestRate + "]";
+				+ ", historicalDataLocalDatasource=" + historicalDataLocalDatasource + ", historicalDataDateRange=" + historicalDataDateRange + ", underlyingRangeStep="
+				+ underlyingRangeStep + ", minOpenInterest=" + minOpenInterest + ", oiBasedRange=" + oiBasedRange + ", maxOptionPremium=" + maxOptionPremium + ", sellOrderMargin="
+				+ sellOrderMargin + ", investibleAmount=" + investibleAmount + ", maxOptionOpenPositions=" + maxOptionOpenPositions + ", maxOptionSpreadOpenPositions="
+				+ maxOptionSpreadOpenPositions + ", maxOptionNumberOfLots=" + maxOptionNumberOfLots + ", lotSize=" + lotSize + ", riskFreeInterestRate=" + riskFreeInterestRate
+				+ "]";
 	}
 }

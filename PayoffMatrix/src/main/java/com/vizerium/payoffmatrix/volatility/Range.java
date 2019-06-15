@@ -69,6 +69,10 @@ public class Range {
 		this.step = step;
 	}
 
+	public boolean isInRange(float f) {
+		return f >= low && f <= high;
+	}
+
 	@Override
 	public String toString() {
 		if (Float.isNaN(step) || step == 0.0f) {

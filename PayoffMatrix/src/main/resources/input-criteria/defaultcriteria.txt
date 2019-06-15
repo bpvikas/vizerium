@@ -25,9 +25,6 @@ underlying.range.step=25
 riskfree.interest.rate=
 riskfree.interest.rate.default=10
 
-#The exchange
-exchange=TEI
-
 # The max loss which the trader is willing to bear
 maxLoss=10000.00
 
@@ -59,7 +56,7 @@ existingposition7=
 existingposition8=
 existingposition9=
 
-#Option Chain datasource, values are web, localhtml
+#Option Chain data source, value is localhtml
 option.chain.remote.datasource=localhtml
 
 #Location where option chains are stored locally for processing, values are csv, db

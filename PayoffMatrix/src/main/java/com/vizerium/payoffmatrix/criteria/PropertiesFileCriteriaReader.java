@@ -38,7 +38,6 @@ import com.vizerium.payoffmatrix.dao.HistoricalDataStoreFactory;
 import com.vizerium.payoffmatrix.dao.LocalDataSource;
 import com.vizerium.payoffmatrix.dao.RemoteDataSource;
 import com.vizerium.payoffmatrix.engine.ExpiryDateCalculator;
-import com.vizerium.payoffmatrix.exchange.Exchanges;
 import com.vizerium.payoffmatrix.option.CallOption;
 import com.vizerium.payoffmatrix.option.ContractDuration;
 import com.vizerium.payoffmatrix.option.ContractSeries;
@@ -109,6 +108,9 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 			if (StringUtils.isNotBlank(criteriaProperties.getProperty("minimum.openinterest"))) {
 				criteria.setMinOpenInterest(Integer.parseInt(criteriaProperties.getProperty("minimum.openinterest")));
 			}
+
+			criteria.setUnderlyingRangeStep(Integer.parseInt(criteriaProperties.getProperty("underlying.range.step")));
+
 			criteria.setMaxOptionPremium(Float.parseFloat(criteriaProperties.getProperty("maximum.option.premium")));
 			criteria.setSellOrderMargin(Float.parseFloat(criteriaProperties.getProperty("sell.order.margin")));
 
@@ -208,11 +210,9 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 			String underlyingRangeStdDevMultiple = criteriaProperties.getProperty("underlying.volatility.standardDeviationMultiple");
 			volatility.setStandardDeviationMultiple(Float.parseFloat(underlyingRangeStdDevMultiple));
 
-			volatility.calculateUnderlyingRange(historicalData.getLast().getDate(), expiryDate, Exchanges.get(criteriaProperties.getProperty("exchange")),
-					Float.parseFloat(underlyingRangeStep));
+			volatility.calculateUnderlyingRange(historicalData.getLast().getDate(), expiryDate, Float.parseFloat(underlyingRangeStep));
 		}
 
 		return volatility;
-
 	}
 }

@@ -23,7 +23,6 @@ import com.vizerium.commons.indicators.RSICalculator;
 import com.vizerium.payoffmatrix.dao.HistoricalCsvDataStore;
 import com.vizerium.payoffmatrix.dao.HistoricalData;
 import com.vizerium.payoffmatrix.dao.HistoricalDataStore;
-import com.vizerium.payoffmatrix.exchange.Exchanges;
 
 public abstract class CsvHistoricalDataVolatilityCalculatorTest {
 
@@ -41,7 +40,7 @@ public abstract class CsvHistoricalDataVolatilityCalculatorTest {
 		HistoricalData historicalData = csvHistoricalDataStore.readHistoricalData(historicalDateRange);
 		Volatility volatility = unit.calculateVolatility(historicalData);
 		volatility.setStandardDeviationMultiple(standardDeviationMultiple);
-		volatility.calculateUnderlyingRange(historicalDateRange.getEndDate(), futureDateRange.getEndDate(), Exchanges.get("TEI"), 25.0f);
+		volatility.calculateUnderlyingRange(historicalDateRange.getEndDate(), futureDateRange.getEndDate(), 25.0f);
 		System.out.println("Forecasted " + volatility.getUnderlyingRange());
 
 		float[] historicalClosingPrices = historicalData.getClosingPrices();

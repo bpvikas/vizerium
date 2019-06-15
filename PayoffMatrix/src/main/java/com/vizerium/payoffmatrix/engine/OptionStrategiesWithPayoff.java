@@ -34,6 +34,7 @@ public class OptionStrategiesWithPayoff {
 		this.payoffMatrix = payoffMatrix;
 		setExistingOpenPosition();
 		calculatePositionDelta();
+		Analytics.write(positionDelta, payoffMatrix);
 	}
 
 	public OptionStrategy[] getOptions() {
