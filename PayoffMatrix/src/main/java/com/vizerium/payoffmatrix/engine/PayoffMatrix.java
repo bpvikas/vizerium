@@ -47,15 +47,12 @@ public class PayoffMatrix {
 
 	private float riskRewardRatio = 0.0f;
 
-	private float underlyingCurrentPrice = 0.0f;
-
 	public PayoffMatrix() {
 
 	}
 
-	public PayoffMatrix(float[][] payoffs, float underlyingCurrentPrice) {
+	public PayoffMatrix(float[][] payoffs) {
 		this.payoffs = payoffs;
-		this.underlyingCurrentPrice = underlyingCurrentPrice;
 		performPayoffAnalysis();
 	}
 
@@ -66,10 +63,6 @@ public class PayoffMatrix {
 	public void setPayoffs(float[][] payoffs) {
 		this.payoffs = payoffs;
 		performPayoffAnalysis();
-	}
-
-	public float getUnderlyingCurrentPrice() {
-		return underlyingCurrentPrice;
 	}
 
 	public float getPositivePayoffsCount() {
@@ -183,7 +176,7 @@ public class PayoffMatrix {
 	@Override
 	public String toString() {
 		return positivePayoffsCount + "+ " + negativePayoffsCount + "- " + ", profit% " + getProfitProbabilityAsString() + " RRR : " + getRiskRewardRatioAsString()
-				+ ", payoffAverage : " + payoffAverage + ", underlyingCurrentPrice : " + underlyingCurrentPrice + ", maxPositive : " + maxPositivePayoff[1] + " at "
-				+ maxPositivePayoff[0] + ", minNegative : " + minNegativePayoff[1] + " at " + minNegativePayoff[0];
+				+ ", payoffAverage : " + payoffAverage + ", maxPositive : " + maxPositivePayoff[1] + " at " + maxPositivePayoff[0] + ", minNegative : " + minNegativePayoff[1]
+				+ " at " + minNegativePayoff[0];
 	}
 }

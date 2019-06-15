@@ -48,6 +48,7 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 		output.setUnderlyingName(criteria.getUnderlyingName());
 		output.setUnderlyingRange(criteria.getVolatility().getUnderlyingRange());
 		output.setOptionStrategiesCount(criteria.getMaxOptionOpenPositions());
+		output.setUnderlyingCurrentPrice(criteria.getUnderlyingValue());
 
 		for (int j = 0; j <= criteria.getMaxOptionOpenPositions() - criteria.getExistingPositions().length; j++) {
 			OptionChainIterator<Option> optionChainIterator = new OptionChainIterator<Option>(optionChain, j);
@@ -105,7 +106,7 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 					}
 					payoffs[payoffCounter++] = new float[] { underlyingPrice, netPayoff };
 				}
-				PayoffMatrix payoffMatrix = new PayoffMatrix(payoffs, criteria.getUnderlyingValue());
+				PayoffMatrix payoffMatrix = new PayoffMatrix(payoffs);
 				if (logger.isDebugEnabled()) {
 					logger.debug(payoffMatrix);
 				}

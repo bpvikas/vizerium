@@ -9,11 +9,15 @@ contract.series=near
 #Any existing positions that needs to be considered in the payoff, with the premium prices at which they were purchased or sold.
 #Format CE/PE,Strike,BUY/SELL,Lots,Premium Paid,Traded Date(DDMMYYYY), NEAR/MID/FAR
 #Format CE,10500,short,1,98.45,04062018,near
-#existingposition1=PE,11300,short,1,1.90,07062019,near
+existingposition1=
 existingposition2=
 existingposition3=
 existingposition4=
 existingposition5=
+existingposition6=
+existingposition7=
+existingposition8=
+existingposition9=
 
 #max positions to be held(including existing positions)
 # VERY IMPORTANT: SETTING BELOW VALUE TO 8 CAUSES THE PROGRAM TO RUN FOR ~100-120 MINUTES AS IT CHECKS 3.5 BILLION + COMBINATIONS, THAT EVENTUALLY

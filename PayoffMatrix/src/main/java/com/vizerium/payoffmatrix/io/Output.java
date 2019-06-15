@@ -63,6 +63,8 @@ public class Output {
 
 	private Range underlyingRange;
 
+	private float underlyingCurrentPrice;
+
 	private int optionStrategiesCount;
 
 	public Output() {
@@ -113,6 +115,10 @@ public class Output {
 
 	public void setUnderlyingRange(Range underlyingRange) {
 		this.underlyingRange = underlyingRange;
+	}
+
+	public void setUnderlyingCurrentPrice(float underlyingCurrentPrice) {
+		this.underlyingCurrentPrice = underlyingCurrentPrice;
 	}
 
 	public int getOptionStrategiesCount() {
@@ -204,7 +210,7 @@ public class Output {
 				printPayoff += payoff;
 				printPayoff += System.lineSeparator();
 			}
-			PayoffReportXlsx.createReport(underlyingName, payoffName, payoffs, optionStrategiesCount, underlyingRange);
+			PayoffReportXlsx.createReport(underlyingName, payoffName, payoffs, optionStrategiesCount, underlyingRange, underlyingCurrentPrice);
 		}
 		return printPayoff;
 	}

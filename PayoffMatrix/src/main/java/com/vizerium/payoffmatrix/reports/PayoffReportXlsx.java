@@ -57,7 +57,8 @@ public class PayoffReportXlsx {
 
 	private static final int pivotChartSheetInitialColNum = (int) 'Y'; // 89 is column 'Y'
 
-	public static void createReport(String underlyingName, String payoffName, TreeSet<OptionStrategiesWithPayoff> payoffs, int optionStrategiesCount, Range underlyingRange) {
+	public static void createReport(String underlyingName, String payoffName, TreeSet<OptionStrategiesWithPayoff> payoffs, int optionStrategiesCount, Range underlyingRange,
+			float underlyingCurrentPrice) {
 		Workbook workbook = getReportTemplate(underlyingName);
 		try {
 			int dataSheetNum = initialOpenPositionDataSheetNumber;
@@ -70,7 +71,7 @@ public class PayoffReportXlsx {
 					}
 				}
 				Sheet pivotChartSheet = workbook.getSheetAt(dataSheetNum - Output.analysisPayoffsLengths);
-				updatePayoffMatrixDetailsInPivotChartSheet(pivotChartSheet, payoff.getPayoffMatrix(), underlyingRange, payoff.getPositionDelta());
+				updatePayoffMatrixDetailsInPivotChartSheet(pivotChartSheet, payoff.getPayoffMatrix(), underlyingRange, payoff.getPositionDelta(), underlyingCurrentPrice);
 				dataSheetNum++;
 			}
 			revaluateFormulaAndCreateOutputFile(workbook, payoffName, optionStrategiesCount, underlyingName, underlyingRange);
@@ -135,14 +136,15 @@ public class PayoffReportXlsx {
 		cell.setCellValue(option.getNumberOfLots());
 	}
 
-	private static void updatePayoffMatrixDetailsInPivotChartSheet(Sheet pivotChartSheet, PayoffMatrix payoffMatrix, Range underlyingRange, double positionDelta) {
+	private static void updatePayoffMatrixDetailsInPivotChartSheet(Sheet pivotChartSheet, PayoffMatrix payoffMatrix, Range underlyingRange, double positionDelta,
+			float underlyingCurrentPrice) {
 		int rowNum = pivotChartSheetInitialRowNum;
 		int colNum = pivotChartSheetInitialColNum;
 
 		CellReference cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(rowNum));
 		Row row = pivotChartSheet.getRow(cr.getRow());
 		Cell cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
-		cell.setCellValue(payoffMatrix.getUnderlyingCurrentPrice());
+		cell.setCellValue(underlyingCurrentPrice);
 
 		cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(++rowNum));
 		row = pivotChartSheet.getRow(cr.getRow());

@@ -54,6 +54,10 @@ existingposition2=
 existingposition3=
 existingposition4=
 existingposition5=
+existingposition6=
+existingposition7=
+existingposition8=
+existingposition9=
 
 #Option Chain datasource, values are web, localhtml
 option.chain.remote.datasource=localhtml

@@ -49,6 +49,7 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 		output.setUnderlyingName(criteria.getUnderlyingName());
 		output.setUnderlyingRange(criteria.getVolatility().getUnderlyingRange());
 		output.setOptionStrategiesCount(criteria.getMaxOptionSpreadOpenPositions());
+		output.setUnderlyingCurrentPrice(criteria.getUnderlyingValue());
 
 		for (int j = 0; j <= criteria.getMaxOptionSpreadOpenPositions(); j++) {
 			OptionChainIterator<OptionSpread> optionChainIterator = new OptionChainIterator<OptionSpread>(optionSpreadChain, j);
@@ -101,7 +102,7 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 					}
 					payoffs[payoffCounter++] = new float[] { underlyingPrice, netPayoff };
 				}
-				PayoffMatrix payoffMatrix = new PayoffMatrix(payoffs, criteria.getUnderlyingValue());
+				PayoffMatrix payoffMatrix = new PayoffMatrix(payoffs);
 				if (logger.isDebugEnabled()) {
 					logger.debug(payoffMatrix);
 				}
