@@ -17,7 +17,6 @@
 package com.vizerium.payoffmatrix.criteria;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 
 import com.vizerium.payoffmatrix.dao.LocalDataSource;
 import com.vizerium.payoffmatrix.dao.RemoteDataSource;
@@ -253,11 +252,21 @@ public class Criteria {
 		this.riskFreeInterestRate = riskFreeInterestRate;
 	}
 
+	private String getExistingPostionDetailsString() {
+		String existingPositionDetails = "";
+		if (existingPositions != null && existingPositions.length > 0) {
+			for (Option existingPostion : existingPositions) {
+				existingPositionDetails += existingPostion.toExistingPositionDetailsString();
+			}
+		}
+		return existingPositionDetails;
+	}
+
 	@Override
 	public String toString() {
 		return "Criteria [underlyingName=" + underlyingName + ", underlyingValue=" + underlyingValue + ", volatility=" + volatility + ", maxLoss=" + maxLoss + ", tradingBias="
 				+ tradingBias + ", contractDuration=" + contractDuration + ", contractSeries=" + contractSeries + ", expiryDate=" + expiryDate + ", existingPositions="
-				+ Arrays.toString(existingPositions) + ", optionChainRemoteDatasource=" + optionChainRemoteDatasource + ", optionChainLocalDatasource=" + optionChainLocalDatasource
+				+ getExistingPostionDetailsString() + ", optionChainRemoteDatasource=" + optionChainRemoteDatasource + ", optionChainLocalDatasource=" + optionChainLocalDatasource
 				+ ", historicalDataLocalDatasource=" + historicalDataLocalDatasource + ", historicalDataDateRange=" + historicalDataDateRange + ", minOpenInterest="
 				+ minOpenInterest + ", maxOptionPremium=" + maxOptionPremium + ", sellOrderMargin=" + sellOrderMargin + ", investibleAmount=" + investibleAmount
 				+ ", maxOptionOpenPositions=" + maxOptionOpenPositions + ", maxOptionSpreadOpenPositions=" + maxOptionSpreadOpenPositions + ", maxOptionNumberOfLots="

@@ -75,7 +75,7 @@ public class Output {
 			existingPositionPayoff = optionStrategiesWithPayoff;
 		}
 
-		if ((optionStrategiesWithPayoff.getRiskRewardRatio() < 1.0f) && !allOptionsInStrategyAreOfSameTypeAndAction(optionStrategiesWithPayoff.getOptions())) {
+		if (!allOptionsInStrategyAreOfSameOrientation(optionStrategiesWithPayoff.getOptions())) {
 			compareToExistingPayoffs(highestAveragePayoffs, optionStrategiesWithPayoff);
 
 			compareToExistingPayoffs(highestProfitProbabilityPayoffs, optionStrategiesWithPayoff);
@@ -123,24 +123,35 @@ public class Output {
 		this.optionStrategiesCount = optionStrategiesCount;
 	}
 
-	private boolean allOptionsInStrategyAreOfSameTypeAndAction(OptionStrategy[] optionStrategies) {
-		OptionType firstOptionType = null;
-		TradeAction firstTradeAction = null;
+	private boolean allOptionsInStrategyAreOfSameOrientation(OptionStrategy[] optionStrategies) {
+		TradeAction firstTradeOrientation = null;
 
 		for (OptionStrategy optionStrategy : optionStrategies) {
 			for (Option option : optionStrategy.getOptions()) {
-				if (firstOptionType == null) {
-					firstOptionType = option.getType();
+				if (firstTradeOrientation == null) {
+					firstTradeOrientation = getOrientation(option.getType(), option.getTradeAction());
 				}
-				if (firstTradeAction == null) {
-					firstTradeAction = option.getTradeAction();
-				}
-				if (!(option.getType().equals(firstOptionType) && option.getTradeAction().equals(firstTradeAction))) {
+				if (!(getOrientation(option.getType(), option.getTradeAction()).equals(firstTradeOrientation))) {
 					return false;
 				}
 			}
 		}
 		return true;
+	}
+
+	private TradeAction getOrientation(OptionType optionType, TradeAction tradeAction) {
+
+		if (optionType.equals(OptionType.CALL) && tradeAction.equals(TradeAction.LONG)) {
+			return TradeAction.LONG;
+		} else if (optionType.equals(OptionType.CALL) && tradeAction.equals(TradeAction.SHORT)) {
+			return TradeAction.SHORT;
+		} else if (optionType.equals(OptionType.PUT) && tradeAction.equals(TradeAction.LONG)) {
+			return TradeAction.SHORT;
+		} else if (optionType.equals(OptionType.PUT) && tradeAction.equals(TradeAction.SHORT)) {
+			return TradeAction.LONG;
+		} else {
+			throw new RuntimeException("Unable to determine orientation from " + optionType + " and " + tradeAction + ".");
+		}
 	}
 
 	@Override

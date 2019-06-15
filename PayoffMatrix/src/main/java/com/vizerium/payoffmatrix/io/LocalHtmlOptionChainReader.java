@@ -22,6 +22,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,11 +34,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.vizerium.commons.io.FileUtils;
+import com.vizerium.payoffmatrix.comparator.MaximumOpenInterestComparator;
 import com.vizerium.payoffmatrix.criteria.Criteria;
 import com.vizerium.payoffmatrix.engine.MinimumOpenInterestCalculator;
 import com.vizerium.payoffmatrix.option.CallOption;
 import com.vizerium.payoffmatrix.option.Option;
+import com.vizerium.payoffmatrix.option.OptionType;
 import com.vizerium.payoffmatrix.option.PutOption;
+import com.vizerium.payoffmatrix.volatility.Range;
 
 //Reads from the local html file copied locally
 public class LocalHtmlOptionChainReader implements OptionChainReader {
@@ -55,13 +60,13 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 			String optionChainDateString = "";
 			for (Element e : spanElements) {
 				if (e.text().contains("Underlying Index")) {
-					if (logger.isInfoEnabled()) {
-						logger.info(e.text());
+					if (logger.isDebugEnabled()) {
+						logger.debug(e.text());
 					}
 					underlyingPriceString = e.text().substring(e.text().lastIndexOf(' ') + 1).replace(",", "");
 				} else if (e.text().contains("IST")) {
-					if (logger.isInfoEnabled()) {
-						logger.info(e.text());
+					if (logger.isDebugEnabled()) {
+						logger.debug(e.text());
 					}
 					optionChainDateString = e.text().substring(6, e.text().lastIndexOf(" "));
 				}
@@ -96,8 +101,8 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 			for (Element e : optionChainDataTitleElements) {
 				headerString += (e.text() + ",");
 			}
-			if (logger.isInfoEnabled()) {
-				logger.info(headerString);
+			if (logger.isDebugEnabled()) {
+				logger.debug(headerString);
 			}
 			List<Option> optionChain = new ArrayList<Option>();
 
@@ -138,10 +143,47 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 				criteria.setMinOpenInterest(MinimumOpenInterestCalculator.calculateMinimumOpenInterest(optionChain));
 			}
 
+			Collections.sort(optionChain, new MaximumOpenInterestComparator());
+			if (logger.isInfoEnabled()) {
+				logger.info("The options with maximum OI are ");
+				for (int i = 0; i <= 5; i++) {
+					logger.info(optionChain.get(i).toOptionChainDetailsString());
+				}
+
+				logger.info("Estimated Market Range based on current OI calculation : " + getMarketRangeBasedOnOI(optionChain));
+			}
+
 			return optionChain.toArray(new Option[optionChain.size()]);
 		} catch (IOException e) {
 			logger.error("An error occurred while parsing option chain data locally.", e);
 			throw new RuntimeException(e);
 		}
+	}
+
+	private Range getMarketRangeBasedOnOI(List<Option> oiReverseSortedOptionChain) {
+		Option highestOICallOption = null;
+		Option secondHighestOICallOption = null;
+		Option highestOIPutOption = null;
+		Option secondHighestOIPutOption = null;
+		for (Option o : oiReverseSortedOptionChain) {
+			if (highestOICallOption == null && o.getType().equals(OptionType.CALL)) {
+				highestOICallOption = o;
+			} else if (highestOICallOption != null && secondHighestOICallOption == null && o.getType().equals(OptionType.CALL)) {
+				secondHighestOICallOption = o;
+			} else if (highestOIPutOption == null && o.getType().equals(OptionType.PUT)) {
+				highestOIPutOption = o;
+			} else if (highestOIPutOption != null && secondHighestOIPutOption == null && o.getType().equals(OptionType.PUT)) {
+				secondHighestOIPutOption = o;
+			}
+
+			if (highestOICallOption != null && secondHighestOICallOption != null && highestOIPutOption != null && secondHighestOIPutOption != null) {
+				break;
+			}
+		}
+		float[] ranges = new float[] { highestOIPutOption.getStrike() - highestOIPutOption.getCurrentPremium(),
+				highestOICallOption.getStrike() + highestOICallOption.getCurrentPremium(), secondHighestOIPutOption.getStrike() - secondHighestOIPutOption.getCurrentPremium(),
+				secondHighestOICallOption.getStrike() + secondHighestOICallOption.getCurrentPremium() };
+		Arrays.sort(ranges);
+		return new Range(ranges[0], ranges[ranges.length - 1]);
 	}
 }

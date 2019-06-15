@@ -208,7 +208,8 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 			String underlyingRangeStdDevMultiple = criteriaProperties.getProperty("underlying.volatility.standardDeviationMultiple");
 			volatility.setStandardDeviationMultiple(Float.parseFloat(underlyingRangeStdDevMultiple));
 
-			volatility.calculateUnderlyingRange(LocalDate.now(), expiryDate, Exchanges.get(criteriaProperties.getProperty("exchange")), Float.parseFloat(underlyingRangeStep));
+			volatility.calculateUnderlyingRange(historicalData.getLast().getDate(), expiryDate, Exchanges.get(criteriaProperties.getProperty("exchange")),
+					Float.parseFloat(underlyingRangeStep));
 		}
 
 		return volatility;

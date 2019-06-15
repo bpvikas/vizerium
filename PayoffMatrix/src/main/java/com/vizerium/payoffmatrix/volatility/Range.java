@@ -71,6 +71,10 @@ public class Range {
 
 	@Override
 	public String toString() {
-		return "Range [low=" + low + ", high=" + high + ", step=" + step + "]";
+		if (Float.isNaN(step) || step == 0.0f) {
+			return "Range [" + low + " -> " + high + "]";
+		} else {
+			return "Range [" + low + " -> " + step + " -> " + high + "]";
+		}
 	}
 }

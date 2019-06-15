@@ -268,6 +268,16 @@ public abstract class Option implements Cloneable, Serializable, OptionStrategy 
 	@Override
 	public abstract Option clone();
 
+	public String toOptionChainDetailsString() {
+		return (int) strike + type.getShortName() + "," + currentPremium + "," + currentPremiumDate.toString() + "," + lotSize + ",Iv"
+				+ NumberFormats.getForMovingAverage().format(impliedVolatility) + "," + openInterest + " ";
+	}
+
+	public String toExistingPositionDetailsString() {
+		return (int) strike + type.getShortName() + "," + "existing," + tradedPremium + "," + tradedDate.toString() + "," + tradeAction.name() + "," + numberOfLots + "lot(s),"
+				+ lotSize + " ";
+	}
+
 	@Override
 	public String toString() {
 		return (int) strike + type.getShortName() + "," + (existing ? "existing," : "new,") + (existing ? tradedPremium : currentPremium) + ","
