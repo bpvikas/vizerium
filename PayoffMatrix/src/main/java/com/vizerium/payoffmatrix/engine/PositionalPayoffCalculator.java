@@ -87,24 +87,7 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 				for (float underlyingPrice = underlyingRangeBottom; underlyingPrice <= underlyingRangeTop; underlyingPrice += underlyingRangeStep) {
 					float netPayoff = 0.0f;
 					for (Option newOrExistingPosition : newAndExistingPositions) {
-						if (newOrExistingPosition.isExisting()) {
-							if (TradeAction.LONG.equals(newOrExistingPosition.getTradeAction())) {
-								netPayoff += newOrExistingPosition.getLongPayoffAtExpiryForTradedPremium(underlyingPrice);
-							} else if (TradeAction.SHORT.equals(newOrExistingPosition.getTradeAction())) {
-								netPayoff += newOrExistingPosition.getShortPayoffAtExpiryForTradedPremium(underlyingPrice);
-							} else {
-								throw new RuntimeException("Could not determine whether the existing position is long/short, " + newOrExistingPosition);
-							}
-
-						} else {
-							if (TradeAction.LONG.equals(newOrExistingPosition.getTradeAction())) {
-								netPayoff += newOrExistingPosition.getLongPayoffAtExpiryForCurrentPremium(underlyingPrice);
-							} else if (TradeAction.SHORT.equals(newOrExistingPosition.getTradeAction())) {
-								netPayoff += newOrExistingPosition.getShortPayoffAtExpiryForCurrentPremium(underlyingPrice);
-							} else {
-								throw new RuntimeException("Could not determine whether the existing position is long/short, " + newOrExistingPosition);
-							}
-						}
+						netPayoff += newOrExistingPosition.getPayoffAtExpiry(underlyingPrice);
 					}
 					payoffs[payoffCounter++] = new float[] { underlyingPrice, netPayoff };
 				}

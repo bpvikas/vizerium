@@ -20,6 +20,8 @@ import java.time.LocalDate;
 
 import org.apache.commons.lang3.SerializationUtils;
 
+import com.vizerium.commons.trade.TradeAction;
+
 public class PutOption extends Option {
 
 	private static final long serialVersionUID = 3997232431317895590L;
@@ -45,27 +47,14 @@ public class PutOption extends Option {
 	}
 
 	@Override
-	public float getShortPayoffAtExpiryForCurrentPremium(float underlyingSpotPrice) {
-		// premium - max (0, strike - spot)
-		return (currentPremium - Math.max(0.0f, strike - underlyingSpotPrice)) * numberOfLots * lotSize;
+	public float getPayoffAtExpiry(float underlyingSpotPrice) {
+		float premium = isExisting() ? tradedPremium : currentPremium;
+		return (Math.max(0.0f, strike - underlyingSpotPrice) - premium) * numberOfLots * lotSize * (tradeAction.equals(TradeAction.LONG) ? 1 : -1);
 	}
 
 	@Override
-	public float getLongPayoffAtExpiryForCurrentPremium(float underlyingSpotPrice) {
-		// max (0, strike - spot) - premium
-		return (Math.max(0.0f, strike - underlyingSpotPrice) - currentPremium) * numberOfLots * lotSize;
-	}
-
-	@Override
-	public float getShortPayoffAtExpiryForTradedPremium(float underlyingSpotPrice) {
-		// premium - max (0, strike - spot)
-		return (tradedPremium - Math.max(0.0f, strike - underlyingSpotPrice)) * numberOfLots * lotSize;
-	}
-
-	@Override
-	public float getLongPayoffAtExpiryForTradedPremium(float underlyingSpotPrice) {
-		// max (0, strike - spot) - premium
-		return (Math.max(0, strike - underlyingSpotPrice) - tradedPremium) * numberOfLots * lotSize;
+	public float getBreakevenAtExpiry() {
+		return strike - (isExisting() ? tradedPremium : currentPremium);
 	}
 
 	@Override

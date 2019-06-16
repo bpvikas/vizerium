@@ -145,9 +145,19 @@ public class PayoffMatrix {
 		return "1:" + nf.format(1 / riskRewardRatio);
 	}
 
+	public String getRiskRewardRatioInOIRangeAsString() {
+		NumberFormat nf = NumberFormats.getForPrice();
+		return "1:" + nf.format(1 / riskRewardRatioInOIRange);
+	}
+
 	public String getProfitProbabilityAsString() {
 		NumberFormat nf = NumberFormats.getForPrice();
 		return nf.format(profitProbability * 100) + "%";
+	}
+
+	public String getProfitProbabilityInOIRangeAsString() {
+		NumberFormat nf = NumberFormats.getForPrice();
+		return nf.format(profitProbabilityInOIRange * 100) + "%";
 	}
 
 	public void performPayoffAnalysis() {
@@ -230,6 +240,10 @@ public class PayoffMatrix {
 
 	public static void setOIBasedRange(Range oiBasedRange) {
 		PayoffMatrix.oiBasedRange = oiBasedRange;
+	}
+
+	public static Range getOIBasedRange() {
+		return PayoffMatrix.oiBasedRange;
 	}
 
 	@Override

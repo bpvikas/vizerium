@@ -244,8 +244,15 @@ public class Analytics {
 	}
 
 	public static boolean applyingCustomFilters(double positionDelta, PayoffMatrix payoffMatrix) {
-		return (Math.abs(positionDelta) >= 0 && Math.abs(positionDelta) < 0.5) && (payoffMatrix.getPositivePayoffSumInOIRange() >= 100000)
-				&& (payoffMatrix.getProfitProbability() > 0.4) && (payoffMatrix.getProfitProbabilityInOIRange() >= 0.8);
+		// @formatter:off
+		return (Math.abs(positionDelta) < 0.5) 
+				&& (payoffMatrix.getPositivePayoffSum() >= 130000.0f)
+				&& (payoffMatrix.getPositivePayoffSumInOIRange() >= 100000.0f) 
+				&& (payoffMatrix.getProfitProbability() >= 0.4f)
+				&& (payoffMatrix.getProfitProbabilityInOIRange() >= 0.8f) 
+				&& (payoffMatrix.getRiskRewardRatio() < 3.0f) 
+				&& (payoffMatrix.getRiskRewardRatioInOIRange() <= 0.1f)
+				;
+		// @formatter:on
 	}
-
 }

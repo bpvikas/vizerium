@@ -252,13 +252,9 @@ public abstract class Option implements Cloneable, Serializable, OptionStrategy 
 
 	public abstract OptionType getType();
 
-	public abstract float getShortPayoffAtExpiryForCurrentPremium(float underlyingSpotPrice);
+	public abstract float getPayoffAtExpiry(float underlyingSpotPrice);
 
-	public abstract float getLongPayoffAtExpiryForCurrentPremium(float underlyingSpotPrice);
-
-	public abstract float getShortPayoffAtExpiryForTradedPremium(float underlyingSpotPrice);
-
-	public abstract float getLongPayoffAtExpiryForTradedPremium(float underlyingSpotPrice);
+	public abstract float getBreakevenAtExpiry();
 
 	@Override
 	public Option[] getOptions() {

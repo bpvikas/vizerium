@@ -82,24 +82,7 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 					float netPayoff = 0.0f;
 					for (OptionSpread optionSpread : optionSpreads) {
 						for (Option option : optionSpread.getOptions()) {
-							if (optionSpread.isExisting()) {
-								if (TradeAction.LONG.equals(option.getTradeAction())) {
-									netPayoff += option.getLongPayoffAtExpiryForTradedPremium(underlyingPrice);
-								} else if (TradeAction.SHORT.equals(option.getTradeAction())) {
-									netPayoff += option.getShortPayoffAtExpiryForTradedPremium(underlyingPrice);
-								} else {
-									throw new RuntimeException("Could not determine whether the existing position is long/short, " + optionSpread);
-								}
-
-							} else {
-								if (TradeAction.LONG.equals(option.getTradeAction())) {
-									netPayoff += option.getLongPayoffAtExpiryForCurrentPremium(underlyingPrice);
-								} else if (TradeAction.SHORT.equals(option.getTradeAction())) {
-									netPayoff += option.getShortPayoffAtExpiryForCurrentPremium(underlyingPrice);
-								} else {
-									throw new RuntimeException("Could not determine whether the existing position is long/short, " + optionSpread);
-								}
-							}
+							netPayoff += option.getPayoffAtExpiry(underlyingPrice);
 						}
 					}
 					payoffs[payoffCounter++] = new float[] { underlyingPrice, netPayoff };

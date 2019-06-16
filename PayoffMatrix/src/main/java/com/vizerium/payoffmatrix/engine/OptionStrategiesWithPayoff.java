@@ -29,6 +29,8 @@ public class OptionStrategiesWithPayoff {
 
 	private double positionDelta;
 
+	private float[] breakevenPrices;
+
 	public OptionStrategiesWithPayoff(OptionStrategy[] newAndExistingPositions, PayoffMatrix payoffMatrix) {
 		this.optionStrategies = newAndExistingPositions;
 		this.payoffMatrix = payoffMatrix;
@@ -136,6 +138,54 @@ public class OptionStrategiesWithPayoff {
 		positionDelta = 0.0;
 		for (OptionStrategy optionStrategy : optionStrategies) {
 			positionDelta += optionStrategy.getDelta();
+		}
+	}
+
+	public float[] getBreakevenPrices() {
+		if (breakevenPrices == null) {
+			calculateBreakevenPrices();
+		}
+		return breakevenPrices;
+	}
+
+	// The current implementation is not an efficient algorithm. So, use it sparingly.
+	// I am looping through 0.05 steps, to find which step has a netPayoff = 0, the more efficient way would be to solve a quadratic / n-powered equation, I assume.
+	// For now, this is called only while writing reports where the breakeven price is displayed.
+	public void calculateBreakevenPrices() {
+		float[] breakevenPrices = new float[10];
+		int breakevenCounter = 0;
+		if (optionStrategies.length > 0) {
+			float[][] payoffs = payoffMatrix.getPayoffs();
+			outer: for (int i = 0; i < payoffs.length - 1; i++) {
+				if (payoffs[i][1] * payoffs[i + 1][1] <= 0.0f) {
+					// The above if condition is to check whether any one of them is positive and the other is negative. Then the product will be negative.
+					// The product will be zero, if one of the numbers is zero.
+					for (float price = payoffs[i][0]; price <= payoffs[i + 1][0]; price += 0.05) {
+						float netPayoff = 0.0f;
+						for (OptionStrategy optionStrategy : optionStrategies) {
+							for (Option option : optionStrategy.getOptions()) {
+								netPayoff += option.getPayoffAtExpiry(price);
+							}
+						}
+						if (Math.abs(netPayoff) < 10.0f) {
+							if (breakevenCounter > 0 && Math.abs(breakevenPrices[breakevenCounter - 1] - price) < 5.0f) {
+
+							} else {
+								breakevenPrices[breakevenCounter++] = price;
+								if (breakevenCounter >= breakevenPrices.length) {
+									break outer;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		if (breakevenCounter == 0) {
+			this.breakevenPrices = new float[0];
+		} else {
+			this.breakevenPrices = new float[breakevenCounter];
+			System.arraycopy(breakevenPrices, 0, this.breakevenPrices, 0, breakevenCounter);
 		}
 	}
 
