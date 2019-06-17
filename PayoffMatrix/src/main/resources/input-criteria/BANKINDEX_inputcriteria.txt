@@ -34,7 +34,12 @@ max.option.spread.positions=2
 #The lot size (e.g. 20 for the Bank Index)
 lotsize=20
 
-#If not provided, taken as the Index default of the next Thursday of the current settlement.
-#If it is a holiday, then please manually enter the date here
-#format DDMMYYYY
-expiryDate=
+#Custom filters for analyzing data. The values here will override the default values in the defaultcriteria properties file.
+analytics.customfilters.minPositionDelta=
+analytics.customfilters.maxPositionDelta=
+analytics.customfilters.minPositivePayoffSum=
+analytics.customfilters.minPositivePayoffSumInOIRange= 
+analytics.customfilters.minProfitProbability=
+analytics.customfilters.minProfitProbabilityInOIRange= 
+analytics.customfilters.maxRiskRewardRatio=
+analytics.customfilters.maxRiskRewardRatioInOIRange=

@@ -20,6 +20,7 @@ import java.time.LocalDate;
 
 import com.vizerium.payoffmatrix.dao.LocalDataSource;
 import com.vizerium.payoffmatrix.dao.RemoteDataSource;
+import com.vizerium.payoffmatrix.engine.Analytics.CustomFilters;
 import com.vizerium.payoffmatrix.option.ContractDuration;
 import com.vizerium.payoffmatrix.option.ContractSeries;
 import com.vizerium.payoffmatrix.option.Option;
@@ -77,6 +78,8 @@ public class Criteria {
 	private int lotSize;
 
 	private float riskFreeInterestRate;
+
+	private CustomFilters customFilters;
 
 	public String getUnderlyingName() {
 		return underlyingName;
@@ -273,6 +276,14 @@ public class Criteria {
 		this.riskFreeInterestRate = riskFreeInterestRate;
 	}
 
+	public CustomFilters getCustomFilters() {
+		return customFilters;
+	}
+
+	public void setCustomFilters(CustomFilters customFilters) {
+		this.customFilters = customFilters;
+	}
+
 	private String getExistingPostionDetailsString() {
 		String existingPositionDetails = "";
 		if (existingPositions != null && existingPositions.length > 0) {
@@ -292,6 +303,6 @@ public class Criteria {
 				+ underlyingRangeStep + ", minOpenInterest=" + minOpenInterest + ", oiBasedRange=" + oiBasedRange + ", maxOptionPremium=" + maxOptionPremium + ", sellOrderMargin="
 				+ sellOrderMargin + ", investibleAmount=" + investibleAmount + ", maxOptionOpenPositions=" + maxOptionOpenPositions + ", maxOptionSpreadOpenPositions="
 				+ maxOptionSpreadOpenPositions + ", maxOptionNumberOfLots=" + maxOptionNumberOfLots + ", lotSize=" + lotSize + ", riskFreeInterestRate=" + riskFreeInterestRate
-				+ "]";
+				+ ", customFilters=" + customFilters + "]";
 	}
 }

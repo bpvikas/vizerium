@@ -37,6 +37,8 @@ import com.vizerium.payoffmatrix.dao.HistoricalDataStore;
 import com.vizerium.payoffmatrix.dao.HistoricalDataStoreFactory;
 import com.vizerium.payoffmatrix.dao.LocalDataSource;
 import com.vizerium.payoffmatrix.dao.RemoteDataSource;
+import com.vizerium.payoffmatrix.engine.Analytics;
+import com.vizerium.payoffmatrix.engine.Analytics.CustomFilters;
 import com.vizerium.payoffmatrix.engine.ExpiryDateCalculator;
 import com.vizerium.payoffmatrix.option.CallOption;
 import com.vizerium.payoffmatrix.option.ContractDuration;
@@ -128,6 +130,9 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 			}
 			criteria.setRiskFreeInterestRate(Float.parseFloat(criteriaRiskFreeInterestRate.trim()) / 100.0f);
 
+			criteria.setCustomFilters(getCustomFilters(criteriaProperties));
+			Analytics.setCustomFilters(criteria.getCustomFilters());
+
 		} catch (IOException e) {
 			logger.error("An error occurred while reading input criteria properties file.", e);
 			throw new RuntimeException(e);
@@ -212,7 +217,62 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 
 			volatility.calculateUnderlyingRange(historicalData.getLast().getDate(), expiryDate, Float.parseFloat(underlyingRangeStep));
 		}
-
+		logger.info("Estimated Market Range based on volatility calculation : " + volatility.getUnderlyingRange());
 		return volatility;
+	}
+
+	private CustomFilters getCustomFilters(Properties criteriaProperties) {
+
+		String minPositionDeltaString = criteriaProperties.getProperty("analytics.customfilters.minPositionDelta");
+		if (StringUtils.isBlank(minPositionDeltaString)) {
+			minPositionDeltaString = criteriaProperties.getProperty("analytics.customfilters.minPositionDelta.default");
+		}
+		double minPositionDelta = Double.parseDouble(minPositionDeltaString);
+
+		String maxPositionDeltaString = criteriaProperties.getProperty("analytics.customfilters.maxPositionDelta");
+		if (StringUtils.isBlank(maxPositionDeltaString)) {
+			maxPositionDeltaString = criteriaProperties.getProperty("analytics.customfilters.maxPositionDelta.default");
+		}
+		double maxPositionDelta = Double.parseDouble(maxPositionDeltaString);
+
+		String minPositivePayoffSumString = criteriaProperties.getProperty("analytics.customfilters.minPositivePayoffSum");
+		if (StringUtils.isBlank(minPositivePayoffSumString)) {
+			minPositivePayoffSumString = criteriaProperties.getProperty("analytics.customfilters.minPositivePayoffSum.default");
+		}
+		float minPositivePayoffSum = Float.parseFloat(minPositivePayoffSumString);
+
+		String minPositivePayoffSumInOIRangeString = criteriaProperties.getProperty("analytics.customfilters.minPositivePayoffSumInOIRange");
+		if (StringUtils.isBlank(minPositivePayoffSumInOIRangeString)) {
+			minPositivePayoffSumInOIRangeString = criteriaProperties.getProperty("analytics.customfilters.minPositivePayoffSumInOIRange.default");
+		}
+		float minPositivePayoffSumInOIRange = Float.parseFloat(minPositivePayoffSumInOIRangeString);
+
+		String minProfitProbabilityString = criteriaProperties.getProperty("analytics.customfilters.minProfitProbability");
+		if (StringUtils.isBlank(minProfitProbabilityString)) {
+			minProfitProbabilityString = criteriaProperties.getProperty("analytics.customfilters.minProfitProbability.default");
+		}
+		float minProfitProbability = Float.parseFloat(minProfitProbabilityString);
+
+		String minProfitProbabilityInOIRangeString = criteriaProperties.getProperty("analytics.customfilters.minProfitProbabilityInOIRange");
+		if (StringUtils.isBlank(minProfitProbabilityInOIRangeString)) {
+			minProfitProbabilityInOIRangeString = criteriaProperties.getProperty("analytics.customfilters.minProfitProbabilityInOIRange.default");
+		}
+		float minProfitProbabilityInOIRange = Float.parseFloat(minProfitProbabilityInOIRangeString);
+
+		String maxRiskRewardRatioString = criteriaProperties.getProperty("analytics.customfilters.maxRiskRewardRatio");
+		if (StringUtils.isBlank(maxRiskRewardRatioString)) {
+			maxRiskRewardRatioString = criteriaProperties.getProperty("analytics.customfilters.maxRiskRewardRatio.default");
+		}
+		float maxRiskRewardRatio = Float.parseFloat(maxRiskRewardRatioString);
+
+		String maxRiskRewardRatioInOIRangeString = criteriaProperties.getProperty("analytics.customfilters.maxRiskRewardRatioInOIRange");
+		if (StringUtils.isBlank(maxRiskRewardRatioInOIRangeString)) {
+			maxRiskRewardRatioInOIRangeString = criteriaProperties.getProperty("analytics.customfilters.maxRiskRewardRatioInOIRange.default");
+		}
+		float maxRiskRewardRatioInOIRange = Float.parseFloat(maxRiskRewardRatioInOIRangeString);
+
+		return new CustomFilters(minPositionDelta, maxPositionDelta, minPositivePayoffSum, minPositivePayoffSumInOIRange, minProfitProbability, minProfitProbabilityInOIRange,
+				maxRiskRewardRatio, maxRiskRewardRatioInOIRange);
+
 	}
 }

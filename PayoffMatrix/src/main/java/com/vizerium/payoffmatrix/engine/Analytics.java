@@ -239,20 +239,81 @@ public class Analytics {
 			logger.info("RRR in OI Range 2.0 ->     " + riskRewardRatioInOIRangeGreaterThan2);
 			logger.info("");
 			logger.info("Applying multiple custom filters " + applyingCustomFilters);
+			logger.info(customFilters);
 			logger.info("");
 		}
 	}
 
 	public static boolean applyingCustomFilters(double positionDelta, PayoffMatrix payoffMatrix) {
 		// @formatter:off
-		return (Math.abs(positionDelta) < 0.5) 
-				&& (payoffMatrix.getPositivePayoffSum() >= 130000.0f)
-				&& (payoffMatrix.getPositivePayoffSumInOIRange() >= 100000.0f) 
-				&& (payoffMatrix.getProfitProbability() >= 0.4f)
-				&& (payoffMatrix.getProfitProbabilityInOIRange() >= 0.8f) 
-				&& (payoffMatrix.getRiskRewardRatio() < 3.0f) 
-				&& (payoffMatrix.getRiskRewardRatioInOIRange() <= 0.1f)
+		return (positionDelta > customFilters.minPositionDelta)
+				&& (positionDelta < customFilters.maxPositionDelta)
+				&& (payoffMatrix.getPositivePayoffSum() > customFilters.minPositivePayoffSum)
+				&& (payoffMatrix.getPositivePayoffSumInOIRange() > customFilters.minPositivePayoffSumInOIRange) 
+				&& (payoffMatrix.getProfitProbability() > customFilters.minProfitProbability)
+				&& (payoffMatrix.getProfitProbabilityInOIRange() > customFilters.minProfitProbabilityInOIRange) 
+				&& (payoffMatrix.getRiskRewardRatio() < customFilters.maxRiskRewardRatio) 
+				&& (payoffMatrix.getRiskRewardRatioInOIRange() < customFilters.maxRiskRewardRatioInOIRange)
 				;
 		// @formatter:on
+	}
+
+	private static CustomFilters customFilters;
+
+	public static void setCustomFilters(CustomFilters customFilters) {
+		Analytics.customFilters = customFilters;
+	}
+
+	public static class CustomFilters {
+
+		private double minPositionDelta;
+		private double maxPositionDelta;
+		private float minPositivePayoffSum;
+		private float minPositivePayoffSumInOIRange;
+		private float minProfitProbability;
+		private float minProfitProbabilityInOIRange;
+		private float maxRiskRewardRatio;
+		private float maxRiskRewardRatioInOIRange;
+
+		public CustomFilters(double minPositionDelta, double maxPositionDelta, float minPositivePayoffSum, float minPositivePayoffSumInOIRange, float minProfitProbability,
+				float minProfitProbabilityInOIRange, float maxRiskRewardRatio, float maxRiskRewardRatioInOIRange) {
+			if (minPositionDelta > maxPositionDelta) {
+				throw new RuntimeException("Min position delta " + minPositionDelta + " cannot be greater than max position delta " + maxPositionDelta);
+			}
+			if (minPositivePayoffSum < 0.0f) {
+				throw new RuntimeException("Min positive payoff sum " + minPositivePayoffSum + " needs to be zero or higher.");
+			}
+			if (minPositivePayoffSumInOIRange < 0.0f) {
+				throw new RuntimeException("Min positive payoff sum in OI range " + minPositivePayoffSumInOIRange + " needs to be zero or higher.");
+			}
+			if (minProfitProbability < 0.0f || minProfitProbability > 1.0f) {
+				throw new RuntimeException("Min profit probability " + minProfitProbability + " needs to be between 0 and 1.");
+			}
+			if (minProfitProbabilityInOIRange < 0.0f || minProfitProbabilityInOIRange > 1.0f) {
+				throw new RuntimeException("Min profit probability in OI range " + minProfitProbabilityInOIRange + " needs to be between 0 and 1.");
+			}
+			if (maxRiskRewardRatio < 0.0f) {
+				throw new RuntimeException("Max risk reward ratio " + maxRiskRewardRatio + " cannot be -ve.");
+			}
+			if (maxRiskRewardRatioInOIRange < 0.0f) {
+				throw new RuntimeException("Max risk reward ratio in OI range " + maxRiskRewardRatioInOIRange + " cannot be -ve.");
+			}
+
+			this.minPositionDelta = minPositionDelta;
+			this.maxPositionDelta = maxPositionDelta;
+			this.minPositivePayoffSum = minPositivePayoffSum;
+			this.minPositivePayoffSumInOIRange = minPositivePayoffSumInOIRange;
+			this.minProfitProbability = minProfitProbability;
+			this.minProfitProbabilityInOIRange = minProfitProbabilityInOIRange;
+			this.maxRiskRewardRatio = maxRiskRewardRatio;
+			this.maxRiskRewardRatioInOIRange = maxRiskRewardRatioInOIRange;
+		}
+
+		@Override
+		public String toString() {
+			return "CustomFilters [minPositionDelta=" + minPositionDelta + ", maxPositionDelta=" + maxPositionDelta + ", min+vePayoffSum=" + minPositivePayoffSum
+					+ ", min+vePayoffSumOIRange=" + minPositivePayoffSumInOIRange + ", minProfitProb=" + minProfitProbability + ", minProfitProbOIRange="
+					+ minProfitProbabilityInOIRange + ", maxRRR=" + maxRiskRewardRatio + ", maxRRROIRange=" + maxRiskRewardRatioInOIRange + "]";
+		}
 	}
 }

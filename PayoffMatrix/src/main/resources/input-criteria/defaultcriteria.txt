@@ -87,3 +87,13 @@ max.option.lots=1
 
 #The lot size (e.g. 75 for the Index or 20 for the Bank Index)
 lotsize=
+
+#Custom filters for analyzing data
+analytics.customfilters.minPositionDelta.default=-6.0
+analytics.customfilters.maxPositionDelta.default=6.0
+analytics.customfilters.minPositivePayoffSum.default=0.0 
+analytics.customfilters.minPositivePayoffSumInOIRange.default=0.0 
+analytics.customfilters.minProfitProbability.default=0.0
+analytics.customfilters.minProfitProbabilityInOIRange.default=0.0
+analytics.customfilters.maxRiskRewardRatio.default=20.0
+analytics.customfilters.maxRiskRewardRatioInOIRange.default=20.0

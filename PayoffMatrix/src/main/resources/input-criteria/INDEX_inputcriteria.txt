@@ -31,3 +31,13 @@ max.option.spread.positions=2
 
 #The lot size (e.g. 75 for the Index)
 lotsize=75
+
+#Custom filters for analyzing data. The values here will override the default values in the defaultcriteria properties file.
+analytics.customfilters.minPositionDelta=-0.5
+analytics.customfilters.maxPositionDelta=0.5
+analytics.customfilters.minPositivePayoffSum=100000.0
+analytics.customfilters.minPositivePayoffSumInOIRange=90000.0 
+analytics.customfilters.minProfitProbability=0.4
+analytics.customfilters.minProfitProbabilityInOIRange=0.8 
+analytics.customfilters.maxRiskRewardRatio=3.0
+analytics.customfilters.maxRiskRewardRatioInOIRange=0.1

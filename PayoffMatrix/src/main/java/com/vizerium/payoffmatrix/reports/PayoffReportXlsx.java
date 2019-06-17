@@ -58,6 +58,8 @@ public class PayoffReportXlsx {
 
 	private static final int pivotChartSheetInitialColNum = (int) 'Y'; // 89 is column 'Y'
 
+	private static final int pivotChartSheetBreakevenPricesColNum = (int) 'P'; // 80 is column 'P'
+
 	public static void createReport(String underlyingName, String payoffName, TreeSet<OptionStrategiesWithPayoff> payoffs, int optionStrategiesCount, Range underlyingRange,
 			float underlyingCurrentPrice) {
 		Workbook workbook = getReportTemplate(underlyingName);
@@ -259,11 +261,11 @@ public class PayoffReportXlsx {
 		cell.setCellValue(positionDelta);
 
 		if (breakevenPrices.length > 0) {
-			String breakevenPricesString = " ";
+			String breakevenPricesString = "";
 			for (float breakevenPrice : breakevenPrices) {
-				breakevenPricesString += (NumberFormats.getForPrice().format(breakevenPrice) + " ");
+				breakevenPricesString += (" " + NumberFormats.getForPrice().format(breakevenPrice));
 			}
-			cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(rowNum += 2));
+			cr = new CellReference((String.valueOf((char) pivotChartSheetBreakevenPricesColNum)) + String.valueOf(rowNum += 2));
 			row = pivotChartSheet.getRow(cr.getRow());
 			cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
 			cell.setCellValue(breakevenPricesString);
