@@ -37,8 +37,9 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 	@Override
 	public Output calculatePayoff(Criteria criteria, OptionDataStore optionDataStore) {
 
-		Option[] optionChain = filterOptionChainForEvaluatingNewPositions(optionDataStore.readOptionChainData(criteria), criteria);
-		updateCurrentDetailsInExistingPositions(optionChain, criteria.getExistingPositions());
+		Option[] optionChainUnfiltered = optionDataStore.readOptionChainData(criteria);
+		updateCurrentDetailsInExistingPositions(optionChainUnfiltered, criteria.getExistingPositions());
+		Option[] optionChain = filterOptionChainForEvaluatingNewPositions(optionChainUnfiltered, criteria);
 		OptionSpread[] optionSpreadChain = createOptionSpreadsFromSingleOptions(optionChain, criteria.getExistingPositions());
 
 		float underlyingRangeTop = criteria.getVolatility().getUnderlyingRange().getHigh();
@@ -106,12 +107,10 @@ public class SpreadPayoffCalculator extends PayoffCalculator {
 			if (optionChainEntry.getOpenInterest() >= criteria.getMinOpenInterest() && optionChainEntry.getCurrentPremium() <= criteria.getMaxOptionPremium()) {
 				Option longOption = optionChainEntry.clone();
 				longOption.setTradeAction(TradeAction.LONG);
-				longOption.setContractSeries(criteria.getContractSeries());
 				filteredOptionChain.add(longOption);
 
 				Option shortOption = optionChainEntry.clone();
 				shortOption.setTradeAction(TradeAction.SHORT);
-				shortOption.setContractSeries(criteria.getContractSeries());
 				filteredOptionChain.add(shortOption);
 			}
 		}

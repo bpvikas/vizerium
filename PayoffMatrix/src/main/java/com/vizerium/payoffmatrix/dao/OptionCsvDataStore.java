@@ -86,6 +86,7 @@ public class OptionCsvDataStore implements OptionDataStore {
 				option.setRiskFreeInterestRate(criteria.getRiskFreeInterestRate());
 				option.setCurrentPremiumDate(currentPremiumDate);
 				option.setExpiryDate(criteria.getExpiryDate());
+				option.setContractSeries(criteria.getContractSeries());
 				option.setUnderlyingPrice(underlyingPrice);
 				option.setLotSize(lotSize);
 

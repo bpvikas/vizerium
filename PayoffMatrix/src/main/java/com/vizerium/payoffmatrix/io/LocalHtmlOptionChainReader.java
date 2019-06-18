@@ -84,9 +84,9 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 				throw new RuntimeException(
 						"The option chain date " + optionChainDate + " does not match the historical data end date " + criteria.getHistoricalDataDateRange().getEndDate());
 			}
-			if (Math.abs(underlyingPrice - criteria.getUnderlyingValue()) / criteria.getUnderlyingValue() >= 0.005f) {
-				throw new RuntimeException("There is more than a 0.5% difference between the Option Chain price " + underlyingPrice + " and the historical data last closing Price "
-						+ criteria.getUnderlyingValue());
+			if (Math.abs(underlyingPrice - criteria.getUnderlyingValue()) / criteria.getUnderlyingValue() >= 0.0025f) {
+				throw new RuntimeException("There is more than a 0.25% difference between the Option Chain price " + underlyingPrice
+						+ " and the historical data last closing Price " + criteria.getUnderlyingValue());
 			}
 
 			Element optionChainData = htmlDoc.getElementById("octable");

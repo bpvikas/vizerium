@@ -37,8 +37,9 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 	@Override
 	public Output calculatePayoff(Criteria criteria, OptionDataStore optionDataStore) {
 
-		Option[] optionChain = filterOptionChainForEvaluatingNewPositions(optionDataStore.readOptionChainData(criteria), criteria);
-		updateCurrentDetailsInExistingPositions(optionChain, criteria.getExistingPositions());
+		Option[] optionChainUnfiltered = optionDataStore.readOptionChainData(criteria);
+		updateCurrentDetailsInExistingPositions(optionChainUnfiltered, criteria.getExistingPositions());
+		Option[] optionChain = filterOptionChainForEvaluatingNewPositions(optionChainUnfiltered, criteria);
 
 		float underlyingRangeTop = criteria.getVolatility().getUnderlyingRange().getHigh();
 		float underlyingRangeBottom = criteria.getVolatility().getUnderlyingRange().getLow();
@@ -112,13 +113,11 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 					Option longOption = optionChainEntry.clone();
 					longOption.setTradeAction(TradeAction.LONG);
 					longOption.setNumberOfLots(numberOfLots);
-					longOption.setContractSeries(criteria.getContractSeries());
 					filteredOptionChain.add(longOption);
 
 					Option shortOption = optionChainEntry.clone();
 					shortOption.setTradeAction(TradeAction.SHORT);
 					shortOption.setNumberOfLots(numberOfLots);
-					shortOption.setContractSeries(criteria.getContractSeries());
 					filteredOptionChain.add(shortOption);
 				}
 			}

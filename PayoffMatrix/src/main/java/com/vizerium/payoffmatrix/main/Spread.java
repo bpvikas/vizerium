@@ -38,21 +38,24 @@ public class Spread {
 	private static final Logger logger = Logger.getLogger(Spread.class);
 
 	public static void main(String[] args) {
+		try {
+			CriteriaReader criteriaReader = new PropertiesFileCriteriaReader();
+			Criteria criteria = criteriaReader.readCriteria();
 
-		CriteriaReader criteriaReader = new PropertiesFileCriteriaReader();
-		Criteria criteria = criteriaReader.readCriteria();
+			OptionChainReader optionChainReader = OptionChainReaderFactory.getOptionChainReader(criteria.getOptionChainRemoteDatasource());
+			Option[] optionChain = optionChainReader.readOptionChain(criteria);
+			OptionDataStore optionDataStore = OptionDataStoreFactory.getOptionDataStore(criteria.getOptionChainLocalDatasource());
+			optionDataStore.saveOptionChainData(criteria, optionChain);
 
-		OptionChainReader optionChainReader = OptionChainReaderFactory.getOptionChainReader(criteria.getOptionChainRemoteDatasource());
-		Option[] optionChain = optionChainReader.readOptionChain(criteria);
-		OptionDataStore optionDataStore = OptionDataStoreFactory.getOptionDataStore(criteria.getOptionChainLocalDatasource());
-		optionDataStore.saveOptionChainData(criteria, optionChain);
-
-		SpreadPayoffCalculator payoffCalculator = new SpreadPayoffCalculator();
-		Output output = payoffCalculator.calculatePayoff(criteria, optionDataStore);
-		if (logger.isInfoEnabled()) {
-			logger.info(criteria);
-			logger.info(output);
-			output.writeReports();
+			SpreadPayoffCalculator payoffCalculator = new SpreadPayoffCalculator();
+			Output output = payoffCalculator.calculatePayoff(criteria, optionDataStore);
+			if (logger.isInfoEnabled()) {
+				logger.info(criteria);
+				logger.info(output);
+				output.writeReports();
+			}
+		} catch (Throwable t) {
+			logger.error("Error occurred while executing Spread.", t);
 		}
 	}
 }

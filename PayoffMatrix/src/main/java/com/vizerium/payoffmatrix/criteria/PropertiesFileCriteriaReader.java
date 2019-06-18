@@ -25,7 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -147,7 +147,7 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 
 		List<Option> existingOptionOpenPositions = new ArrayList<Option>();
 		try {
-			Set<String> propertyNames = criteriaProperties.stringPropertyNames();
+			TreeSet<String> propertyNames = new TreeSet<String>(criteriaProperties.stringPropertyNames());
 			for (String propertyName : propertyNames) {
 				if (propertyName.toLowerCase().startsWith("existingposition")) {
 					String propertyValue = criteriaProperties.getProperty(propertyName);

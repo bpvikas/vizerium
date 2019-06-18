@@ -38,21 +38,24 @@ public class Positional {
 	private static final Logger logger = Logger.getLogger(Positional.class);
 
 	public static void main(String[] args) {
+		try {
+			CriteriaReader criteriaReader = new PropertiesFileCriteriaReader();
+			Criteria criteria = criteriaReader.readCriteria();
 
-		CriteriaReader criteriaReader = new PropertiesFileCriteriaReader();
-		Criteria criteria = criteriaReader.readCriteria();
+			OptionChainReader optionChainReader = OptionChainReaderFactory.getOptionChainReader(criteria.getOptionChainRemoteDatasource());
+			Option[] optionChain = optionChainReader.readOptionChain(criteria);
+			OptionDataStore optionDataStore = OptionDataStoreFactory.getOptionDataStore(criteria.getOptionChainLocalDatasource());
+			optionDataStore.saveOptionChainData(criteria, optionChain);
 
-		OptionChainReader optionChainReader = OptionChainReaderFactory.getOptionChainReader(criteria.getOptionChainRemoteDatasource());
-		Option[] optionChain = optionChainReader.readOptionChain(criteria);
-		OptionDataStore optionDataStore = OptionDataStoreFactory.getOptionDataStore(criteria.getOptionChainLocalDatasource());
-		optionDataStore.saveOptionChainData(criteria, optionChain);
-
-		PositionalPayoffCalculator payoffCalculator = new PositionalPayoffCalculator();
-		Output output = payoffCalculator.calculatePayoff(criteria, optionDataStore);
-		if (logger.isInfoEnabled()) {
-			logger.info(criteria);
-			logger.info(output);
-			output.writeReports();
+			PositionalPayoffCalculator payoffCalculator = new PositionalPayoffCalculator();
+			Output output = payoffCalculator.calculatePayoff(criteria, optionDataStore);
+			if (logger.isInfoEnabled()) {
+				logger.info(criteria);
+				logger.info(output);
+				output.writeReports();
+			}
+		} catch (Throwable t) {
+			logger.error("Error occurred while executing Positional.", t);
 		}
 	}
 }

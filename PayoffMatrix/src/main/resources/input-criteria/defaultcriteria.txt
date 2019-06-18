@@ -91,8 +91,8 @@ lotsize=
 #Custom filters for analyzing data
 analytics.customfilters.minPositionDelta.default=-6.0
 analytics.customfilters.maxPositionDelta.default=6.0
-analytics.customfilters.minPositivePayoffSum.default=0.0 
-analytics.customfilters.minPositivePayoffSumInOIRange.default=0.0 
+analytics.customfilters.minPositivePayoffSum.default=0.0
+analytics.customfilters.minPositivePayoffSumInOIRange.default=0.0
 analytics.customfilters.minProfitProbability.default=0.0
 analytics.customfilters.minProfitProbabilityInOIRange.default=0.0
 analytics.customfilters.maxRiskRewardRatio.default=20.0
