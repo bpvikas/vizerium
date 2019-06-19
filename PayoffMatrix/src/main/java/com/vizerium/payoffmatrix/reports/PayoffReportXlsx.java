@@ -138,6 +138,11 @@ public class PayoffReportXlsx {
 		row = dataSheet.getRow(cr.getRow());
 		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
 		cell.setCellValue(option.getNumberOfLots());
+
+		cr = new CellReference((String.valueOf((char) colNum)) + String.valueOf(++rowNum));
+		row = dataSheet.getRow(cr.getRow());
+		cell = row.getCell(cr.getCol(), MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		cell.setCellValue(option.getDelta());
 	}
 
 	private static void updatePayoffMatrixDetailsInPivotChartSheet(Sheet pivotChartSheet, PayoffMatrix payoffMatrix, Range underlyingRange, double positionDelta,
