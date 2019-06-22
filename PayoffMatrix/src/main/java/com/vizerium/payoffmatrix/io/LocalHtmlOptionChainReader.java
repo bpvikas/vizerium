@@ -33,8 +33,7 @@ import org.jsoup.select.Elements;
 
 import com.vizerium.commons.io.FileUtils;
 import com.vizerium.payoffmatrix.criteria.Criteria;
-import com.vizerium.payoffmatrix.engine.MinimumOpenInterestCalculator;
-import com.vizerium.payoffmatrix.engine.OpenInterestRangeCalculator;
+import com.vizerium.payoffmatrix.engine.OpenInterestAnalytics;
 import com.vizerium.payoffmatrix.option.CallOption;
 import com.vizerium.payoffmatrix.option.Option;
 import com.vizerium.payoffmatrix.option.PutOption;
@@ -75,10 +74,11 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 			}
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss");
-			LocalDate optionChainDate = LocalDateTime.parse(optionChainDateString, formatter).toLocalDate();
+			LocalDateTime optionChainDateTime = LocalDateTime.parse(optionChainDateString, formatter);
+			LocalDate optionChainDate = optionChainDateTime.toLocalDate();
 			float underlyingPrice = Float.parseFloat(underlyingPriceString);
 			if (logger.isInfoEnabled()) {
-				logger.info(underlyingPrice + " $$ " + optionChainDate);
+				logger.info(underlyingPrice + " $$ " + optionChainDate + " " + optionChainDateTime.toLocalTime());
 			}
 			if (!optionChainDate.equals(criteria.getHistoricalDataDateRange().getEndDate())) {
 				throw new RuntimeException(
@@ -115,30 +115,38 @@ public class LocalHtmlOptionChainReader implements OptionChainReader {
 				}
 
 				String callOI = optionChainDataRow.select("td").get(1).text().trim().replace(",", "");
+				String callOIChange = optionChainDataRow.select("td").get(2).text().trim().replace(",", "");
 				String callIV = optionChainDataRow.select("td").get(4).text().trim().replace(",", "");
 				String callLtp = optionChainDataRow.select("td").get(5).text().trim().replace(",", "");
 				String strike = optionChainDataRow.select("td").get(11).getAllElements().get(0).getAllElements().get(0).text().trim().replace(",", "");
 				String putLtp = optionChainDataRow.select("td").get(17).text().trim().replace(",", "");
 				String putIV = optionChainDataRow.select("td").get(18).text().trim().replace(",", "");
+				String putOIChange = optionChainDataRow.select("td").get(20).text().trim().replace(",", "");
 				String putOI = optionChainDataRow.select("td").get(21).text().trim().replace(",", "");
 
-				if (StringUtils.isNoneBlank(callOI, callIV, callLtp, strike) && !StringUtils.equals(callOI, "-") && (Integer.parseInt(callOI) >= 3000)
-						&& !StringUtils.equals(callIV, "-") && !StringUtils.equals(callLtp, "-") && !StringUtils.equals(strike, "-")) {
+				if (StringUtils.isNoneBlank(callOI, callOIChange, callIV, callLtp, strike) && !StringUtils.equals(callOI, "-") && (Integer.parseInt(callOI) >= 3000)
+						&& !StringUtils.equals(callOIChange, "-") && !StringUtils.equals(callIV, "-") && !StringUtils.equals(callLtp, "-") && !StringUtils.equals(strike, "-")) {
 					// Adding the 3000 check here as there are many options in the Index option chain which are in few 100s and disturb the minimum Open Interest calculation
-					optionChain.add(new CallOption(strike, callOI, callLtp, Float.parseFloat(callIV) / 100.0f, underlyingPrice, optionChainDate, criteria.getLotSize()));
+					optionChain
+							.add(new CallOption(strike, callOI, callOIChange, callLtp, Float.parseFloat(callIV) / 100.0f, underlyingPrice, optionChainDate, criteria.getLotSize()));
 				}
 
-				if (StringUtils.isNoneBlank(strike, putLtp, putIV, putOI) && !StringUtils.equals(strike, "-") && !StringUtils.equals(putLtp, "-") && !StringUtils.equals(putIV, "-")
-						&& !StringUtils.equals(putOI, "-") && (Integer.parseInt(putOI) >= 3000)) {
+				if (StringUtils.isNoneBlank(strike, putLtp, putIV, putOIChange, putOI) && !StringUtils.equals(strike, "-") && !StringUtils.equals(putLtp, "-")
+						&& !StringUtils.equals(putIV, "-") && !StringUtils.equals(putOIChange, "-") && !StringUtils.equals(putOI, "-") && (Integer.parseInt(putOI) >= 3000)) {
 					// Adding the 3000 check here as there are many options in the Index option chain which are in few 100s and disturb the minimum Open Interest calculation
-					optionChain.add(new PutOption(strike, putOI, putLtp, Float.parseFloat(putIV) / 100.0f, underlyingPrice, optionChainDate, criteria.getLotSize()));
+					optionChain.add(new PutOption(strike, putOI, putOIChange, putLtp, Float.parseFloat(putIV) / 100.0f, underlyingPrice, optionChainDate, criteria.getLotSize()));
 				}
 			}
 
+			OpenInterestAnalytics oiAnalytics = new OpenInterestAnalytics(optionChain);
 			if (criteria.getMinOpenInterest() <= 0) {
-				criteria.setMinOpenInterest(MinimumOpenInterestCalculator.calculateMinimumOpenInterest(optionChain));
+				criteria.setMinOpenInterest(oiAnalytics.calculateMinimumOpenInterest());
 			}
-			criteria.setOIBasedRange(OpenInterestRangeCalculator.getOIBasedRange(optionChain, criteria.getUnderlyingRangeStep()));
+			criteria.setOIBasedRange(oiAnalytics.getOIBasedRange(criteria.getUnderlyingRangeStep()));
+			oiAnalytics.calculatePCR();
+			oiAnalytics.calculatePCR(10);
+			oiAnalytics.getMaxOpenInterestAdditions();
+			oiAnalytics.getMaxOpenInterestExits();
 
 			return optionChain.toArray(new Option[optionChain.size()]);
 		} catch (IOException e) {

@@ -22,23 +22,32 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.vizerium.payoffmatrix.comparator.MaximumOpenInterestChangeComparator;
 import com.vizerium.payoffmatrix.comparator.MaximumOpenInterestComparator;
 import com.vizerium.payoffmatrix.option.Option;
 import com.vizerium.payoffmatrix.option.OptionType;
 import com.vizerium.payoffmatrix.volatility.Range;
 
-public class OpenInterestRangeCalculator {
+public class OpenInterestAnalytics {
 
-	private static Logger logger = Logger.getLogger(OpenInterestRangeCalculator.class);
+	private static Logger logger = Logger.getLogger(OpenInterestAnalytics.class);
 
-	public static Range getOIBasedRange(List<Option> optionChain, int rangeStep) {
+	private List<Option> optionChain;
+
+	public OpenInterestAnalytics(List<Option> optionChain) {
+		this.optionChain = optionChain;
+	}
+
+	public Range getOIBasedRange(int rangeStep) {
 
 		Collections.sort(optionChain, new MaximumOpenInterestComparator());
 		if (logger.isInfoEnabled()) {
+			logger.info("");
 			logger.info("The options with maximum OI are ");
 			for (int i = 0; i <= 7; i++) {
 				logger.info(optionChain.get(i).toOptionChainDetailsString());
 			}
+			logger.info("");
 		}
 
 		Option highestOICallOption = null;
@@ -70,7 +79,76 @@ public class OpenInterestRangeCalculator {
 		if (logger.isInfoEnabled()) {
 			logger.info("Estimated Market Range based on current OI calculation : " + oiBasedRange);
 		}
-
 		return oiBasedRange;
 	}
+
+	public float calculatePCR() {
+		return calculatePCR(-1);
+	}
+
+	public float calculatePCR(int topN) {
+		// Calculating PCR on all values in case of -ve or zero topN
+		if (topN <= 0) {
+			topN = 10000;
+		}
+		Collections.sort(optionChain, new MaximumOpenInterestComparator());
+
+		int putOItotal = 0;
+		int callOItotal = 0;
+
+		for (int i = 0; i < Math.min(topN, optionChain.size()); i++) {
+			if (optionChain.get(i).getType().equals(OptionType.CALL)) {
+				callOItotal += optionChain.get(i).getOpenInterest();
+			} else if (optionChain.get(i).getType().equals(OptionType.PUT)) {
+				putOItotal += optionChain.get(i).getOpenInterest();
+			} else {
+				throw new RuntimeException("Unable to determine type of option for : " + optionChain.get(i).toOptionChainDetailsString());
+			}
+		}
+		if (logger.isInfoEnabled()) {
+			logger.info("PCR for " + (topN == 10000 ? "All" : String.valueOf(topN)) + " options is " + (float) putOItotal / callOItotal);
+		}
+
+		return (float) putOItotal / callOItotal;
+	}
+
+	public void getMaxOpenInterestAdditions() {
+		Collections.sort(optionChain, new MaximumOpenInterestChangeComparator());
+		if (logger.isInfoEnabled()) {
+			logger.info("");
+			logger.info("The options with maximum OI additions are ");
+			for (int i = 0; i <= 4; i++) {
+				logger.info(optionChain.get(i).toOptionChainDetailsString());
+			}
+			logger.info("");
+		}
+	}
+
+	public void getMaxOpenInterestExits() {
+		Collections.sort(optionChain, new MaximumOpenInterestChangeComparator().reversed());
+		if (logger.isInfoEnabled()) {
+			logger.info("");
+			logger.info("The options with maximum OI exits are ");
+			for (int i = 0; i <= 4; i++) {
+				logger.info(optionChain.get(i).toOptionChainDetailsString());
+			}
+			logger.info("");
+		}
+	}
+
+	public int calculateMinimumOpenInterest() {
+
+		float openInterestLogNaturalSum = 0.0f;
+		for (Option option : optionChain) {
+			openInterestLogNaturalSum += Math.log(option.getOpenInterest());
+		}
+		float openInterestLogNaturalMean = openInterestLogNaturalSum / optionChain.size();
+
+		int minimumOpenInterest = (int) Math.exp(openInterestLogNaturalMean);
+		if (logger.isInfoEnabled()) {
+			logger.info("Auto-calculated minimum OI: " + minimumOpenInterest);
+		}
+		return minimumOpenInterest;
+	}
+
 }

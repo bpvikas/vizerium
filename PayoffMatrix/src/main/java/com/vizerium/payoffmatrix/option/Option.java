@@ -30,6 +30,8 @@ public abstract class Option implements Cloneable, Serializable, OptionStrategy 
 
 	protected int openInterest;
 
+	protected int openInterestChange;
+
 	protected float currentPremium;
 
 	protected float tradedPremium;
@@ -132,6 +134,14 @@ public abstract class Option implements Cloneable, Serializable, OptionStrategy 
 
 	public int getOpenInterest() {
 		return openInterest;
+	}
+
+	public void setOpenInterestChange(int openInterestChange) {
+		this.openInterestChange = openInterestChange;
+	}
+
+	public int getOpenInterestChange() {
+		return openInterestChange;
 	}
 
 	public boolean isExisting() {
@@ -266,7 +276,7 @@ public abstract class Option implements Cloneable, Serializable, OptionStrategy 
 
 	public String toOptionChainDetailsString() {
 		return (int) strike + type.getShortName() + "," + currentPremium + "," + currentPremiumDate.toString() + "," + lotSize + ",Iv"
-				+ NumberFormats.getForMovingAverage().format(impliedVolatility) + "," + openInterest + " ";
+				+ NumberFormats.getForMovingAverage().format(impliedVolatility) + "," + openInterest + "," + openInterestChange + " ";
 	}
 
 	public String toExistingPositionDetailsString() {

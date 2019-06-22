@@ -35,9 +35,10 @@ public class CallOption extends Option {
 		this.type = OptionType.CALL;
 	}
 
-	public CallOption(String strike, String openInterest, String currentPremium, float impliedVolatility, float underlyingPrice, LocalDate currentPremiumDate, int lotSize) {
+	public CallOption(String strike, String openInterest, String openInterestChange, String currentPremium, float impliedVolatility, float underlyingPrice, LocalDate currentPremiumDate, int lotSize) {
 		this.strike = Float.parseFloat(strike);
 		this.openInterest = Integer.parseInt(openInterest);
+		this.openInterestChange = Integer.parseInt(openInterestChange);
 		this.currentPremium = Float.parseFloat(currentPremium);
 		setImpliedVolatility(impliedVolatility);
 		this.underlyingPrice = underlyingPrice;
