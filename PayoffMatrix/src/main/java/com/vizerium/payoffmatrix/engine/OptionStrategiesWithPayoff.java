@@ -36,7 +36,7 @@ public class OptionStrategiesWithPayoff {
 		this.payoffMatrix = payoffMatrix;
 		setExistingOpenPosition();
 		calculatePositionDelta();
-		Analytics.write(positionDelta, payoffMatrix);
+		Analytics.write(this);
 	}
 
 	public OptionStrategy[] getOptions() {
@@ -139,6 +139,33 @@ public class OptionStrategiesWithPayoff {
 		for (OptionStrategy optionStrategy : optionStrategies) {
 			positionDelta += optionStrategy.getDelta();
 		}
+	}
+
+	public boolean isIndividualDeltaLessThan(double minIndividualDelta) {
+		for (OptionStrategy optionStrategy : optionStrategies) {
+			if (optionStrategy.getDelta() < minIndividualDelta) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isIndividualDeltaGreaterThan(double maxIndividualDelta) {
+		for (OptionStrategy optionStrategy : optionStrategies) {
+			if (optionStrategy.getDelta() > maxIndividualDelta) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isIndividualDeltaOutside(double minIndividualDelta, double maxIndividualDelta) {
+		for (OptionStrategy optionStrategy : optionStrategies) {
+			if (optionStrategy.getDelta() < minIndividualDelta || optionStrategy.getDelta() > maxIndividualDelta) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public float[] getBreakevenPrices() {

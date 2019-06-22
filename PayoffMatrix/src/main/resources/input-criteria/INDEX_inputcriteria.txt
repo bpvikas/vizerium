@@ -33,6 +33,8 @@ max.option.spread.positions=2
 lotsize=75
 
 #Custom filters for analyzing data. The values here will override the default values in the defaultcriteria properties file.
+analytics.customfilters.minIndividualDelta=-0.65
+analytics.customfilters.maxIndividualDelta=0.65
 analytics.customfilters.minPositionDelta=-0.5
 analytics.customfilters.maxPositionDelta=0.5
 analytics.customfilters.minPositivePayoffSum=100000.0

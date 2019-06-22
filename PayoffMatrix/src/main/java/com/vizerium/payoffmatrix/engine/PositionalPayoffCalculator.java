@@ -53,6 +53,12 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 
 		PayoffMatrix.setOIBasedRange(criteria.getOIBasedRange());
 
+		int payoffsSize = 0;
+		// This for loop is a bit lame to get to the size of payoffs, but wanted to get the accurate count without having to write too complicated code.
+		for (float underlyingPrice = underlyingRangeBottom; underlyingPrice <= underlyingRangeTop; underlyingPrice += underlyingRangeStep) {
+			++payoffsSize;
+		}
+
 		for (int j = 0; j <= criteria.getMaxOptionOpenPositions() - criteria.getExistingPositions().length; j++) {
 			OptionChainIterator<Option> optionChainIterator = new OptionChainIterator<Option>(optionChain, j);
 			while (optionChainIterator.hasNext()) {
@@ -77,11 +83,6 @@ public class PositionalPayoffCalculator extends PayoffCalculator {
 					continue;
 				}
 
-				int payoffsSize = 0;
-				// This for loop is a bit lame to get to the size of payoffs, but wanted to get the accurate count without having to write too complicated code.
-				for (float underlyingPrice = underlyingRangeBottom; underlyingPrice <= underlyingRangeTop; underlyingPrice += underlyingRangeStep) {
-					++payoffsSize;
-				}
 				float[][] payoffs = new float[payoffsSize][];
 
 				int payoffCounter = 0;

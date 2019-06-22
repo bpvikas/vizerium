@@ -78,7 +78,7 @@ public class Output {
 			existingPositionPayoff = optionStrategiesWithPayoff;
 		}
 
-		if (Analytics.applyingCustomFilters(optionStrategiesWithPayoff.getPositionDelta(), optionStrategiesWithPayoff.getPayoffMatrix())) {
+		if (Analytics.applyingCustomFilters(optionStrategiesWithPayoff)) {
 			compareToExistingPayoffs(highestAveragePayoffs, optionStrategiesWithPayoff);
 
 			compareToExistingPayoffs(highestProfitProbabilityPayoffs, optionStrategiesWithPayoff);

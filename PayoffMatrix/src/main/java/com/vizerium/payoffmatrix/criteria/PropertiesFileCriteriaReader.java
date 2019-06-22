@@ -223,6 +223,18 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 
 	private CustomFilters getCustomFilters(Properties criteriaProperties) {
 
+		String minIndividualDeltaString = criteriaProperties.getProperty("analytics.customfilters.minIndividualDelta");
+		if (StringUtils.isBlank(minIndividualDeltaString)) {
+			minIndividualDeltaString = criteriaProperties.getProperty("analytics.customfilters.minIndividualDelta.default");
+		}
+		double minIndividualDelta = Double.parseDouble(minIndividualDeltaString);
+
+		String maxIndividualDeltaString = criteriaProperties.getProperty("analytics.customfilters.maxIndividualDelta");
+		if (StringUtils.isBlank(maxIndividualDeltaString)) {
+			maxIndividualDeltaString = criteriaProperties.getProperty("analytics.customfilters.maxIndividualDelta.default");
+		}
+		double maxIndividualDelta = Double.parseDouble(maxIndividualDeltaString);
+
 		String minPositionDeltaString = criteriaProperties.getProperty("analytics.customfilters.minPositionDelta");
 		if (StringUtils.isBlank(minPositionDeltaString)) {
 			minPositionDeltaString = criteriaProperties.getProperty("analytics.customfilters.minPositionDelta.default");
@@ -271,8 +283,8 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 		}
 		float maxRiskRewardRatioInOIRange = Float.parseFloat(maxRiskRewardRatioInOIRangeString);
 
-		return new CustomFilters(minPositionDelta, maxPositionDelta, minPositivePayoffSum, minPositivePayoffSumInOIRange, minProfitProbability, minProfitProbabilityInOIRange,
-				maxRiskRewardRatio, maxRiskRewardRatioInOIRange);
+		return new CustomFilters(minIndividualDelta, maxIndividualDelta, minPositionDelta, maxPositionDelta, minPositivePayoffSum, minPositivePayoffSumInOIRange,
+				minProfitProbability, minProfitProbabilityInOIRange, maxRiskRewardRatio, maxRiskRewardRatioInOIRange);
 
 	}
 }
