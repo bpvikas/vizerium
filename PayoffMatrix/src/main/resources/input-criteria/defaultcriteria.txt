@@ -25,13 +25,6 @@ underlying.range.step=25
 riskfree.interest.rate=
 riskfree.interest.rate.default=10
 
-# The max loss which the trader is willing to bear
-maxLoss=10000.00
-
-# The bias to be used to bear minimum loss with small sized profits. # minLoss
-# The bias to be used to obtain maximum profit with potentially large losses. #maxProfit
-tradingBias=minLoss
-
 # contract.duration can be "month" or "week", depending on whether you are trading the Index or BankIndex respectively. 
 contract.duration=
 

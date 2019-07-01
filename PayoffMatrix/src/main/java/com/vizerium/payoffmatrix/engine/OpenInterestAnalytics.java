@@ -118,6 +118,9 @@ public class OpenInterestAnalytics {
 			logger.info("");
 			logger.info("The options with maximum OI additions are ");
 			for (int i = 0; i <= 4; i++) {
+				if (optionChain.get(i).getOpenInterestChange() < 0) {
+					break;
+				}
 				logger.info(optionChain.get(i).toOptionChainDetailsString());
 			}
 			logger.info("");
@@ -130,6 +133,9 @@ public class OpenInterestAnalytics {
 			logger.info("");
 			logger.info("The options with maximum OI exits are ");
 			for (int i = 0; i <= 4; i++) {
+				if (optionChain.get(i).getOpenInterestChange() > 0) {
+					break;
+				}
 				logger.info(optionChain.get(i).toOptionChainDetailsString());
 			}
 			logger.info("");

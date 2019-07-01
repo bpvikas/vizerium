@@ -45,7 +45,6 @@ import com.vizerium.payoffmatrix.option.ContractDuration;
 import com.vizerium.payoffmatrix.option.ContractSeries;
 import com.vizerium.payoffmatrix.option.Option;
 import com.vizerium.payoffmatrix.option.PutOption;
-import com.vizerium.payoffmatrix.option.TradingBias;
 import com.vizerium.payoffmatrix.volatility.CsvHistoricalDataVolatilityCalculator;
 import com.vizerium.payoffmatrix.volatility.Range;
 import com.vizerium.payoffmatrix.volatility.Volatility;
@@ -97,10 +96,6 @@ public class PropertiesFileCriteriaReader implements CriteriaReader {
 			criteria.setUnderlyingValue(historicalData.getLastClosingPrice());
 			criteria.setHistoricalDataDateRange(historicalData.getStartAndEndDates());
 			criteria.setVolatility(getVolatility(criteriaProperties, historicalData, criteria.getExpiryDate()));
-
-			criteria.setMaxLoss(Float.parseFloat(criteriaProperties.getProperty("maxLoss")));
-
-			criteria.setTradingBias(TradingBias.getByProperty(criteriaProperties.getProperty("tradingBias")));
 
 			criteria.setExistingPositions(getAllExistingPositions(criteriaProperties));
 
