@@ -29,7 +29,7 @@ public class AverageTrueRange implements Indicator<AverageTrueRange> {
 	private float[] values;
 
 	private static final int DEFAULT_SMOOTHING_PERIOD = 14;
-	private static final MovingAverageType DEFAULT_SMOOTHING_MA_TYPE = MovingAverageType.WELLESWILDER;
+	static final MovingAverageType DEFAULT_SMOOTHING_MA_TYPE = MovingAverageType.WELLESWILDER;
 
 	public AverageTrueRange() {
 		this.smoothingPeriod = DEFAULT_SMOOTHING_PERIOD;

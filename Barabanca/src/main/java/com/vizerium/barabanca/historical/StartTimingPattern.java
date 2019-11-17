@@ -32,7 +32,8 @@ public enum StartTimingPattern {
 	START1101(new LocalTime[] { LocalTime.of(11, 1), LocalTime.of(11, 2), LocalTime.of(11, 3), LocalTime.of(11, 4) }, 0),
 	PREOPEN1108START1116(new LocalTime[] { LocalTime.of(11, 8), LocalTime.of(11, 16), LocalTime.of(11, 17), LocalTime.of(11, 18) }, 1),
 	MUHURATTRADINGPREOPEN1723START1731(new LocalTime[] { LocalTime.of(17, 23), LocalTime.of(17, 31), LocalTime.of(17, 32), LocalTime.of(17, 33) }, 1),
-	MUHURATTRADINGPREOPEN1823START1831(new LocalTime[] { LocalTime.of(18, 23), LocalTime.of(18, 31), LocalTime.of(18, 32), LocalTime.of(18, 33) }, 1);
+	MUHURATTRADINGPREOPEN1823START1831(new LocalTime[] { LocalTime.of(18, 23), LocalTime.of(18, 31), LocalTime.of(18, 32), LocalTime.of(18, 33) }, 1),
+	MUHURATTRADINGPREOPEN1808START1816(new LocalTime[] { LocalTime.of(18, 8), LocalTime.of(18, 16), LocalTime.of(18, 17), LocalTime.of(18, 18) }, 1);
 	// @formatter:on
 
 	private LocalTime[] startTimings;
