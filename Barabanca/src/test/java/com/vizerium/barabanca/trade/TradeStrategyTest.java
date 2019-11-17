@@ -55,22 +55,22 @@ public abstract class TradeStrategyTest {
 
 	@Test
 	public void test01_BankNiftyHourlyChart() {
-		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._1HOUR, 2011, 1, 2019, 2);
+		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._1HOUR, 2011, 1, 2019, 10);
 	}
 
 	@Test
 	public void test02_BankNiftyDailyChart() {
-		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._1DAY, 2011, 1, 2019, 2);
+		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._1DAY, 2011, 1, 2019, 10);
 	}
 
 	@Test
 	public void test03_NiftyHourlyChart() {
-		testAndReportTradeStrategy("NIFTY", TimeFormat._1HOUR, 2011, 1, 2019, 2);
+		testAndReportTradeStrategy("NIFTY", TimeFormat._1HOUR, 2011, 1, 2019, 10);
 	}
 
 	@Test
 	public void test04_NiftyDailyChart() {
-		testAndReportTradeStrategy("NIFTY", TimeFormat._1DAY, 2011, 1, 2019, 2);
+		testAndReportTradeStrategy("NIFTY", TimeFormat._1DAY, 2011, 1, 2019, 10);
 	}
 
 	@Test

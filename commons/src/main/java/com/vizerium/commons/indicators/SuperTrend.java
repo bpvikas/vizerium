@@ -46,6 +46,8 @@ public class SuperTrend implements Indicator<SuperTrend> {
 
 	private float[] trendValues;
 
+	public static final int UPI_POSN_TREND = 3;
+
 	public SuperTrend() {
 		this(DEFAULT_PERIOD, DEFAULT_MULTIPLIER);
 	}
@@ -142,7 +144,7 @@ public class SuperTrend implements Indicator<SuperTrend> {
 	@Override
 	public int getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues() {
 		// The value for the lookbackPeriod needs to be a sum of the start point of the gain loss calculation and the smoothing period
-		return AverageTrueRangeCalculator.TRUE_RANGE_CALCULATION_START + period - 1;
+		return AverageTrueRangeCalculator.TRUE_RANGE_CALCULATION_START + period;
 	}
 
 	@Override

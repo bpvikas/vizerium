@@ -20,48 +20,62 @@ import java.util.List;
 
 import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
+import com.vizerium.commons.indicators.MovingAverageType;
+import com.vizerium.commons.indicators.SuperTrend;
 
-public class MACDTradesTest extends TradeStrategyTest {
+public abstract class SuperTrendTradeTest extends TradeStrategyTest {
+
+	protected abstract int getSuperTrendAtrPeriod();
+
+	protected abstract float getSuperTrendMultiplier();
+
+	protected abstract MovingAverageType getSuperTrendAtrMAType();
+
+	protected SuperTrend superTrend;
 
 	@Override
 	protected void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
-		// TODO Auto-generated method stub
-
+		superTrend = new SuperTrend(getSuperTrendAtrPeriod(), getSuperTrendMultiplier(), getSuperTrendAtrMAType());
+		updateIndicatorDataInUnitPrices(unitPriceDataList, superTrend);
 	}
 
 	@Override
 	protected boolean testForCurrentUnitGreaterThanPreviousUnit(UnitPriceData current, UnitPriceData previous) {
-		// TODO Auto-generated method stub
-		return false;
+		return (current.getIndicator(superTrend.getName()).getValues()[SuperTrend.UPI_POSN_TREND] > previous.getIndicator(superTrend.getName())
+				.getValues()[SuperTrend.UPI_POSN_TREND]) ? true : false;
 	}
 
 	@Override
 	protected void executeForCurrentUnitGreaterThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
-		// TODO Auto-generated method stub
-
+		if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
+			tradeBook.coverShortTrade(current);
+		}
+		if (tradeBook.isLastTradeExited()) {
+			current.setTradedValue(current.getOpen());
+			tradeBook.addLongTrade(current);
+		}
 	}
 
 	@Override
 	protected boolean testForCurrentUnitLessThanPreviousUnit(UnitPriceData current, UnitPriceData previous) {
-		// TODO Auto-generated method stub
-		return false;
+		return (current.getIndicator(superTrend.getName()).getValues()[SuperTrend.UPI_POSN_TREND] < previous.getIndicator(superTrend.getName())
+				.getValues()[SuperTrend.UPI_POSN_TREND]) ? true : false;
 	}
 
 	@Override
 	protected void executeForCurrentUnitLessThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
-		// TODO Auto-generated method stub
-
+		if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
+			tradeBook.exitLongTrade(current);
+		}
+		if (tradeBook.isLastTradeExited()) {
+			current.setTradedValue(current.getOpen());
+			tradeBook.addShortTrade(current);
+		}
 	}
 
 	@Override
 	protected void executeForCurrentUnitChoppyWithPreviousUnit(UnitPriceData current, UnitPriceData previous) {
-		// TODO Auto-generated method stub
 
 	}
 
-	@Override
-	protected String getPreviousResultFileName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

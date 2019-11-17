@@ -47,7 +47,7 @@ public class SuperTrendCalculator implements IndicatorCalculator<SuperTrend> {
 
 		float[] atrValues = superTrend.getAtrValues();
 
-		for (int i = superTrend.getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues(); i < unitPrices.size(); i++) {
+		for (int i = superTrend.getPeriod(); i < unitPrices.size(); i++) {
 			float hiLoAverage = (unitPrices.get(i).getHigh() + unitPrices.get(i).getLow()) / 2.0f;
 			float multiplierAtr = atrValues[i] * superTrend.getMultiplier();
 
@@ -70,7 +70,7 @@ public class SuperTrendCalculator implements IndicatorCalculator<SuperTrend> {
 		float[] superTrendValues = new float[unitPrices.size()];
 		float[] trendValues = new float[unitPrices.size()];
 
-		for (int i = superTrend.getTotalLookbackPeriodRequiredToRemoveBlankIndicatorDataFromInitialValues(); i < unitPrices.size(); i++) {
+		for (int i = superTrend.getPeriod(); i < unitPrices.size(); i++) {
 
 			finalUpperBandValues[i] = (basicUpperBandValues[i] < finalUpperBandValues[i - 1] || unitPrices.get(i - 1).getClose() > finalUpperBandValues[i - 1])
 					? basicUpperBandValues[i]
