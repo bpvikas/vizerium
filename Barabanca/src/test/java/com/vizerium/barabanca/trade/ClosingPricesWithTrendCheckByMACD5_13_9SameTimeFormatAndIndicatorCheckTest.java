@@ -47,7 +47,7 @@ public class ClosingPricesWithTrendCheckByMACD5_13_9SameTimeFormatAndIndicatorCh
 	}
 
 	@Override
-	protected String getPreviousResultFileName() {
+	protected String getResultFileName() {
 		return "macd_5_13_same_time_format_trend_indicator_check";
 	}
 }

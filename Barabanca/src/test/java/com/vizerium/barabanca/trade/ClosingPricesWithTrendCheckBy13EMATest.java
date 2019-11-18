@@ -27,7 +27,7 @@ public class ClosingPricesWithTrendCheckBy13EMATest extends ClosingPricesWithTre
 	}
 
 	@Override
-	protected String getPreviousResultFileName() {
+	protected String getResultFileName() {
 		return "13ema_slope";
 	}
 }

@@ -27,7 +27,7 @@ public class ClosingPricesWithTrendCheckByDirectionalSystem_ADX_14Test extends C
 	}
 
 	@Override
-	protected String getPreviousResultFileName() {
-		return null;
+	protected String getResultFileName() {
+		return "adx_14";
 	}
 }

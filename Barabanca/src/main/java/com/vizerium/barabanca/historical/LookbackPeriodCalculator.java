@@ -88,10 +88,7 @@ public class LookbackPeriodCalculator<I extends Indicator<I>> {
 
 	private DateTimeTuple updateStartAndEndDatesForLookbackPeriods(String scripName, TimeFormat trendTimeFormat, LocalDateTime originalStartDateTime, LocalDateTime startDateTime,
 			LocalDateTime endDateTime, int lookbackPeriod) {
-		if (trendTimeFormat.equals(TimeFormat._1MIN)) {
-			startDateTime = startDateTime.minusMinutes(lookbackPeriod);
-			endDateTime = endDateTime.plusMinutes(1);
-		} else if (trendTimeFormat.equals(TimeFormat._5MIN)) {
+		if (trendTimeFormat.equals(TimeFormat._1MIN) || trendTimeFormat.equals(TimeFormat._5MIN) || trendTimeFormat.equals(TimeFormat._15MIN)) {
 			startDateTime = startDateTime.minusMinutes(lookbackPeriod * trendTimeFormat.getInterval());
 			endDateTime = endDateTime.plusMinutes(1 * trendTimeFormat.getInterval());
 		} else if (trendTimeFormat.equals(TimeFormat._1HOUR)) {

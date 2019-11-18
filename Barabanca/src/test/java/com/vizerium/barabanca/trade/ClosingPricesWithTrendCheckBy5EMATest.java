@@ -27,7 +27,7 @@ public class ClosingPricesWithTrendCheckBy5EMATest extends ClosingPricesWithTren
 	}
 
 	@Override
-	protected String getPreviousResultFileName() {
+	protected String getResultFileName() {
 		return "5ema_slope";
 	}
 }

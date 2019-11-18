@@ -36,7 +36,7 @@ public class SuperTrend10Wx3TradeTest extends SuperTrendTradeTest {
 	}
 
 	@Override
-	protected String getPreviousResultFileName() {
+	protected String getResultFileName() {
 		return "supertrend10wx3";
 	}
 }

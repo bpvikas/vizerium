@@ -39,12 +39,10 @@ public abstract class ClosingPricesWithTrendCheckByMACDHistogramTest extends Clo
 	protected void executeForCurrentUnitLessThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 		Trend trend = periodTrends.getPriorTrend(current.getDateTime());
 		if (!Trend.UP.equals(trend) && tradeBook.isLastTradeLong() && !tradeBook.isLastTradeExited()) {
-			current.setTradedValue(current.getOpen());
 			tradeBook.exitLongTrade(current);
 		}
 
 		if (Trend.DOWN.equals(trend) && tradeBook.isLastTradeExited()) {
-			current.setTradedValue(current.getOpen());
 			tradeBook.addShortTrade(current);
 		}
 	}
@@ -53,12 +51,10 @@ public abstract class ClosingPricesWithTrendCheckByMACDHistogramTest extends Clo
 	protected void executeForCurrentUnitGreaterThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 		Trend trend = periodTrends.getPriorTrend(current.getDateTime());
 		if (!Trend.DOWN.equals(trend) && tradeBook.isLastTradeShort() && !tradeBook.isLastTradeExited()) {
-			current.setTradedValue(current.getOpen());
 			tradeBook.coverShortTrade(current);
 		}
 
 		if (Trend.UP.equals(trend) && tradeBook.isLastTradeExited()) {
-			current.setTradedValue(current.getOpen());
 			tradeBook.addLongTrade(current);
 		}
 	}

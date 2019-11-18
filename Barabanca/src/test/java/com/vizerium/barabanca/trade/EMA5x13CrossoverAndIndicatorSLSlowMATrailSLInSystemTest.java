@@ -34,7 +34,7 @@ public class EMA5x13CrossoverAndIndicatorSLSlowMATrailSLInSystemTest extends EMA
 	}
 
 	@Override
-	protected String getPreviousResultFileName() {
+	protected String getResultFileName() {
 		return "5x13crossover_indicator_SL13_trail_SL_in_system";
 	}
 }

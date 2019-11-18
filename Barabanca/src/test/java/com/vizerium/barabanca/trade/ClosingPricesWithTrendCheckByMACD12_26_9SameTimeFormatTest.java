@@ -46,7 +46,7 @@ public class ClosingPricesWithTrendCheckByMACD12_26_9SameTimeFormatTest extends 
 	}
 
 	@Override
-	protected String getPreviousResultFileName() {
+	protected String getResultFileName() {
 		return "macd_12_26_same_time_format_trend";
 	}
 }

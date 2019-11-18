@@ -16,6 +16,8 @@
 
 package com.vizerium.barabanca.trade;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
@@ -54,36 +56,53 @@ public abstract class TradeStrategyTest {
 	}
 
 	@Test
-	public void test01_BankNiftyHourlyChart() {
+	public void test01_BankNifty15minChart() {
+		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._15MIN, 2011, 1, 2019, 10);
+	}
+
+	@Test
+	public void test02_BankNiftyHourlyChart() {
 		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._1HOUR, 2011, 1, 2019, 10);
 	}
 
 	@Test
-	public void test02_BankNiftyDailyChart() {
+	public void test03_BankNiftyDailyChart() {
 		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._1DAY, 2011, 1, 2019, 10);
 	}
 
 	@Test
-	public void test03_NiftyHourlyChart() {
+	public void test04_Nifty15minChart() {
+		testAndReportTradeStrategy("NIFTY", TimeFormat._15MIN, 2011, 1, 2019, 10);
+	}
+
+	@Test
+	public void test05_NiftyHourlyChart() {
 		testAndReportTradeStrategy("NIFTY", TimeFormat._1HOUR, 2011, 1, 2019, 10);
 	}
 
 	@Test
-	public void test04_NiftyDailyChart() {
+	public void test06_NiftyDailyChart() {
 		testAndReportTradeStrategy("NIFTY", TimeFormat._1DAY, 2011, 1, 2019, 10);
 	}
 
 	@Test
-	public void test05_compareWithPreviousResult() {
+	public void test07_compareWithPreviousResult() {
 		try {
 			TradesReport.close();
 
-			List<String> previousResult = TradesReport.readFileAsString("src/test/resources/output/testRun_" + getPreviousResultFileName() + ".csv");
-			List<String> currentTestRunResult = TradesReport.readFileAsString(FileUtils.directoryPath + "output-log-v2/testrun.csv");
-			Assert.assertEquals(previousResult, currentTestRunResult);
+			Files.deleteIfExists(Paths.get(FileUtils.directoryPath + "output-log-v2/testrun_" + getResultFileName() + ".csv"));
+			Files.move(Paths.get(FileUtils.directoryPath + "output-log-v2/testrun.csv"),
+					Paths.get(FileUtils.directoryPath + "output-log-v2/testrun_" + getResultFileName() + ".csv"));
+			List<String> previousResult = TradesReport.readFileAsString("src/test/resources/output/testrun_" + getResultFileName() + ".csv");
+			List<String> currentTestRunResult = TradesReport.readFileAsString(FileUtils.directoryPath + "output-log-v2/testrun_" + getResultFileName() + ".csv");
 
-			List<String> previousTradeBook = TradesReport.readFileAsString("src/test/resources/output/tradebook_" + getPreviousResultFileName() + ".csv");
-			List<String> currentTradeBook = TradesReport.readFileAsString(FileUtils.directoryPath + "output-log-v2/tradebook.csv");
+			Files.deleteIfExists(Paths.get(FileUtils.directoryPath + "output-log-v2/tradebook_" + getResultFileName() + ".csv"));
+			Files.move(Paths.get(FileUtils.directoryPath + "output-log-v2/tradebook.csv"),
+					Paths.get(FileUtils.directoryPath + "output-log-v2/tradebook_" + getResultFileName() + ".csv"));
+			List<String> previousTradeBook = TradesReport.readFileAsString("src/test/resources/output/tradebook_" + getResultFileName() + ".csv");
+			List<String> currentTradeBook = TradesReport.readFileAsString(FileUtils.directoryPath + "output-log-v2/tradebook_" + getResultFileName() + ".csv");
+
+			Assert.assertEquals(previousResult, currentTestRunResult);
 			Assert.assertEquals(previousTradeBook, currentTradeBook);
 
 		} catch (Exception e) {
@@ -91,7 +110,7 @@ public abstract class TradeStrategyTest {
 		}
 	}
 
-	protected abstract String getPreviousResultFileName();
+	protected abstract String getResultFileName();
 
 	protected abstract void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList);
 

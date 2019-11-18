@@ -55,7 +55,7 @@ public class ClosingPricesWithStopAndReverseTest extends ClosingPricesTest {
 	}
 
 	@Override
-	protected String getPreviousResultFileName() {
+	protected String getResultFileName() {
 		return "SR";
 	}
 }
