@@ -18,7 +18,7 @@ package com.vizerium.commons.dao;
 
 public enum TimeFormat {
 	// This needs to necessarily be in the ascending order as there are calculations based on this below.
-	_1MIN(1), _5MIN(5), _1HOUR(60), _1DAY(1440), _1WEEK(-1), _1MONTH(-1);
+	_1MIN(1), _5MIN(5), _15MIN(15), _1HOUR(60), _1DAY(1440), _1WEEK(-1), _1MONTH(-1);
 
 	private int interval;
 
@@ -27,6 +27,8 @@ public enum TimeFormat {
 			return _1MIN;
 		} else if ("5min".equalsIgnoreCase(propertyOrInterval.trim()) || "5".equalsIgnoreCase(propertyOrInterval.trim())) {
 			return _5MIN;
+		} else if ("15min".equalsIgnoreCase(propertyOrInterval.trim()) || "15".equalsIgnoreCase(propertyOrInterval.trim())) {
+			return _15MIN;
 		} else if ("1hour".equalsIgnoreCase(propertyOrInterval.trim()) || "60".equalsIgnoreCase(propertyOrInterval.trim())) {
 			return _1HOUR;
 		} else if ("1day".equalsIgnoreCase(propertyOrInterval.trim()) || "1440".equalsIgnoreCase(propertyOrInterval.trim())) {

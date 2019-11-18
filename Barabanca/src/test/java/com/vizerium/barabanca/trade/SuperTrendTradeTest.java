@@ -51,7 +51,6 @@ public abstract class SuperTrendTradeTest extends TradeStrategyTest {
 			tradeBook.coverShortTrade(current);
 		}
 		if (tradeBook.isLastTradeExited()) {
-			current.setTradedValue(current.getOpen());
 			tradeBook.addLongTrade(current);
 		}
 	}
@@ -68,7 +67,6 @@ public abstract class SuperTrendTradeTest extends TradeStrategyTest {
 			tradeBook.exitLongTrade(current);
 		}
 		if (tradeBook.isLastTradeExited()) {
-			current.setTradedValue(current.getOpen());
 			tradeBook.addShortTrade(current);
 		}
 	}
@@ -77,5 +75,4 @@ public abstract class SuperTrendTradeTest extends TradeStrategyTest {
 	protected void executeForCurrentUnitChoppyWithPreviousUnit(UnitPriceData current, UnitPriceData previous) {
 
 	}
-
 }
