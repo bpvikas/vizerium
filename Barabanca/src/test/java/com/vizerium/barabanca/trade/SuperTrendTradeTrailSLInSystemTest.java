@@ -16,63 +16,63 @@
 
 package com.vizerium.barabanca.trade;
 
-import java.util.List;
-
-import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
-import com.vizerium.commons.indicators.MovingAverageType;
 import com.vizerium.commons.indicators.SuperTrend;
 
-public abstract class SuperTrendTradeTest extends TradeStrategyTest {
-
-	protected abstract int getSuperTrendAtrPeriod();
-
-	protected abstract float getSuperTrendMultiplier();
-
-	protected abstract MovingAverageType getSuperTrendAtrMAType();
-
-	protected SuperTrend superTrend;
-
-	@Override
-	protected void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
-		superTrend = new SuperTrend(getSuperTrendAtrPeriod(), getSuperTrendMultiplier(), getSuperTrendAtrMAType());
-		updateIndicatorDataInUnitPrices(unitPriceDataList, superTrend);
-	}
-
-	@Override
-	protected boolean testForCurrentUnitGreaterThanPreviousUnit(UnitPriceData current, UnitPriceData previous) {
-		return (current.getIndicator(superTrend.getName()).getValues()[SuperTrend.UPI_POSN_TREND] > previous.getIndicator(superTrend.getName())
-				.getValues()[SuperTrend.UPI_POSN_TREND]) ? true : false;
-	}
+public abstract class SuperTrendTradeTrailSLInSystemTest extends SuperTrendTradeTest {
 
 	@Override
 	protected void executeForCurrentUnitGreaterThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 		if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
+			Trade lastTrade = tradeBook.last();
+			if (lastTrade.isExitStopLossHit(current.getHigh())) {
+				current.setTradedValue(lastTrade.getExitStoppedPrice(current));
+			}
 			tradeBook.coverShortTrade(current);
 		}
+
 		if (tradeBook.isLastTradeExited()) {
 			tradeBook.addLongTrade(current);
+			tradeBook.last().setExitStopLoss(current.getIndicator(superTrend.getName()).getValues()[SuperTrend.UPI_POSN_SUPERTREND_VALUE]);
 		}
-	}
-
-	@Override
-	protected boolean testForCurrentUnitLessThanPreviousUnit(UnitPriceData current, UnitPriceData previous) {
-		return (current.getIndicator(superTrend.getName()).getValues()[SuperTrend.UPI_POSN_TREND] < previous.getIndicator(superTrend.getName())
-				.getValues()[SuperTrend.UPI_POSN_TREND]) ? true : false;
 	}
 
 	@Override
 	protected void executeForCurrentUnitLessThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 		if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
+			Trade lastTrade = tradeBook.last();
+			if (lastTrade.isExitStopLossHit(current.getLow())) {
+				current.setTradedValue(lastTrade.getExitStoppedPrice(current));
+			}
 			tradeBook.exitLongTrade(current);
 		}
+
 		if (tradeBook.isLastTradeExited()) {
 			tradeBook.addShortTrade(current);
+			tradeBook.last().setExitStopLoss(current.getIndicator(superTrend.getName()).getValues()[SuperTrend.UPI_POSN_SUPERTREND_VALUE]);
 		}
 	}
 
 	@Override
 	protected void executeForCurrentUnitChoppyWithPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
+		if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
+			Trade lastTrade = tradeBook.last();
+			if (lastTrade.isExitStopLossHit(current.getHigh())) {
+				current.setTradedValue(lastTrade.getExitStoppedPrice(current));
+				tradeBook.coverShortTrade(current);
+			} else {
+				lastTrade.setExitStopLoss(current.getIndicator(superTrend.getName()).getValues()[SuperTrend.UPI_POSN_SUPERTREND_VALUE]);
+			}
+		}
 
+		if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
+			Trade lastTrade = tradeBook.last();
+			if (lastTrade.isExitStopLossHit(current.getLow())) {
+				current.setTradedValue(lastTrade.getExitStoppedPrice(current));
+				tradeBook.exitLongTrade(current);
+			} else {
+				lastTrade.setExitStopLoss(current.getIndicator(superTrend.getName()).getValues()[SuperTrend.UPI_POSN_SUPERTREND_VALUE]);
+			}
+		}
 	}
 }

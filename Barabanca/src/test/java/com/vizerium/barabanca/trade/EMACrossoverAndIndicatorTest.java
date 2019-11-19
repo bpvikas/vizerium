@@ -239,7 +239,7 @@ public abstract class EMACrossoverAndIndicatorTest extends EMACrossoverTest {
 	}
 
 	@Override
-	protected void executeForCurrentUnitChoppyWithPreviousUnit(UnitPriceData current, UnitPriceData previous) {
+	protected void executeForCurrentUnitChoppyWithPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 
 	}
 

@@ -34,13 +34,13 @@ import com.vizerium.commons.io.FileUtils;
 
 public class TradesReport {
 
-	private static BufferedWriter bw = null;
+	private static BufferedWriter bwTestRun = null;
 	private static BufferedWriter bwTradeBook = null;
 
 	public static void initialize() {
 		try {
 			File csvOutputFile = new File(FileUtils.directoryPath + "output-log-v2/testrun.csv");
-			bw = new BufferedWriter(new FileWriter(csvOutputFile));
+			bwTestRun = new BufferedWriter(new FileWriter(csvOutputFile));
 		} catch (IOException e) {
 			throw new RuntimeException("Error while creating CSV file for writing P L T results.", e);
 		}
@@ -106,7 +106,7 @@ public class TradesReport {
 			updatePLT(currentDurationTradeBook, p, l, t);
 		}
 		try {
-			bw.write(p.toString() + System.lineSeparator() + l.toString() + System.lineSeparator() + t.toString() + System.lineSeparator());
+			bwTestRun.write(p.toString() + System.lineSeparator() + l.toString() + System.lineSeparator() + t.toString() + System.lineSeparator());
 		} catch (IOException ioe) {
 			logger.error("Error while writing P L T results to CSV file.", ioe);
 		}
@@ -136,9 +136,9 @@ public class TradesReport {
 	}
 
 	public static void close() throws Exception {
-		if (bw != null) {
-			bw.flush();
-			bw.close();
+		if (bwTestRun != null) {
+			bwTestRun.flush();
+			bwTestRun.close();
 		}
 		if (bwTradeBook != null) {
 			bwTradeBook.flush();

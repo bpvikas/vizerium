@@ -45,7 +45,7 @@ public class ClosingPricesWithStopAndReverseTest extends ClosingPricesTest {
 	}
 
 	@Override
-	protected void executeForCurrentUnitChoppyWithPreviousUnit(UnitPriceData current, UnitPriceData previous) {
+	protected void executeForCurrentUnitChoppyWithPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 
 	}
 

@@ -46,6 +46,8 @@ public class SuperTrend implements Indicator<SuperTrend> {
 
 	private float[] trendValues;
 
+	public static final int UPI_POSN_SUPERTREND_VALUE = 2;
+
 	public static final int UPI_POSN_TREND = 3;
 
 	public SuperTrend() {

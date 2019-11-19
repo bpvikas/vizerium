@@ -181,13 +181,13 @@ public class Trade {
 			return unitPriceData.getClose();
 		} else {
 			if (TradeAction.SHORT.equals(action)) {
-				if (unitPriceData.getOpen() >= exitStopLoss) {
+				if (unitPriceData.getOpen() >= exitStopLoss) { // This is in case of gap-ups at open while holding a short position.
 					return unitPriceData.getOpen();
 				} else if (unitPriceData.getHigh() >= exitStopLoss && unitPriceData.getLow() <= exitStopLoss) {
 					return exitStopLoss;
 				}
 			} else {
-				if (unitPriceData.getOpen() <= exitStopLoss) {
+				if (unitPriceData.getOpen() <= exitStopLoss) { // This is in case of gap-downs at open while holding a long position.
 					return unitPriceData.getOpen();
 				} else if (unitPriceData.getHigh() >= exitStopLoss && unitPriceData.getLow() <= exitStopLoss) {
 					return exitStopLoss;

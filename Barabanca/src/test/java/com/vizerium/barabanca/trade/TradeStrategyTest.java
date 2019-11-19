@@ -93,16 +93,18 @@ public abstract class TradeStrategyTest {
 			Files.deleteIfExists(Paths.get(FileUtils.directoryPath + "output-log-v2/testrun_" + getResultFileName() + ".csv"));
 			Files.move(Paths.get(FileUtils.directoryPath + "output-log-v2/testrun.csv"),
 					Paths.get(FileUtils.directoryPath + "output-log-v2/testrun_" + getResultFileName() + ".csv"));
-			List<String> previousResult = TradesReport.readFileAsString("src/test/resources/output/testrun_" + getResultFileName() + ".csv");
-			List<String> currentTestRunResult = TradesReport.readFileAsString(FileUtils.directoryPath + "output-log-v2/testrun_" + getResultFileName() + ".csv");
 
 			Files.deleteIfExists(Paths.get(FileUtils.directoryPath + "output-log-v2/tradebook_" + getResultFileName() + ".csv"));
 			Files.move(Paths.get(FileUtils.directoryPath + "output-log-v2/tradebook.csv"),
 					Paths.get(FileUtils.directoryPath + "output-log-v2/tradebook_" + getResultFileName() + ".csv"));
+
+			List<String> previousTestRunResult = TradesReport.readFileAsString("src/test/resources/output/testrun_" + getResultFileName() + ".csv");
+			List<String> currentTestRunResult = TradesReport.readFileAsString(FileUtils.directoryPath + "output-log-v2/testrun_" + getResultFileName() + ".csv");
+
 			List<String> previousTradeBook = TradesReport.readFileAsString("src/test/resources/output/tradebook_" + getResultFileName() + ".csv");
 			List<String> currentTradeBook = TradesReport.readFileAsString(FileUtils.directoryPath + "output-log-v2/tradebook_" + getResultFileName() + ".csv");
 
-			Assert.assertEquals(previousResult, currentTestRunResult);
+			Assert.assertEquals(previousTestRunResult, currentTestRunResult);
 			Assert.assertEquals(previousTradeBook, currentTradeBook);
 
 		} catch (Exception e) {
@@ -122,7 +124,7 @@ public abstract class TradeStrategyTest {
 
 	protected abstract void executeForCurrentUnitLessThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous);
 
-	protected abstract void executeForCurrentUnitChoppyWithPreviousUnit(UnitPriceData current, UnitPriceData previous);
+	protected abstract void executeForCurrentUnitChoppyWithPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous);
 
 	protected <I extends Indicator<I>> void updateIndicatorDataInUnitPrices(List<UnitPriceData> unitPriceDataList, I indicator) {
 		UnitPriceIndicatorData<I> unitPriceIndicatorData = new UnitPriceIndicatorData<I>();
@@ -167,7 +169,7 @@ public abstract class TradeStrategyTest {
 				executeForCurrentUnitLessThanPreviousUnit(tradeBook, unitPriceDataList.get(i), unitPriceDataList.get(i - 1));
 
 			} else {
-				executeForCurrentUnitChoppyWithPreviousUnit(unitPriceDataList.get(i), unitPriceDataList.get(i - 1));
+				executeForCurrentUnitChoppyWithPreviousUnit(tradeBook, unitPriceDataList.get(i), unitPriceDataList.get(i - 1));
 			}
 			if (tradeBook.size() > 0) {
 				tradeBook.last().setUnrealisedStatus(unitPriceDataList.get(i));
