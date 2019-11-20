@@ -34,9 +34,4 @@ public class SuperTrend29Ex5_5TradeTest extends SuperTrendTradeTest {
 	protected MovingAverageType getSuperTrendAtrMAType() {
 		return MovingAverageType.EXPONENTIAL;
 	}
-
-	@Override
-	protected String getResultFileName() {
-		return "supertrend29ex5_5";
-	}
 }

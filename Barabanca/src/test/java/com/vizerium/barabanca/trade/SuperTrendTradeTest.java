@@ -75,4 +75,12 @@ public abstract class SuperTrendTradeTest extends TradeStrategyTest {
 	protected void executeForCurrentUnitChoppyWithPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
 
 	}
+
+	@Override
+	protected String getResultFileName() {
+		float superTrendMultiplier = getSuperTrendMultiplier();
+		return "supertrend" + String.valueOf(getSuperTrendAtrPeriod()) + getSuperTrendAtrMAType().name().substring(0, 1).toLowerCase() + "x"
+				+ (((int) superTrendMultiplier == superTrendMultiplier) ? String.valueOf((int) superTrendMultiplier) : String.valueOf(superTrendMultiplier).replace('.', '_'));
+	}
+
 }

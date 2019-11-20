@@ -242,7 +242,7 @@ public class Trade {
 					maxUnrealisedLossDateTime = unitPriceData.getDateTime();
 				}
 			}
-			logger.debug(unitPriceData.getDateTime() + " " + printUnrealisedStatus());
+			logger.trace(unitPriceData.getDateTime() + " " + printUnrealisedStatus());
 		}
 	}
 

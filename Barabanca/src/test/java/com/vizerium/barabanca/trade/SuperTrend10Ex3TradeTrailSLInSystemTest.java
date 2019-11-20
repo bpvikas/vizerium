@@ -34,9 +34,4 @@ public class SuperTrend10Ex3TradeTrailSLInSystemTest extends SuperTrendTradeTrai
 	protected MovingAverageType getSuperTrendAtrMAType() {
 		return MovingAverageType.EXPONENTIAL;
 	}
-
-	@Override
-	protected String getResultFileName() {
-		return "supertrend10ex3_trail_SL_in_system";
-	}
 }

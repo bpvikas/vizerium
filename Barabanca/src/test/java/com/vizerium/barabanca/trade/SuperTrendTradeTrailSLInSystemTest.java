@@ -75,4 +75,9 @@ public abstract class SuperTrendTradeTrailSLInSystemTest extends SuperTrendTrade
 			}
 		}
 	}
+
+	@Override
+	protected String getResultFileName() {
+		return super.getResultFileName() + "_trail_SL_in_system";
+	}
 }

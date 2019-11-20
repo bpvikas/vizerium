@@ -34,9 +34,4 @@ public class SuperTrend10Wx3TradeTest extends SuperTrendTradeTest {
 	protected MovingAverageType getSuperTrendAtrMAType() {
 		return MovingAverageType.WELLESWILDER;
 	}
-
-	@Override
-	protected String getResultFileName() {
-		return "supertrend10wx3";
-	}
 }

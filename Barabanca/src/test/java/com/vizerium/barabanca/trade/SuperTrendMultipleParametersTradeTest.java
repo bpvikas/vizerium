@@ -16,22 +16,32 @@
 
 package com.vizerium.barabanca.trade;
 
+import org.junit.Before;
+
 import com.vizerium.commons.indicators.MovingAverageType;
 
-public class SuperTrend10Ex3TradeTest extends SuperTrendTradeTest {
+public class SuperTrendMultipleParametersTradeTest extends SuperTrendTradeTest {
+
+	private static SuperTrendMultipleParametersTradeTestRunner runner;
+
+	@Before
+	public void setUp() {
+		super.setUp();
+		runner = SuperTrendMultipleParametersTradeTestRunner.getInstance();
+	}
 
 	@Override
 	protected int getSuperTrendAtrPeriod() {
-		return 10;
+		return runner.getSuperTrendAtrPeriod();
 	}
 
 	@Override
 	protected float getSuperTrendMultiplier() {
-		return 3.0f;
+		return runner.getSuperTrendMultiplier();
 	}
 
 	@Override
 	protected MovingAverageType getSuperTrendAtrMAType() {
-		return MovingAverageType.EXPONENTIAL;
+		return runner.getSuperTrendAtrMAType();
 	}
 }
