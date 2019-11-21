@@ -16,6 +16,7 @@
 
 package com.vizerium.barabanca.trade;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
@@ -31,6 +32,12 @@ public class TradeBook extends ArrayList<Trade> {
 
 	private static final Logger logger = Logger.getLogger(TradeBook.class);
 
+	private String strategyName;
+
+	private String scripName;
+
+	private TimeFormat timeFormat;
+
 	private float payoff = Float.MIN_VALUE;
 
 	private int profitTradesCount = 0;
@@ -41,9 +48,33 @@ public class TradeBook extends ArrayList<Trade> {
 
 	private float lossPayoff = 0.0f;
 
+	private float drawdown = 0.0f;
+
+	private float maxDrawdown = Float.MAX_VALUE;
+
+	private LocalDateTime maxDrawdownDateTime = null;
+
 	private Trade largestLossTrade;
 
 	private Trade largestProfitTrade;
+
+	public String getStrategyName() {
+		return strategyName;
+	}
+
+	public void setIdentifiers(String strategyName, String scripName, TimeFormat timeFormat) {
+		this.strategyName = strategyName;
+		this.scripName = scripName;
+		this.timeFormat = timeFormat;
+	}
+
+	public String getScripName() {
+		return scripName;
+	}
+
+	public TimeFormat getTimeFormat() {
+		return timeFormat;
+	}
 
 	public float getPayoff() {
 		if (payoff == Float.MIN_VALUE) {
@@ -61,11 +92,17 @@ public class TradeBook extends ArrayList<Trade> {
 						if (p > largestProfitTrade.getPayoff()) {
 							largestProfitTrade = t;
 						}
+						drawdown = 0.0f;
 					} else {
 						lossPayoff += p;
 						++lossTradesCount;
 						if (p < largestLossTrade.getPayoff()) {
 							largestLossTrade = t;
+						}
+						drawdown += p;
+						if (drawdown < maxDrawdown) {
+							maxDrawdown = drawdown;
+							maxDrawdownDateTime = t.getExitDateTime();
 						}
 					}
 					payoff += p;
@@ -159,15 +196,32 @@ public class TradeBook extends ArrayList<Trade> {
 		}
 	}
 
-	public void printStatus(TimeFormat timeFormat) {
+	public void printStatus() {
 		if (!isEmpty()) {
-			logger.info(get(0).getScripName() + " " + timeFormat.getProperty() + " " + String.valueOf(get(0).getExitDateTime().getYear()) + " "
+			logger.info(strategyName + " " + scripName + " " + timeFormat.getProperty() + " " + String.valueOf(get(0).getExitDateTime().getYear()) + " "
 					+ String.valueOf(get(0).getExitDateTime().getMonth().name().substring(0, 3)) + " " + "\t" + (isProfitable() ? "PROFIT" : "LOSS") + "\t" + getPayoff() + "\t"
 					+ size() + " trades.\n" + String.valueOf(profitTradesCount) + " profit trades fetching " + String.valueOf(profitPayoff) + " points "
 					+ profitPayoff / profitTradesCount + " per trade.\n" + String.valueOf(lossTradesCount) + " loss trades losing " + String.valueOf(lossPayoff) + " points "
-					+ lossPayoff / lossTradesCount + " per trade. \nLargest profit @ " + largestProfitTrade + "\nLargest loss @ " + largestLossTrade + ".\n");
+					+ lossPayoff / lossTradesCount + " per trade. \nLargest profit @ " + largestProfitTrade + "\nLargest loss @ " + largestLossTrade + ".\nMaximum drawdown "
+					+ maxDrawdown + " @ " + maxDrawdownDateTime + ".\n");
 		} else {
 			logger.info("No trades executed.");
 		}
+	}
+
+	public String toCsvString() {
+		if (!isEmpty()) {
+			return strategyName + "," + scripName + "," + timeFormat.getProperty() + "," + String.valueOf(get(0).getEntryDateTime().toLocalDate()) + ","
+					+ String.valueOf(last().getExitDateTime().toLocalDate()) + "," + getPayoff() + "," + profitTradesCount + "," + profitPayoff + ","
+					+ (profitPayoff / profitTradesCount) + "," + lossTradesCount + "," + lossPayoff + "," + (lossPayoff / lossTradesCount) + "," + size() + "," + getPayoff() + ","
+					+ (getPayoff() / size()) + "," + maxDrawdown + "," + String.valueOf(maxDrawdownDateTime) + "," + largestProfitTrade.getPayoff() + ","
+					+ largestLossTrade.getPayoff();
+		} else {
+			return strategyName + "," + get(0).getScripName() + "," + timeFormat.getProperty() + ",,,0,0.0,0.0,0,0.0,0.0," + size() + ",0.0,0,0.0,,0.0,0.0";
+		}
+	}
+
+	public static String getCsvHeaderString() {
+		return "Strategy,Scrip,TimeFormat,P/L,Start Date,End Date,Profit Trades,Profit Points,Avg Profit,Loss Trades,Loss Points,Avg Loss,Total Trades,Total Points,Avg Total,Max Drawdown,Max Drawdown Time,Largest Profit,Largest Loss";
 	}
 }

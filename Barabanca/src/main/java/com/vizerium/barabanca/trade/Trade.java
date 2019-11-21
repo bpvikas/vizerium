@@ -282,7 +282,7 @@ public class Trade {
 	}
 
 	public String toCsvString() {
-		return timeFormat.getProperty() + "," + action.name() + "," + scripName + "," + entryDateTime.toLocalDate() + "," + entryDateTime.toLocalTime() + ","
+		return scripName + "," + timeFormat.getProperty() + "," + action.name() + "," + entryDateTime.toLocalDate() + "," + entryDateTime.toLocalTime() + ","
 				+ nf.format(entryPrice) + "," + exitDateTime.toLocalDate() + "," + exitDateTime.toLocalTime() + "," + nf.format(exitPrice) + ","
 				+ (isProfitable() ? "PROFIT" : "LOSS") + "," + nf.format(getPayoff()) + ","
 				+ ((maxUnrealisedProfitDateTime != null) ? maxUnrealisedProfitDateTime.toLocalDate() : "") + ","
@@ -292,6 +292,6 @@ public class Trade {
 	}
 
 	public static String getCsvHeaderString() {
-		return "TimeFormat,Action,Scrip,EntryDate,EntryTime,Price,ExitDate,ExitTime,Price,P/L,Amount,UnrProfitDate,UnrProfitTime,UnrProfit,UnrLossDate,UnrLossTime,UnrLoss";
+		return "Scrip,TimeFormat,Action,EntryDate,EntryTime,Price,ExitDate,ExitTime,Price,P/L,Amount,UnrProfitDate,UnrProfitTime,UnrProfit,UnrLossDate,UnrLossTime,UnrLoss";
 	}
 }

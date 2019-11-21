@@ -98,14 +98,22 @@ public abstract class TradeStrategyTest {
 			Files.move(Paths.get(FileUtils.directoryPath + "output-log-v2/tradebook.csv"),
 					Paths.get(FileUtils.directoryPath + "output-log-v2/tradebook_" + getResultFileName() + ".csv"));
 
+			Files.deleteIfExists(Paths.get(FileUtils.directoryPath + "output-log-v2/tradessummary_" + getResultFileName() + ".csv"));
+			Files.move(Paths.get(FileUtils.directoryPath + "output-log-v2/tradessummary.csv"),
+					Paths.get(FileUtils.directoryPath + "output-log-v2/tradessummary_" + getResultFileName() + ".csv"));
+
 			List<String> previousTestRunResult = TradesReport.readFileAsString("src/test/resources/output/testrun_" + getResultFileName() + ".csv");
 			List<String> currentTestRunResult = TradesReport.readFileAsString(FileUtils.directoryPath + "output-log-v2/testrun_" + getResultFileName() + ".csv");
 
 			List<String> previousTradeBook = TradesReport.readFileAsString("src/test/resources/output/tradebook_" + getResultFileName() + ".csv");
 			List<String> currentTradeBook = TradesReport.readFileAsString(FileUtils.directoryPath + "output-log-v2/tradebook_" + getResultFileName() + ".csv");
 
+			List<String> previousTradesSummary = TradesReport.readFileAsString("src/test/resources/output/tradessummary_" + getResultFileName() + ".csv");
+			List<String> currentTradesSummary = TradesReport.readFileAsString(FileUtils.directoryPath + "output-log-v2/tradessummary_" + getResultFileName() + ".csv");
+
 			Assert.assertEquals(previousTestRunResult, currentTestRunResult);
 			Assert.assertEquals(previousTradeBook, currentTradeBook);
+			Assert.assertEquals(previousTradesSummary, currentTradesSummary);
 
 		} catch (Exception e) {
 			Assert.fail(e.toString());
@@ -148,13 +156,15 @@ public abstract class TradeStrategyTest {
 		List<UnitPriceData> unitPriceDataList = historicalDataReader.getUnitPriceDataForRange(scripName, LocalDateTime.of(startYear, startMonth, 1, 6, 0),
 				LocalDateTime.of(endYear, endMonth, lastDateOfMonth, 21, 00), timeFormat);
 
-		return testTradeStrategy(timeFormat, unitPriceDataList);
+		return testTradeStrategy(scripName, timeFormat, unitPriceDataList);
 	}
 
-	protected TradeBook testTradeStrategy(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
+	protected TradeBook testTradeStrategy(String scripName, TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
 		getAdditionalDataPriorToIteration(timeFormat, unitPriceDataList);
 
 		TradeBook tradeBook = new TradeBook();
+		tradeBook.setIdentifiers(getResultFileName(), scripName, timeFormat);
+
 		for (int i = 1; i < unitPriceDataList.size(); i++) {
 			if (testForCurrentUnitGreaterThanPreviousUnit(unitPriceDataList.get(i), unitPriceDataList.get(i - 1))) {
 				logger.debug("For date " + unitPriceDataList.get(i).getDateTime() + " New close " + unitPriceDataList.get(i).getClose() + " MORE than old close "

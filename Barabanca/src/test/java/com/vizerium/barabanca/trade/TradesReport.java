@@ -36,14 +36,16 @@ public class TradesReport {
 
 	private static BufferedWriter bwTestRun = null;
 	private static BufferedWriter bwTradeBook = null;
+	private static BufferedWriter bwTradesSummary = null;
 
 	public static void initialize() {
 		try {
-			File csvOutputFile = new File(FileUtils.directoryPath + "output-log-v2/testrun.csv");
-			bwTestRun = new BufferedWriter(new FileWriter(csvOutputFile));
+			File testRunOutputFile = new File(FileUtils.directoryPath + "output-log-v2/testrun.csv");
+			bwTestRun = new BufferedWriter(new FileWriter(testRunOutputFile));
 		} catch (IOException e) {
-			throw new RuntimeException("Error while creating CSV file for writing P L T results.", e);
+			throw new RuntimeException("Error while creating TestRun file for writing P L T results.", e);
 		}
+
 		try {
 			File tradeBookOutputFile = new File(FileUtils.directoryPath + "output-log-v2/tradebook.csv");
 			bwTradeBook = new BufferedWriter(new FileWriter(tradeBookOutputFile));
@@ -52,6 +54,16 @@ public class TradesReport {
 		} catch (IOException e) {
 			throw new RuntimeException("Error while creating TradeBook file for writing executed trades.", e);
 		}
+
+		try {
+			File tradesSummaryFile = new File(FileUtils.directoryPath + "output-log-v2/tradessummary.csv");
+			bwTradesSummary = new BufferedWriter(new FileWriter(tradesSummaryFile));
+			bwTradesSummary.write(TradeBook.getCsvHeaderString());
+			bwTradesSummary.newLine();
+		} catch (IOException e) {
+			throw new RuntimeException("Error while creating Trades Summary file for summarizing executed trades.", e);
+		}
+
 	}
 
 	private static final Logger logger = Logger.getLogger(TradesReport.class);
@@ -60,22 +72,30 @@ public class TradesReport {
 		printReport(tradeBook, ReportTimeFormat._1YEAR, startYear, startMonth);
 		printReport(tradeBook, ReportTimeFormat._1MONTH, startYear, startMonth);
 		printAllTrades(tradeBook);
-		tradeBook.printStatus(timeFormat);
+		tradeBook.printStatus();
 	}
 
 	private static enum ReportTimeFormat {
 		_1MONTH, _1YEAR;
 	}
 
-	protected static void printReport(TradeBook tradeBook, ReportTimeFormat reportTimeFormat, int startYear, int startMonth) {
+	private static void printReport(TradeBook tradeBook, ReportTimeFormat reportTimeFormat, int startYear, int startMonth) {
 		StringBuilder p = new StringBuilder(), l = new StringBuilder(), t = new StringBuilder();
 
 		if (ReportTimeFormat._1YEAR.equals(reportTimeFormat)) {
 			int currentYear = startYear;
 			TradeBook currentDurationTradeBook = new TradeBook();
+
 			for (Trade trade : tradeBook) {
 				if (trade.getExitDateTime().getYear() != currentYear) {
 					updatePLT(currentDurationTradeBook, p, l, t);
+					while (!isAdjacentYear(trade.getExitDateTime().getYear(), currentYear)) {
+						// The above while condition checks for those years where no trades took place at all. This is needed in some very esoteric cases
+						// like calculating supertrend (40 wma, 10) on BN daily chart where no qualifying trades are found for 2 years straight.
+						updatePLT(new TradeBook(), p, l, t);
+						LocalDateTime nextYear = getNextYear(currentYear);
+						currentYear = nextYear.getYear();
+					}
 					currentDurationTradeBook = new TradeBook();
 					currentYear = trade.getExitDateTime().getYear();
 				}
@@ -91,7 +111,6 @@ public class TradesReport {
 					updatePLT(currentDurationTradeBook, p, l, t);
 					while (!isAdjacentMonth(trade.getExitDateTime().getYear(), trade.getExitDateTime().getMonthValue(), currentYear, currentMonth)) {
 						// The above while condition checks for those months where no trades took place at all.
-						// While a similar case can be added for the years, usually there is at least one trade that is placed in a year.
 						updatePLT(new TradeBook(), p, l, t);
 						LocalDateTime nextMonth = getNextMonth(currentYear, currentMonth);
 						currentYear = nextMonth.getYear();
@@ -112,7 +131,7 @@ public class TradesReport {
 		}
 	}
 
-	protected static void updatePLT(TradeBook currentDurationTradeBook, StringBuilder p, StringBuilder l, StringBuilder t) {
+	private static void updatePLT(TradeBook currentDurationTradeBook, StringBuilder p, StringBuilder l, StringBuilder t) {
 		if (currentDurationTradeBook.size() == 0) {
 			logger.debug("Updating PLT for no trades here.");
 		} else {
@@ -131,8 +150,16 @@ public class TradesReport {
 		}
 	}
 
+	private static boolean isAdjacentYear(int currentYear, int previousYear) {
+		return currentYear - previousYear == 1;
+	}
+
 	private static LocalDateTime getNextMonth(int previousYear, int previousMonth) {
 		return LocalDateTime.of(previousYear, previousMonth, 1, 6, 0).plusMonths(1);
+	}
+
+	private static LocalDateTime getNextYear(int previousYear) {
+		return LocalDateTime.of(previousYear, 1, 1, 6, 0).plusYears(1);
 	}
 
 	public static void close() throws Exception {
@@ -144,9 +171,13 @@ public class TradesReport {
 			bwTradeBook.flush();
 			bwTradeBook.close();
 		}
+		if (bwTradesSummary != null) {
+			bwTradesSummary.flush();
+			bwTradesSummary.close();
+		}
 	}
 
-	public static void printAllTrades(TradeBook tradeBook) {
+	private static void printAllTrades(TradeBook tradeBook) {
 		try {
 			ListIterator<Trade> i = tradeBook.listIterator();
 			while (i.hasNext()) {
@@ -154,6 +185,10 @@ public class TradesReport {
 				bwTradeBook.write(t.toCsvString());
 				bwTradeBook.newLine();
 			}
+
+			bwTradesSummary.write(tradeBook.toCsvString());
+			bwTradesSummary.newLine();
+
 		} catch (IOException e) {
 			throw new RuntimeException("Error while creating CSV file for writing P L T results.", e);
 		}
