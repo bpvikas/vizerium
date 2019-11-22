@@ -123,7 +123,7 @@ public class TradeBook extends ArrayList<Trade> {
 	}
 
 	public boolean isProfitable() {
-		return getPayoff() > 0 ? true : false;
+		return getPayoff() > 0;
 	}
 
 	public boolean isLastTradeExited() {
@@ -211,17 +211,18 @@ public class TradeBook extends ArrayList<Trade> {
 
 	public String toCsvString() {
 		if (!isEmpty()) {
-			return strategyName + "," + scripName + "," + timeFormat.getProperty() + "," + String.valueOf(get(0).getEntryDateTime().toLocalDate()) + ","
-					+ String.valueOf(last().getExitDateTime().toLocalDate()) + "," + getPayoff() + "," + profitTradesCount + "," + profitPayoff + ","
-					+ (profitPayoff / profitTradesCount) + "," + lossTradesCount + "," + lossPayoff + "," + (lossPayoff / lossTradesCount) + "," + size() + "," + getPayoff() + ","
-					+ (getPayoff() / size()) + "," + maxDrawdown + "," + String.valueOf(maxDrawdownDateTime) + "," + largestProfitTrade.getPayoff() + ","
-					+ largestLossTrade.getPayoff();
+			return strategyName + "," + scripName + "," + timeFormat.getProperty() + "," + (isProfitable() ? "PROFIT" : "LOSS") + ","
+					+ String.valueOf(get(0).getEntryDateTime().toLocalDate()) + "," + String.valueOf(last().getExitDateTime().toLocalDate()) + "," + profitTradesCount + ","
+					+ profitPayoff + "," + (profitPayoff / profitTradesCount) + "," + lossTradesCount + "," + lossPayoff + "," + (lossPayoff / lossTradesCount) + "," + size() + ","
+					+ getPayoff() + "," + (getPayoff() / size()) + "," + maxDrawdown + "," + String.valueOf(maxDrawdownDateTime) + "," + largestProfitTrade.getPayoff() + ","
+					+ largestProfitTrade.getExitDateTime() + "," + largestLossTrade.getPayoff() + "," + largestLossTrade.getExitDateTime();
 		} else {
-			return strategyName + "," + get(0).getScripName() + "," + timeFormat.getProperty() + ",,,0,0.0,0.0,0,0.0,0.0," + size() + ",0.0,0,0.0,,0.0,0.0";
+			return strategyName + "," + get(0).getScripName() + "," + timeFormat.getProperty() + ",,,0,0.0,0.0,0,0.0,0.0," + size() + ",0.0,0,0.0,,0.0,,0.0,";
 		}
 	}
 
 	public static String getCsvHeaderString() {
-		return "Strategy,Scrip,TimeFormat,P/L,Start Date,End Date,Profit Trades,Profit Points,Avg Profit,Loss Trades,Loss Points,Avg Loss,Total Trades,Total Points,Avg Total,Max Drawdown,Max Drawdown Time,Largest Profit,Largest Loss";
+		return "Strategy,Scrip,TimeFormat,P/L,Start Date,End Date,Profit Trades,Profit Points,Avg Profit,Loss Trades,Loss Points,Avg Loss,Total Trades,Total Points,Avg Total,"
+				+ "Max Drawdown,Max Drawdown Time,Largest Profit,Largest Profit Time,Largest Loss,Largest Loss Time";
 	}
 }

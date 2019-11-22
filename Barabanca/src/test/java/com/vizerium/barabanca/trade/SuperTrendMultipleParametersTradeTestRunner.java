@@ -66,7 +66,7 @@ public class SuperTrendMultipleParametersTradeTestRunner {
 					superTrendAtrMAType = maType;
 					System.out.println("Running Tests for supertrend" + superTrendAtrPeriod + superTrendAtrMAType.name().substring(0, 1).toLowerCase() + "x"
 							+ String.valueOf(superTrendMultiplier));
-					Result result = junit.run(SuperTrendMultipleParametersTradeTest.class);
+					Result result = junit.run(SuperTrendMultipleParametersTradeTest.class, SuperTrendMultipleParametersTradeTrailSLInSystemTest.class);
 					resultReport(result);
 				}
 			}
