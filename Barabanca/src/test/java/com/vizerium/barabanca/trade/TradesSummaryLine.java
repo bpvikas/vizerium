@@ -20,17 +20,20 @@ import java.util.Comparator;
 
 public class TradesSummaryLine {
 
-	private String resultLine;
+	private String summaryLine;
 
 	private float totalPayoff = 0.0f;
 
 	private float averagePayoff = 0.0f;
 
-	TradesSummaryLine(String resultLine) {
-		this.resultLine = resultLine;
-		String[] resultLineDetails = resultLine.split(",");
-		totalPayoff = Float.parseFloat(resultLineDetails[13]);
-		averagePayoff = Float.parseFloat(resultLineDetails[14]);
+	private float payoffAfterBrokerageAndTaxes = 0.0f;
+
+	TradesSummaryLine(String summaryLine) {
+		this.summaryLine = summaryLine;
+		String[] summaryLineDetails = summaryLine.split(",");
+		totalPayoff = Float.parseFloat(summaryLineDetails[13]);
+		averagePayoff = Float.parseFloat(summaryLineDetails[14]);
+		payoffAfterBrokerageAndTaxes = Float.parseFloat(summaryLineDetails[15]);
 	}
 
 	public float getTotalPayoff() {
@@ -41,23 +44,33 @@ public class TradesSummaryLine {
 		return averagePayoff;
 	}
 
-	@Override
-	public String toString() {
-		return resultLine;
+	public float getPayoffAfterBrokerageAndTaxes() {
+		return payoffAfterBrokerageAndTaxes;
 	}
 
-	static class HighestTradesSummaryLineTotalComparator implements Comparator<TradesSummaryLine> {
+	@Override
+	public String toString() {
+		return summaryLine;
+	}
+
+	static class TradesSummaryHighestTotalPayoffComparator implements Comparator<TradesSummaryLine> {
 		@Override
 		public int compare(TradesSummaryLine o1, TradesSummaryLine o2) {
 			return Comparator.comparing(TradesSummaryLine::getTotalPayoff).compare(o2, o1);
 		}
 	}
 
-	static class HighestTradesSummaryLineAverageComparator implements Comparator<TradesSummaryLine> {
+	static class TradesSummaryHighestAveragePayoffComparator implements Comparator<TradesSummaryLine> {
 		@Override
 		public int compare(TradesSummaryLine o1, TradesSummaryLine o2) {
 			return Comparator.comparing(TradesSummaryLine::getAveragePayoff).compare(o2, o1);
 		}
 	}
 
+	static class TradesSummaryHighestPayoffAfterBrokerageAndTaxesComparator implements Comparator<TradesSummaryLine> {
+		@Override
+		public int compare(TradesSummaryLine o1, TradesSummaryLine o2) {
+			return Comparator.comparing(TradesSummaryLine::getPayoffAfterBrokerageAndTaxes).compare(o2, o1);
+		}
+	}
 }

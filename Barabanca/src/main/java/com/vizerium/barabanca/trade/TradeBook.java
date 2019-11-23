@@ -196,6 +196,17 @@ public class TradeBook extends ArrayList<Trade> {
 		}
 	}
 
+	public float getPayoffPerLotAfterBrokerageAndTaxes() {
+
+		if ("NIFTY".equalsIgnoreCase(scripName.trim())) {
+			return (getPayoff() * 75) - (size() * 250); // Nifty lot size 75, Approx brokerage and exchange charges per lot 250.
+		} else if ("BANKNIFTY".equalsIgnoreCase(scripName.trim())) {
+			return (getPayoff() * 20) - (size() * 250); // BankNifty lot size 20, Approx brokerage and exchange charges per lot 250.
+		} else {
+			throw new RuntimeException("Unable to determine scrip from " + scripName);
+		}
+	}
+
 	public void printStatus() {
 		if (!isEmpty()) {
 			logger.info(strategyName + " " + scripName + " " + timeFormat.getProperty() + " " + String.valueOf(get(0).getExitDateTime().getYear()) + " "
@@ -203,7 +214,7 @@ public class TradeBook extends ArrayList<Trade> {
 					+ size() + " trades.\n" + String.valueOf(profitTradesCount) + " profit trades fetching " + String.valueOf(profitPayoff) + " points "
 					+ profitPayoff / profitTradesCount + " per trade.\n" + String.valueOf(lossTradesCount) + " loss trades losing " + String.valueOf(lossPayoff) + " points "
 					+ lossPayoff / lossTradesCount + " per trade. \nLargest profit @ " + largestProfitTrade + "\nLargest loss @ " + largestLossTrade + ".\nMaximum drawdown "
-					+ maxDrawdown + " @ " + maxDrawdownDateTime + ".\n");
+					+ maxDrawdown + " @ " + maxDrawdownDateTime + ", Payoff After Brokerage/Taxes " + getPayoffPerLotAfterBrokerageAndTaxes() + ".\n");
 		} else {
 			logger.info("No trades executed.");
 		}
@@ -214,15 +225,16 @@ public class TradeBook extends ArrayList<Trade> {
 			return strategyName + "," + scripName + "," + timeFormat.getProperty() + "," + (isProfitable() ? "PROFIT" : "LOSS") + ","
 					+ String.valueOf(get(0).getEntryDateTime().toLocalDate()) + "," + String.valueOf(last().getExitDateTime().toLocalDate()) + "," + profitTradesCount + ","
 					+ profitPayoff + "," + (profitPayoff / profitTradesCount) + "," + lossTradesCount + "," + lossPayoff + "," + (lossPayoff / lossTradesCount) + "," + size() + ","
-					+ getPayoff() + "," + (getPayoff() / size()) + "," + maxDrawdown + "," + String.valueOf(maxDrawdownDateTime) + "," + largestProfitTrade.getPayoff() + ","
-					+ largestProfitTrade.getExitDateTime() + "," + largestLossTrade.getPayoff() + "," + largestLossTrade.getExitDateTime();
+					+ getPayoff() + "," + (getPayoff() / size()) + "," + getPayoffPerLotAfterBrokerageAndTaxes() + "," + maxDrawdown + "," + String.valueOf(maxDrawdownDateTime)
+					+ "," + largestProfitTrade.getPayoff() + "," + largestProfitTrade.getExitDateTime() + "," + largestLossTrade.getPayoff() + ","
+					+ largestLossTrade.getExitDateTime();
 		} else {
-			return strategyName + "," + get(0).getScripName() + "," + timeFormat.getProperty() + ",,,0,0.0,0.0,0,0.0,0.0," + size() + ",0.0,0,0.0,,0.0,,0.0,";
+			return strategyName + "," + get(0).getScripName() + "," + timeFormat.getProperty() + ",,,,0,0.0,0.0,0,0.0,0.0," + size() + ",0.0,0.0,0.0,0.0,,0.0,,0.0,";
 		}
 	}
 
 	public static String getCsvHeaderString() {
 		return "Strategy,Scrip,TimeFormat,P/L,Start Date,End Date,Profit Trades,Profit Points,Avg Profit,Loss Trades,Loss Points,Avg Loss,Total Trades,Total Points,Avg Total,"
-				+ "Max Drawdown,Max Drawdown Time,Largest Profit,Largest Profit Time,Largest Loss,Largest Loss Time";
+				+ "Payoff After Tax,Max Drawdown,Max Drawdown Time,Largest Profit,Largest Profit Time,Largest Loss,Largest Loss Time";
 	}
 }
