@@ -18,20 +18,20 @@ package com.vizerium.barabanca.trade;
 
 import com.vizerium.commons.indicators.MovingAverageType;
 
-public class SuperTrend35Ex5_25TradeTrailSLInSystemTest extends SuperTrendTradeTrailSLInSystemTest {
+public class SuperTrend29Wx5_5TradeTrailSLInSystemTest extends SuperTrendTradeTrailSLInSystemTest {
 
 	@Override
 	protected int getSuperTrendAtrPeriod() {
-		return 35;
+		return 29;
 	}
 
 	@Override
 	protected float getSuperTrendMultiplier() {
-		return 5.25f;
+		return 5.5f;
 	}
 
 	@Override
 	protected MovingAverageType getSuperTrendAtrMAType() {
-		return MovingAverageType.EXPONENTIAL;
+		return MovingAverageType.WELLESWILDER;
 	}
 }

@@ -38,7 +38,7 @@ public class SuperTrendMultipleParametersTradeTestResultsParser {
 
 	private String superTrendTestResultsDirectoryPath = FileUtils.directoryPath + "output-log-v2/supertrend/";
 
-	private static final int MAX_RESULTS_FOR_COMPARISON = 12;
+	private static final int MAX_RESULTS_FOR_COMPARISON = 8;
 
 	private String headerLine = "";
 

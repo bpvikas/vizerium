@@ -16,50 +16,43 @@
 
 package com.vizerium.barabanca.trade;
 
+import java.util.List;
+
+import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
+import com.vizerium.commons.indicators.RSI;
 import com.vizerium.commons.indicators.SuperTrend;
 
-public abstract class SuperTrendTradeTrailSLInSystemTest extends SuperTrendTradeTest {
+public abstract class SuperTrendWithRSITradeTrailSLInSystemTest extends SuperTrendTradeTrailSLInSystemTest {
+
+	public abstract int getRsiLookbackPeriod();
+
+	public abstract float getRsiExitForLongPosition();
+
+	public abstract float getRsiExitForShortPosition();
+
+	protected RSI rsi;
 
 	@Override
-	protected void executeForCurrentUnitGreaterThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
-		if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
-			Trade lastTrade = tradeBook.last();
-			if (lastTrade.isExitStopLossHit(current.getHigh())) {
-				current.setTradedValue(lastTrade.getExitStoppedPrice(current));
-			}
-			tradeBook.coverShortTrade(current);
-		}
-
-		if (tradeBook.isLastTradeExited()) {
-			tradeBook.addLongTrade(current);
-			tradeBook.last().setExitStopLoss(current.getIndicator(superTrend.getName()).getValues()[SuperTrend.UPI_POSN_SUPERTREND_VALUE]);
-		}
-	}
-
-	@Override
-	protected void executeForCurrentUnitLessThanPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
-		if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeLong()) {
-			Trade lastTrade = tradeBook.last();
-			if (lastTrade.isExitStopLossHit(current.getLow())) {
-				current.setTradedValue(lastTrade.getExitStoppedPrice(current));
-			}
-			tradeBook.exitLongTrade(current);
-		}
-
-		if (tradeBook.isLastTradeExited()) {
-			tradeBook.addShortTrade(current);
-			tradeBook.last().setExitStopLoss(current.getIndicator(superTrend.getName()).getValues()[SuperTrend.UPI_POSN_SUPERTREND_VALUE]);
-		}
+	protected void getAdditionalDataPriorToIteration(TimeFormat timeFormat, List<UnitPriceData> unitPriceDataList) {
+		super.getAdditionalDataPriorToIteration(timeFormat, unitPriceDataList);
+		rsi = new RSI(getRsiLookbackPeriod());
+		updateIndicatorDataInUnitPrices(unitPriceDataList, rsi);
 	}
 
 	@Override
 	protected void executeForCurrentUnitChoppyWithPreviousUnit(TradeBook tradeBook, UnitPriceData current, UnitPriceData previous) {
+
 		if (!tradeBook.isLastTradeExited() && tradeBook.isLastTradeShort()) {
 			Trade lastTrade = tradeBook.last();
 			if (lastTrade.isExitStopLossHit(current.getHigh())) {
 				current.setTradedValue(lastTrade.getExitStoppedPrice(current));
 				tradeBook.coverShortTrade(current);
+
+			} else if ((current.getIndicator(rsi.getName()).getValues()[RSI.UPI_POSN_RSI_VALUE] > getRsiExitForShortPosition())
+					&& (previous.getIndicator(rsi.getName()).getValues()[RSI.UPI_POSN_RSI_VALUE] <= getRsiExitForShortPosition())) {
+				tradeBook.coverShortTrade(current);
+
 			} else {
 				lastTrade.setExitStopLoss(current.getIndicator(superTrend.getName()).getValues()[SuperTrend.UPI_POSN_SUPERTREND_VALUE]);
 			}
@@ -70,6 +63,11 @@ public abstract class SuperTrendTradeTrailSLInSystemTest extends SuperTrendTrade
 			if (lastTrade.isExitStopLossHit(current.getLow())) {
 				current.setTradedValue(lastTrade.getExitStoppedPrice(current));
 				tradeBook.exitLongTrade(current);
+
+			} else if ((current.getIndicator(rsi.getName()).getValues()[RSI.UPI_POSN_RSI_VALUE] < getRsiExitForLongPosition())
+					&& (previous.getIndicator(rsi.getName()).getValues()[RSI.UPI_POSN_RSI_VALUE] >= getRsiExitForLongPosition())) {
+				tradeBook.exitLongTrade(current);
+
 			} else {
 				lastTrade.setExitStopLoss(current.getIndicator(superTrend.getName()).getValues()[SuperTrend.UPI_POSN_SUPERTREND_VALUE]);
 			}
@@ -78,6 +76,6 @@ public abstract class SuperTrendTradeTrailSLInSystemTest extends SuperTrendTrade
 
 	@Override
 	protected String getResultFileName() {
-		return super.getResultFileName() + TRAIL_SL_IN_SYSTEM;
+		return super.getResultFileName() + "_rsi" + getRsiLookbackPeriod() + "_" + String.valueOf((int)getRsiExitForLongPosition()) + "_" + String.valueOf((int)getRsiExitForShortPosition());
 	}
 }

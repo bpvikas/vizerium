@@ -45,6 +45,8 @@ public abstract class TradeStrategyTest {
 
 	protected HistoricalDataReader historicalDataReader;
 
+	protected static final String TRAIL_SL_IN_SYSTEM = "_trail_SL_in_system";
+
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		TradesReport.initialize();

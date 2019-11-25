@@ -32,8 +32,15 @@ public class RSI implements Indicator<RSI> {
 
 	private static final MovingAverageType DEFAULT_MOVING_AVERAGE_TYPE = MovingAverageType.WELLESWILDER;
 
+	public static final int UPI_POSN_RSI_VALUE = 1;
+
 	public RSI() {
 		this.lookbackPeriod = DEFAULT_LOOKBACK_PERIOD;
+		this.maType = DEFAULT_MOVING_AVERAGE_TYPE;
+	}
+
+	public RSI(int lookbackPeriod) {
+		this.lookbackPeriod = lookbackPeriod;
 		this.maType = DEFAULT_MOVING_AVERAGE_TYPE;
 	}
 

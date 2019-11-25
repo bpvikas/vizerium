@@ -42,7 +42,7 @@ public abstract class SuperTrendTradeTest extends TradeStrategyTest {
 	@Override
 	protected boolean testForCurrentUnitGreaterThanPreviousUnit(UnitPriceData current, UnitPriceData previous) {
 		return (current.getIndicator(superTrend.getName()).getValues()[SuperTrend.UPI_POSN_TREND] > previous.getIndicator(superTrend.getName())
-				.getValues()[SuperTrend.UPI_POSN_TREND]) ? true : false;
+				.getValues()[SuperTrend.UPI_POSN_TREND]);
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public abstract class SuperTrendTradeTest extends TradeStrategyTest {
 	@Override
 	protected boolean testForCurrentUnitLessThanPreviousUnit(UnitPriceData current, UnitPriceData previous) {
 		return (current.getIndicator(superTrend.getName()).getValues()[SuperTrend.UPI_POSN_TREND] < previous.getIndicator(superTrend.getName())
-				.getValues()[SuperTrend.UPI_POSN_TREND]) ? true : false;
+				.getValues()[SuperTrend.UPI_POSN_TREND]);
 	}
 
 	@Override
@@ -83,4 +83,25 @@ public abstract class SuperTrendTradeTest extends TradeStrategyTest {
 				+ (((int) superTrendMultiplier == superTrendMultiplier) ? String.valueOf((int) superTrendMultiplier) : String.valueOf(superTrendMultiplier).replace('.', '_'));
 	}
 
+	protected static SuperTrend getSuperTrendFromName(String superTrendName) {
+		if (superTrendName.indexOf("supertrend") != 0) {
+			throw new RuntimeException("Cannot create SuperTrend object out of :" + superTrendName);
+		} else {
+			int xLocation = superTrendName.indexOf('x');
+			MovingAverageType maType = MovingAverageType.getByName(String.valueOf(superTrendName.charAt(xLocation - 1)));
+			int period = Integer.parseInt(superTrendName.substring("supertrend".length(), xLocation - 1));
+
+			float multiplier = 0.0f;
+			if (superTrendName.indexOf(TradeStrategyTest.TRAIL_SL_IN_SYSTEM) > 0) {
+				multiplier = Float.parseFloat(superTrendName.substring(xLocation + 1, superTrendName.indexOf(TradeStrategyTest.TRAIL_SL_IN_SYSTEM)).replace('_', '.'));
+			} else {
+				multiplier = Float.parseFloat(superTrendName.substring(xLocation + 1).replace('_', '.'));
+			}
+			if (multiplier <= 0.0f) {
+				throw new RuntimeException("Cannot determine SuperTrend multiplier from :" + superTrendName);
+			}
+
+			return new SuperTrend(period, multiplier, maType);
+		}
+	}
 }

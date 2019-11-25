@@ -17,6 +17,7 @@
 package com.vizerium.commons.indicators;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.vizerium.commons.dao.UnitPrice;
 
@@ -158,5 +159,33 @@ public class SuperTrend implements Indicator<SuperTrend> {
 	@Override
 	public String getName() {
 		return getClass().getSimpleName() + "[" + period + atrMAType.toString() + "," + multiplier + "]";
+	}
+
+	/*
+	 * This equals method is required in the SuperTrendWithRSIMultipleParametersTradeTestRunner class where all the SuperTrend objects are stored in a Set.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		SuperTrend other = (SuperTrend) obj;
+		return Objects.equals(period, other.period) && Objects.equals(multiplier, other.multiplier) && Objects.equals(atrMAType, other.atrMAType);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(period, multiplier, atrMAType);
+	}
+
+	@Override
+	public String toString() {
+		return getName();
 	}
 }
