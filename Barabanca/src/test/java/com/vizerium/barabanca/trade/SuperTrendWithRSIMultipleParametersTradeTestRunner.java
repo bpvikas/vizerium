@@ -33,6 +33,10 @@ import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.indicators.MovingAverageType;
 import com.vizerium.commons.indicators.SuperTrend;
 
+/*
+ * CAUTION : IT TAKES 19 HOURS TO RUN THIS PROGRAM WITH THE SET OF PARAMETERS BELOW.
+ */
+
 public class SuperTrendWithRSIMultipleParametersTradeTestRunner {
 
 	private static final Logger logger = Logger.getLogger(SuperTrendWithRSIMultipleParametersTradeTestRunner.class);
@@ -147,11 +151,11 @@ public class SuperTrendWithRSIMultipleParametersTradeTestRunner {
 		File[] superTrendTestResultsFiles = getSuperTrendTestResultsFile();
 		getSuperTrends(superTrendTestResultsFiles);
 
-		for (rsiLookbackPeriod = 14; rsiLookbackPeriod <= 26; rsiLookbackPeriod += 12) {
-			for (rsiExitForLongPosition = 60.0f; rsiExitForLongPosition <= 70.0f; rsiExitForLongPosition += 5.0f) {
-				for (rsiExitForShortPosition = 30.0f; rsiExitForShortPosition <= 40.0f; rsiExitForShortPosition += 5.0f) {
+		for (rsiLookbackPeriod = 6; rsiLookbackPeriod <= 30; rsiLookbackPeriod += 4) {
+			for (rsiExitForLongPosition = 60.0f; rsiExitForLongPosition <= 90.0f; rsiExitForLongPosition += 5.0f) {
+				for (rsiExitForShortPosition = 10.0f; rsiExitForShortPosition <= 40.0f; rsiExitForShortPosition += 5.0f) {
 
-					System.out.println("Running Tests for supertrendWithRSI" + String.valueOf((int) rsiLookbackPeriod) + "_" + String.valueOf((int)rsiExitForLongPosition) + "_"
+					System.out.println("Running Tests for supertrendWithRSI" + String.valueOf((int) rsiLookbackPeriod) + "_" + String.valueOf((int) rsiExitForLongPosition) + "_"
 							+ String.valueOf((int) rsiExitForShortPosition));
 
 					for (SuperTrend superTrend : superTrendSet) {

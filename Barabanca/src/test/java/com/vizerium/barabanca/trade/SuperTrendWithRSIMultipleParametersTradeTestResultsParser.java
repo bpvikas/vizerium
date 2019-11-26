@@ -18,7 +18,7 @@ package com.vizerium.barabanca.trade;
 
 import com.vizerium.commons.io.FileUtils;
 
-public class SuperTrendMultipleParametersTradeTestResultsParser extends MultipleParametersTradeTestResultsParser {
+public class SuperTrendWithRSIMultipleParametersTradeTestResultsParser extends MultipleParametersTradeTestResultsParser {
 
 	@Override
 	protected float getBn15MinMinimumAveragePayoff() {
@@ -82,7 +82,7 @@ public class SuperTrendMultipleParametersTradeTestResultsParser extends Multiple
 
 	@Override
 	protected String getTestResultsDirectoryPath() {
-		return FileUtils.directoryPath + "output-log-v2/supertrend/";
+		return FileUtils.directoryPath + "output-log-v2/supertrend-with-rsi/";
 	}
 
 	@Override
@@ -92,11 +92,11 @@ public class SuperTrendMultipleParametersTradeTestResultsParser extends Multiple
 
 	@Override
 	protected String getParsedResultsFile() {
-		return FileUtils.directoryPath + "output-log-v2/supertrend-parsed-results/supertrendParsedResults_v0.csv";
+		return FileUtils.directoryPath + "output-log-v2/supertrend-with-rsi-parsed-results/supertrendWithRsiParsedResults_v0.csv";
 	}
 
 	public static void main(String[] args) {
-		SuperTrendMultipleParametersTradeTestResultsParser parser = new SuperTrendMultipleParametersTradeTestResultsParser();
+		SuperTrendWithRSIMultipleParametersTradeTestResultsParser parser = new SuperTrendWithRSIMultipleParametersTradeTestResultsParser();
 		parser.parseAndCompareResults();
 	}
 }

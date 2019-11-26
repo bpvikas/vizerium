@@ -18,85 +18,55 @@ package com.vizerium.barabanca.trade;
 
 import com.vizerium.commons.io.FileUtils;
 
-public class SuperTrendMultipleParametersTradeTestResultsParser extends MultipleParametersTradeTestResultsParser {
+public class SuperTrendWithRSIMultipleParametersTradeTestResultsParserV1 extends SuperTrendWithRSIMultipleParametersTradeTestResultsParser {
 
 	@Override
 	protected float getBn15MinMinimumAveragePayoff() {
-		return 0.0f;
+		return 35.0f;
 	}
 
 	@Override
 	protected float getBn15MinMinimumTotalPayoff() {
-		return 0.0f;
+		return 29000.0f;
 	}
 
 	@Override
 	protected float getBn1HourMinimumAveragePayoff() {
-		return 0.0f;
+		return 70.0f;
 	}
 
 	@Override
 	protected float getBn1HourMinimumTotalPayoff() {
-		return 0.0f;
-	}
-
-	@Override
-	protected float getBn1DayMinimumAveragePayoff() {
-		return 0.0f;
-	}
-
-	@Override
-	protected float getBn1DayMinimumTotalPayoff() {
-		return 0.0f;
+		return 12500.0f;
 	}
 
 	@Override
 	protected float getN15MinMinimumAveragePayoff() {
-		return 0.0f;
+		return 15.0f;
 	}
 
 	@Override
 	protected float getN15MinMinimumTotalPayoff() {
-		return 0.0f;
+		return 10000.0f;
 	}
 
 	@Override
 	protected float getN1HourMinimumAveragePayoff() {
-		return 0.0f;
+		return 27.0f;
 	}
 
 	@Override
 	protected float getN1HourMinimumTotalPayoff() {
-		return 0.0f;
-	}
-
-	@Override
-	protected float getN1DayMinimumAveragePayoff() {
-		return 0.0f;
-	}
-
-	@Override
-	protected float getN1DayMinimumTotalPayoff() {
-		return 0.0f;
-	}
-
-	@Override
-	protected String getTestResultsDirectoryPath() {
-		return FileUtils.directoryPath + "output-log-v2/supertrend/";
-	}
-
-	@Override
-	protected String getResultFileNamePrefix() {
-		return "tradessummary_supertrend";
+		return 6300.0f;
 	}
 
 	@Override
 	protected String getParsedResultsFile() {
-		return FileUtils.directoryPath + "output-log-v2/supertrend-parsed-results/supertrendParsedResults_v0.csv";
+		return FileUtils.directoryPath + "output-log-v2/supertrend-with-rsi-parsed-results/supertrendWithRsiParsedResults_v1.csv";
 	}
 
 	public static void main(String[] args) {
-		SuperTrendMultipleParametersTradeTestResultsParser parser = new SuperTrendMultipleParametersTradeTestResultsParser();
+		SuperTrendWithRSIMultipleParametersTradeTestResultsParserV1 parser = new SuperTrendWithRSIMultipleParametersTradeTestResultsParserV1();
 		parser.parseAndCompareResults();
 	}
 }

@@ -23,13 +23,7 @@ import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.indicators.RSI;
 import com.vizerium.commons.indicators.SuperTrend;
 
-public abstract class SuperTrendWithRSITradeTrailSLInSystemTest extends SuperTrendTradeTrailSLInSystemTest {
-
-	public abstract int getRsiLookbackPeriod();
-
-	public abstract float getRsiExitForLongPosition();
-
-	public abstract float getRsiExitForShortPosition();
+public abstract class SuperTrendWithRSITradeTrailSLInSystemTest extends SuperTrendTradeTrailSLInSystemTest implements RSITradeTestParameters {
 
 	protected RSI rsi;
 
@@ -76,6 +70,6 @@ public abstract class SuperTrendWithRSITradeTrailSLInSystemTest extends SuperTre
 
 	@Override
 	protected String getResultFileName() {
-		return super.getResultFileName() + "_rsi" + getRsiLookbackPeriod() + "_" + String.valueOf((int)getRsiExitForLongPosition()) + "_" + String.valueOf((int)getRsiExitForShortPosition());
+		return super.getResultFileName() + getRSIParametersForResultFileName();
 	}
 }
