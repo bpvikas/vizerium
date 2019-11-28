@@ -128,7 +128,7 @@ public class SuperTrendWithPercentSLMultipleParametersTradeTestRunner {
 		File[] superTrendTestResultsFiles = getSuperTrendTestResultsFile();
 		getSuperTrends(superTrendTestResultsFiles);
 
-		for (percentSL = 0.4f; percentSL <= 1.0f; percentSL += 0.1f) {
+		for (percentSL = 0.4f; percentSL <= 1.01f; percentSL += 0.1f) {
 			System.out.println("Running Tests for supertrendWithPercentSL" + String.valueOf(percentSL));
 
 			for (SuperTrend superTrend : superTrendSet) {

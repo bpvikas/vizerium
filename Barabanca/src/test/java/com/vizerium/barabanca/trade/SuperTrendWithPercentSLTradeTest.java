@@ -75,6 +75,6 @@ public abstract class SuperTrendWithPercentSLTradeTest extends SuperTrendTradeTe
 
 	@Override
 	protected String getResultFileName() {
-		return super.getResultFileName() + "_percentSL" + String.valueOf(getPercentSL());
+		return super.getResultFileName() + "_percentSL" + String.valueOf(getPercentSL()).substring(0, 3).replace('.', '_');
 	}
 }
