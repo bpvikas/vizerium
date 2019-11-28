@@ -29,19 +29,14 @@ import org.junit.internal.TextListener;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
-import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.indicators.MovingAverageType;
 import com.vizerium.commons.indicators.SuperTrend;
 
-/*
- * CAUTION : IT TAKES 19 HOURS TO RUN THIS PROGRAM WITH THE SET OF PARAMETERS BELOW.
- */
+public class SuperTrendWithPercentSLMultipleParametersTradeTestRunner {
 
-public class SuperTrendWithRSIMultipleParametersTradeTestRunner {
+	private static final Logger logger = Logger.getLogger(SuperTrendWithPercentSLMultipleParametersTradeTestRunner.class);
 
-	private static final Logger logger = Logger.getLogger(SuperTrendWithRSIMultipleParametersTradeTestRunner.class);
-
-	private static SuperTrendWithRSIMultipleParametersTradeTestRunner instance = new SuperTrendWithRSIMultipleParametersTradeTestRunner();
+	private static SuperTrendWithPercentSLMultipleParametersTradeTestRunner instance = new SuperTrendWithPercentSLMultipleParametersTradeTestRunner();
 
 	private static int superTrendAtrPeriod = 4;
 
@@ -49,11 +44,7 @@ public class SuperTrendWithRSIMultipleParametersTradeTestRunner {
 
 	private static MovingAverageType superTrendAtrMAType = MovingAverageType.EXPONENTIAL;
 
-	private static int rsiLookbackPeriod = 14;
-
-	private static float rsiExitForLongPosition = 70.0f;
-
-	private static float rsiExitForShortPosition = 30.0f;
+	private static float percentSL = 0.5f;
 
 	private String superTrendTestResultsDirectoryPath = "src/test/resources/supertrend-parsed-results/";
 
@@ -61,11 +52,11 @@ public class SuperTrendWithRSIMultipleParametersTradeTestRunner {
 
 	private Set<SuperTrend> superTrendTrailSLInSystemSet;
 
-	private SuperTrendWithRSIMultipleParametersTradeTestRunner() {
+	private SuperTrendWithPercentSLMultipleParametersTradeTestRunner() {
 
 	}
 
-	public static SuperTrendWithRSIMultipleParametersTradeTestRunner getInstance() {
+	public static SuperTrendWithPercentSLMultipleParametersTradeTestRunner getInstance() {
 		return instance;
 	}
 
@@ -81,16 +72,8 @@ public class SuperTrendWithRSIMultipleParametersTradeTestRunner {
 		return superTrendAtrMAType;
 	}
 
-	protected int getRsiLookbackPeriod() {
-		return rsiLookbackPeriod;
-	}
-
-	public float getRsiExitForLongPosition() {
-		return rsiExitForLongPosition;
-	}
-
-	public float getRsiExitForShortPosition() {
-		return rsiExitForShortPosition;
+	public float getPercentSL() {
+		return percentSL;
 	}
 
 	private File[] getSuperTrendTestResultsFile() {
@@ -123,12 +106,6 @@ public class SuperTrendWithRSIMultipleParametersTradeTestRunner {
 
 					String[] superTrendLineDetails = superTrendLine.split(",");
 
-					// Ignoring below all the superTrend results which are in Average as they are sub-optimal results.
-					// Also ignoring the 1day results, as we are not planning to pursue trades on the daily timeframe
-					if (superTrendLineDetails[0].equals("Average") || superTrendLineDetails[3].equals(TimeFormat._1DAY.getProperty())) {
-						continue;
-					}
-
 					String superTrendName = superTrendLineDetails[1];
 					if (superTrendName.indexOf(TradeStrategyTest.TRAIL_SL_IN_SYSTEM) > 0) {
 						superTrendTrailSLInSystemSet.add(SuperTrendTradeTest.getSuperTrendFromName(superTrendName));
@@ -143,7 +120,7 @@ public class SuperTrendWithRSIMultipleParametersTradeTestRunner {
 		}
 	}
 
-	public void runSuperTrendWithRSIMultipleParameterTests() {
+	public void runSuperTrendWithPercentSLMultipleParameterTests() {
 
 		JUnitCore junit = new JUnitCore();
 		junit.addListener(new TextListener(System.out));
@@ -151,31 +128,25 @@ public class SuperTrendWithRSIMultipleParametersTradeTestRunner {
 		File[] superTrendTestResultsFiles = getSuperTrendTestResultsFile();
 		getSuperTrends(superTrendTestResultsFiles);
 
-		for (rsiLookbackPeriod = 6; rsiLookbackPeriod <= 30; rsiLookbackPeriod += 4) {
-			for (rsiExitForLongPosition = 60.0f; rsiExitForLongPosition <= 90.0f; rsiExitForLongPosition += 5.0f) {
-				for (rsiExitForShortPosition = 10.0f; rsiExitForShortPosition <= 40.0f; rsiExitForShortPosition += 5.0f) {
+		for (percentSL = 0.4f; percentSL <= 1.0f; percentSL += 0.1f) {
+			System.out.println("Running Tests for supertrendWithPercentSL" + String.valueOf(percentSL));
 
-					System.out.println("Running Tests for supertrendWithRSI" + String.valueOf((int) rsiLookbackPeriod) + "_" + String.valueOf((int) rsiExitForLongPosition) + "_"
-							+ String.valueOf((int) rsiExitForShortPosition));
+			for (SuperTrend superTrend : superTrendSet) {
+				superTrendAtrPeriod = superTrend.getPeriod();
+				superTrendMultiplier = superTrend.getMultiplier();
+				superTrendAtrMAType = superTrend.getAtrMAType();
 
-					for (SuperTrend superTrend : superTrendSet) {
-						superTrendAtrPeriod = superTrend.getPeriod();
-						superTrendMultiplier = superTrend.getMultiplier();
-						superTrendAtrMAType = superTrend.getAtrMAType();
+				Result result = junit.run(SuperTrendWithPercentSLMultipleParametersTradeTest.class);
+				resultReport(result);
+			}
 
-						Result result = junit.run(SuperTrendWithRSIMultipleParametersTradeTest.class);
-						resultReport(result);
-					}
+			for (SuperTrend superTrend : superTrendTrailSLInSystemSet) {
+				superTrendAtrPeriod = superTrend.getPeriod();
+				superTrendMultiplier = superTrend.getMultiplier();
+				superTrendAtrMAType = superTrend.getAtrMAType();
 
-					for (SuperTrend superTrend : superTrendTrailSLInSystemSet) {
-						superTrendAtrPeriod = superTrend.getPeriod();
-						superTrendMultiplier = superTrend.getMultiplier();
-						superTrendAtrMAType = superTrend.getAtrMAType();
-
-						Result result = junit.run(SuperTrendWithRSIMultipleParametersTradeTrailSLInSystemTest.class);
-						resultReport(result);
-					}
-				}
+				Result result = junit.run(SuperTrendWithPercentSLMultipleParametersTradeTrailSLInSystemTest.class);
+				resultReport(result);
 			}
 		}
 	}
@@ -186,6 +157,6 @@ public class SuperTrendWithRSIMultipleParametersTradeTestRunner {
 	}
 
 	public static void main(String[] args) {
-		instance.runSuperTrendWithRSIMultipleParameterTests();
+		instance.runSuperTrendWithPercentSLMultipleParameterTests();
 	}
 }
