@@ -110,7 +110,7 @@ public class RenkoCalculatorTest {
 		RenkoRange renkoRangeBN2018 = calculateRenko("BANKNIFTY", TimeFormat._1HOUR, 2018, 2018, BANKNIFTY_BRICK_SIZE, true);
 		Assert.assertEquals(87, renkoRangeBN2018.getAllReversals().size());
 		RenkoRange renkoRangeBN2019 = calculateRenko("BANKNIFTY", TimeFormat._1HOUR, 2019, 2019, BANKNIFTY_BRICK_SIZE, true);
-		Assert.assertEquals(18, renkoRangeBN2019.getAllReversals().size());
+		Assert.assertEquals(113, renkoRangeBN2019.getAllReversals().size());
 	}
 
 	@Test
@@ -118,7 +118,7 @@ public class RenkoCalculatorTest {
 		RenkoRange renkoRangeBN2018 = calculateRenko("BANKNIFTY", TimeFormat._1DAY, 2018, 2018, BANKNIFTY_BRICK_SIZE, true);
 		Assert.assertEquals(54, renkoRangeBN2018.getAllReversals().size());
 		RenkoRange renkoRangeBN2019 = calculateRenko("BANKNIFTY", TimeFormat._1DAY, 2019, 2019, BANKNIFTY_BRICK_SIZE, true);
-		Assert.assertEquals(11, renkoRangeBN2019.getAllReversals().size());
+		Assert.assertEquals(53, renkoRangeBN2019.getAllReversals().size());
 	}
 
 	@Test
@@ -134,7 +134,7 @@ public class RenkoCalculatorTest {
 		RenkoRange renkoRangeN2018 = calculateRenko("NIFTY", TimeFormat._1DAY, 2018, 2018, NIFTY_BRICK_SIZE, true);
 		Assert.assertEquals(28, renkoRangeN2018.getAllReversals().size());
 		RenkoRange renkoRangeN2019 = calculateRenko("NIFTY", TimeFormat._1DAY, 2019, 2019, NIFTY_BRICK_SIZE, true);
-		Assert.assertEquals(9, renkoRangeN2019.getAllReversals().size());
+		Assert.assertEquals(39, renkoRangeN2019.getAllReversals().size());
 	}
 
 	private RenkoRange calculateRenko(String scripName, TimeFormat timeFormat, int startYear, int endYear, int brickSize, boolean smoothPriceRange) {
