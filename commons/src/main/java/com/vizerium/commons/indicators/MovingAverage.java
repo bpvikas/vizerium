@@ -25,6 +25,8 @@ public class MovingAverage implements Indicator<MovingAverage> {
 	private MovingAverageType type;
 	private float[] values;
 
+	public static final int UPI_POSN_MA_VALUE = 1;
+
 	public MovingAverage(int ma, MovingAverageType type) {
 		this.ma = ma;
 		this.type = type;
@@ -70,5 +72,10 @@ public class MovingAverage implements Indicator<MovingAverage> {
 	@Override
 	public String getName() {
 		return "[" + ma + type.toString() + "]";
+	}
+
+	@Override
+	public String toString() {
+		return String.valueOf(ma) + type.toString();
 	}
 }
