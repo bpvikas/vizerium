@@ -94,4 +94,14 @@ public class IndicatorTest {
 
 		System.out.println(ChronoUnit.DAYS.between(fromDate, toDate));
 	}
+
+	@Test
+	public void testRoundingtoNearest005() {
+		Assert.assertEquals(11831.60f, Math.floor(11831.63f * 20) / 20.0, 0.001);
+		Assert.assertEquals(11831.65f, Math.ceil(11831.63f * 20) / 20.0, 0.001);
+		Assert.assertEquals(11831.60f, Math.floor(11831.60f * 20) / 20.0, 0.001);
+		Assert.assertEquals(11831.60f, Math.ceil(11831.60f * 20) / 20.0, 0.001);
+		Assert.assertEquals(11831.65f, Math.floor(11831.65f * 20) / 20.0, 0.001);
+		Assert.assertEquals(11831.65f, Math.ceil(11831.65f * 20) / 20.0, 0.001);
+	}
 }

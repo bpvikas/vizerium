@@ -77,7 +77,22 @@ public class HistoricalDataReaderTest {
 	}
 
 	@Test
-	public void test13_getPreviousHour() {
+	public void test13_getPrevious15min() {
+		List<UnitPriceData> previousUnitPrice = unit.getPreviousN("BANKNIFTY", TimeFormat._15MIN, LocalDateTime.of(2019, 1, 1, 6, 0), 1);
+		Assert.assertEquals(previousUnitPrice.size(), 1);
+		Assert.assertEquals(LocalDateTime.of(2018, 12, 31, 15, 31), previousUnitPrice.get(0).getDateTime());
+
+		previousUnitPrice = unit.getPreviousN("BANKNIFTY", TimeFormat._15MIN, LocalDateTime.of(2019, 1, 1, 12, 31), 1);
+		Assert.assertEquals(previousUnitPrice.size(), 1);
+		Assert.assertEquals(LocalDateTime.of(2019, 1, 1, 12, 16), previousUnitPrice.get(0).getDateTime());
+
+		previousUnitPrice = unit.getPreviousN("BANKNIFTY", TimeFormat._15MIN, LocalDateTime.of(2019, 1, 1, 12, 33), 1);
+		Assert.assertEquals(previousUnitPrice.size(), 1);
+		Assert.assertEquals(LocalDateTime.of(2019, 1, 1, 12, 16), previousUnitPrice.get(0).getDateTime());
+	}
+
+	@Test
+	public void test14_getPreviousHour() {
 		List<UnitPriceData> previousUnitPrice = unit.getPreviousN("BANKNIFTY", TimeFormat._1HOUR, LocalDateTime.of(2019, 1, 1, 6, 0), 1);
 		Assert.assertEquals(previousUnitPrice.size(), 1);
 		Assert.assertEquals(LocalDateTime.of(2018, 12, 31, 15, 16), previousUnitPrice.get(0).getDateTime());
@@ -92,7 +107,7 @@ public class HistoricalDataReaderTest {
 	}
 
 	@Test
-	public void test14_getPreviousDay() {
+	public void test15_getPreviousDay() {
 		List<UnitPriceData> previousUnitPrice = unit.getPreviousN("BANKNIFTY", TimeFormat._1DAY, LocalDateTime.of(2019, 1, 1, 6, 0), 1);
 		Assert.assertEquals(previousUnitPrice.size(), 1);
 		Assert.assertEquals(LocalDateTime.of(2018, 12, 31, 9, 16), previousUnitPrice.get(0).getDateTime());
@@ -107,7 +122,7 @@ public class HistoricalDataReaderTest {
 	}
 
 	@Test
-	public void test15_getPreviousWeek() {
+	public void test16_getPreviousWeek() {
 		List<UnitPriceData> previousUnitPrice = unit.getPreviousN("BANKNIFTY", TimeFormat._1WEEK, LocalDateTime.of(2019, 1, 1, 6, 0), 1);
 		Assert.assertEquals(previousUnitPrice.size(), 1);
 		Assert.assertEquals(LocalDateTime.of(2018, 12, 24, 9, 16), previousUnitPrice.get(0).getDateTime());
@@ -122,7 +137,7 @@ public class HistoricalDataReaderTest {
 	}
 
 	@Test
-	public void test16_getPreviousMonth() {
+	public void test17_getPreviousMonth() {
 		List<UnitPriceData> previousUnitPrice = unit.getPreviousN("BANKNIFTY", TimeFormat._1MONTH, LocalDateTime.of(2019, 1, 1, 6, 0), 1);
 		Assert.assertEquals(previousUnitPrice.size(), 1);
 		Assert.assertEquals(LocalDateTime.of(2018, 12, 3, 9, 16), previousUnitPrice.get(0).getDateTime());
@@ -167,7 +182,22 @@ public class HistoricalDataReaderTest {
 	}
 
 	@Test
-	public void test23_getNextHour() {
+	public void test23_getNext15min() {
+		List<UnitPriceData> previousUnitPrice = unit.getNextN("BANKNIFTY", TimeFormat._15MIN, LocalDateTime.of(2018, 12, 31, 21, 0), 1);
+		Assert.assertEquals(previousUnitPrice.size(), 1);
+		Assert.assertEquals(LocalDateTime.of(2019, 1, 1, 9, 16), previousUnitPrice.get(0).getDateTime());
+
+		previousUnitPrice = unit.getNextN("BANKNIFTY", TimeFormat._15MIN, LocalDateTime.of(2019, 1, 1, 12, 31), 1);
+		Assert.assertEquals(previousUnitPrice.size(), 1);
+		Assert.assertEquals(LocalDateTime.of(2019, 1, 1, 12, 46), previousUnitPrice.get(0).getDateTime());
+
+		previousUnitPrice = unit.getNextN("BANKNIFTY", TimeFormat._15MIN, LocalDateTime.of(2019, 1, 1, 12, 33), 1);
+		Assert.assertEquals(previousUnitPrice.size(), 1);
+		Assert.assertEquals(LocalDateTime.of(2019, 1, 1, 12, 46), previousUnitPrice.get(0).getDateTime());
+	}
+
+	@Test
+	public void test24_getNextHour() {
 		List<UnitPriceData> previousUnitPrice = unit.getNextN("BANKNIFTY", TimeFormat._1HOUR, LocalDateTime.of(2018, 12, 31, 21, 0), 1);
 		Assert.assertEquals(previousUnitPrice.size(), 1);
 		Assert.assertEquals(LocalDateTime.of(2019, 1, 1, 9, 16), previousUnitPrice.get(0).getDateTime());
@@ -182,7 +212,7 @@ public class HistoricalDataReaderTest {
 	}
 
 	@Test
-	public void test24_getNextDay() {
+	public void test25_getNextDay() {
 		List<UnitPriceData> previousUnitPrice = unit.getNextN("BANKNIFTY", TimeFormat._1DAY, LocalDateTime.of(2018, 12, 31, 21, 0), 1);
 		Assert.assertEquals(previousUnitPrice.size(), 1);
 		Assert.assertEquals(LocalDateTime.of(2019, 1, 1, 9, 16), previousUnitPrice.get(0).getDateTime());
@@ -197,7 +227,7 @@ public class HistoricalDataReaderTest {
 	}
 
 	@Test
-	public void test25_getNextWeek() {
+	public void test26_getNextWeek() {
 		List<UnitPriceData> previousUnitPrice = unit.getNextN("BANKNIFTY", TimeFormat._1WEEK, LocalDateTime.of(2018, 12, 31, 21, 0), 1);
 		Assert.assertEquals(previousUnitPrice.size(), 1);
 		Assert.assertEquals(LocalDateTime.of(2019, 1, 7, 9, 16), previousUnitPrice.get(0).getDateTime());
@@ -212,7 +242,7 @@ public class HistoricalDataReaderTest {
 	}
 
 	@Test
-	public void test26_getNextMonth() {
+	public void test27_getNextMonth() {
 		List<UnitPriceData> previousUnitPrice = unit.getNextN("BANKNIFTY", TimeFormat._1MONTH, LocalDateTime.of(2018, 12, 31, 21, 0), 1);
 		Assert.assertEquals(previousUnitPrice.size(), 1);
 		Assert.assertEquals(LocalDateTime.of(2019, 1, 1, 9, 16), previousUnitPrice.get(0).getDateTime());
@@ -279,7 +309,28 @@ public class HistoricalDataReaderTest {
 	}
 
 	@Test
-	public void test33_isLastCandleHour() {
+	public void test33_isLastCandle15min() {
+		List<UnitPriceData> unitPrice = unit.getUnitPriceDataForRange("BANKNIFTY", LocalDateTime.of(2019, 1, 9, 13, 1), LocalDateTime.of(2019, 1, 9, 13, 1), TimeFormat._15MIN);
+
+		Assert.assertTrue(unit.isLastCandleOfTimePeriod(unitPrice.get(0), unitPrice.get(0).getTimeFormat()));
+		Assert.assertTrue(unit.isLastCandleOfTimePeriod(unitPrice.get(0), TimeFormat._1HOUR));
+		Assert.assertFalse(unit.isLastCandleOfTimePeriod(unitPrice.get(0), TimeFormat._1DAY));
+
+		unitPrice = unit.getUnitPriceDataForRange("BANKNIFTY", LocalDateTime.of(2019, 1, 9, 14, 31), LocalDateTime.of(2019, 1, 9, 14, 31), TimeFormat._15MIN);
+
+		Assert.assertTrue(unit.isLastCandleOfTimePeriod(unitPrice.get(0), unitPrice.get(0).getTimeFormat()));
+		Assert.assertFalse(unit.isLastCandleOfTimePeriod(unitPrice.get(0), TimeFormat._1HOUR));
+		Assert.assertFalse(unit.isLastCandleOfTimePeriod(unitPrice.get(0), TimeFormat._1DAY));
+
+		unitPrice = unit.getUnitPriceDataForRange("BANKNIFTY", LocalDateTime.of(2019, 1, 9, 15, 31), LocalDateTime.of(2019, 1, 9, 15, 31), TimeFormat._15MIN);
+
+		Assert.assertTrue(unit.isLastCandleOfTimePeriod(unitPrice.get(0), unitPrice.get(0).getTimeFormat()));
+		Assert.assertTrue(unit.isLastCandleOfTimePeriod(unitPrice.get(0), TimeFormat._1HOUR));
+		Assert.assertTrue(unit.isLastCandleOfTimePeriod(unitPrice.get(0), TimeFormat._1DAY));
+	}
+
+	@Test
+	public void test34_isLastCandleHour() {
 		List<UnitPriceData> unitPrice = unit.getUnitPriceDataForRange("BANKNIFTY", LocalDateTime.of(2019, 1, 23, 12, 16), LocalDateTime.of(2019, 1, 23, 12, 16), TimeFormat._1HOUR);
 
 		Assert.assertTrue(unit.isLastCandleOfTimePeriod(unitPrice.get(0), unitPrice.get(0).getTimeFormat()));
@@ -292,7 +343,7 @@ public class HistoricalDataReaderTest {
 	}
 
 	@Test
-	public void test34_isLastCandleDay() {
+	public void test35_isLastCandleDay() {
 		List<UnitPriceData> unitPrice = unit.getUnitPriceDataForRange("BANKNIFTY", LocalDateTime.of(2019, 1, 22, 9, 16), LocalDateTime.of(2019, 1, 22, 9, 16), TimeFormat._1DAY);
 
 		Assert.assertTrue(unit.isLastCandleOfTimePeriod(unitPrice.get(0), unitPrice.get(0).getTimeFormat()));

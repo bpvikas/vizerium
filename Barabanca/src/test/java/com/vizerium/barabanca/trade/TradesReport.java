@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,16 +40,19 @@ public class TradesReport {
 	private static BufferedWriter bwTradeBook = null;
 	private static BufferedWriter bwTradesSummary = null;
 
-	public static void initialize() {
+	public static void initialize(String resultFileName) {
+
 		try {
-			File testRunOutputFile = new File(FileUtils.directoryPath + "output-log-v2/testrun.csv");
+			Files.deleteIfExists(Paths.get(FileUtils.directoryPath + "output-log-v2/testrun_" + resultFileName + ".csv"));
+			File testRunOutputFile = new File(FileUtils.directoryPath + "output-log-v2/testrun_" + resultFileName + ".csv");
 			bwTestRun = new BufferedWriter(new FileWriter(testRunOutputFile));
 		} catch (IOException e) {
 			throw new RuntimeException("Error while creating TestRun file for writing P L T results.", e);
 		}
 
 		try {
-			File tradeBookOutputFile = new File(FileUtils.directoryPath + "output-log-v2/tradebook.csv");
+			Files.deleteIfExists(Paths.get(FileUtils.directoryPath + "output-log-v2/tradebook_" + resultFileName + ".csv"));
+			File tradeBookOutputFile = new File(FileUtils.directoryPath + "output-log-v2/tradebook_" + resultFileName + ".csv");
 			bwTradeBook = new BufferedWriter(new FileWriter(tradeBookOutputFile));
 			bwTradeBook.write(Trade.getCsvHeaderString());
 			bwTradeBook.newLine();
@@ -56,7 +61,8 @@ public class TradesReport {
 		}
 
 		try {
-			File tradesSummaryFile = new File(FileUtils.directoryPath + "output-log-v2/tradessummary.csv");
+			Files.deleteIfExists(Paths.get(FileUtils.directoryPath + "output-log-v2/tradessummary_" + resultFileName + ".csv"));
+			File tradesSummaryFile = new File(FileUtils.directoryPath + "output-log-v2/tradessummary_" + resultFileName + ".csv");
 			bwTradesSummary = new BufferedWriter(new FileWriter(tradesSummaryFile));
 			bwTradesSummary.write(TradeBook.getCsvHeaderString());
 			bwTradesSummary.newLine();

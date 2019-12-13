@@ -16,8 +16,6 @@
 
 package com.vizerium.barabanca.trade;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
@@ -26,7 +24,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -47,62 +44,50 @@ public abstract class TradeStrategyTest {
 
 	protected static final String TRAIL_SL_IN_SYSTEM = "_trail_SL_in_system";
 
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		TradesReport.initialize();
-	}
-
 	@Before
 	public void setUp() {
 		historicalDataReader = new HistoricalDataReader();
 	}
 
 	@Test
+	public void test00_InitializeReport() {
+		TradesReport.initialize(getResultFileName());
+	}
+
+	@Test
 	public void test01_BankNifty15minChart() {
-		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._15MIN, 2011, 1, 2019, 10);
+		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._15MIN, 2011, 1, 2019, 11);
 	}
 
 	@Test
 	public void test02_BankNiftyHourlyChart() {
-		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._1HOUR, 2011, 1, 2019, 10);
+		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._1HOUR, 2011, 1, 2019, 11);
 	}
 
 	@Test
 	public void test03_BankNiftyDailyChart() {
-		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._1DAY, 2011, 1, 2019, 10);
+		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._1DAY, 2011, 1, 2019, 11);
 	}
 
 	@Test
 	public void test04_Nifty15minChart() {
-		testAndReportTradeStrategy("NIFTY", TimeFormat._15MIN, 2011, 1, 2019, 10);
+		testAndReportTradeStrategy("NIFTY", TimeFormat._15MIN, 2011, 1, 2019, 11);
 	}
 
 	@Test
 	public void test05_NiftyHourlyChart() {
-		testAndReportTradeStrategy("NIFTY", TimeFormat._1HOUR, 2011, 1, 2019, 10);
+		testAndReportTradeStrategy("NIFTY", TimeFormat._1HOUR, 2011, 1, 2019, 11);
 	}
 
 	@Test
 	public void test06_NiftyDailyChart() {
-		testAndReportTradeStrategy("NIFTY", TimeFormat._1DAY, 2011, 1, 2019, 10);
+		testAndReportTradeStrategy("NIFTY", TimeFormat._1DAY, 2011, 1, 2019, 11);
 	}
 
 	@Test
 	public void test07_compareWithPreviousResult() {
 		try {
 			TradesReport.close();
-
-			Files.deleteIfExists(Paths.get(FileUtils.directoryPath + "output-log-v2/testrun_" + getResultFileName() + ".csv"));
-			Files.move(Paths.get(FileUtils.directoryPath + "output-log-v2/testrun.csv"),
-					Paths.get(FileUtils.directoryPath + "output-log-v2/testrun_" + getResultFileName() + ".csv"));
-
-			Files.deleteIfExists(Paths.get(FileUtils.directoryPath + "output-log-v2/tradebook_" + getResultFileName() + ".csv"));
-			Files.move(Paths.get(FileUtils.directoryPath + "output-log-v2/tradebook.csv"),
-					Paths.get(FileUtils.directoryPath + "output-log-v2/tradebook_" + getResultFileName() + ".csv"));
-
-			Files.deleteIfExists(Paths.get(FileUtils.directoryPath + "output-log-v2/tradessummary_" + getResultFileName() + ".csv"));
-			Files.move(Paths.get(FileUtils.directoryPath + "output-log-v2/tradessummary.csv"),
-					Paths.get(FileUtils.directoryPath + "output-log-v2/tradessummary_" + getResultFileName() + ".csv"));
 
 			List<String> previousTestRunResult = TradesReport.readFileAsString("src/test/resources/output/testrun_" + getResultFileName() + ".csv");
 			List<String> currentTestRunResult = TradesReport.readFileAsString(FileUtils.directoryPath + "output-log-v2/testrun_" + getResultFileName() + ".csv");

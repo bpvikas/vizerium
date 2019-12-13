@@ -71,89 +71,89 @@ public class Trade {
 		this.timeFormat = timeFormat;
 		this.action = action;
 		this.entryDateTime = entryDateTime;
-		this.entryPrice = entryPrice;
+		setEntryPrice(entryPrice);
 	}
 
 	public Trade(String scripName, TimeFormat timeFormat, TradeAction action, LocalDateTime entryDateTime, float entryPrice, float stopLoss) {
 		this(scripName, timeFormat, action, entryDateTime, entryPrice);
-		this.entryStopLoss = stopLoss;
-	}
-
-	public Trade(String scripName, TimeFormat timeFormat, TradeAction action, LocalDateTime entryDateTime, float entryPrice, LocalDateTime exitDateTime, float exitPrice) {
-		this(scripName, timeFormat, action, entryDateTime, entryPrice);
-		this.exitDateTime = exitDateTime;
-		this.exitPrice = exitPrice;
-	}
-
-	public Trade(String scripName, TimeFormat timeFormat, TradeAction action, LocalDateTime entryDateTime, float entryPrice, float stopLoss, LocalDateTime exitDateTime,
-			float exitPrice) {
-		this(scripName, timeFormat, action, entryDateTime, entryPrice, stopLoss);
-		this.exitDateTime = exitDateTime;
-		this.exitPrice = exitPrice;
+		setEntryStopLoss(stopLoss);
 	}
 
 	public String getScripName() {
 		return scripName;
 	}
 
-	public void setScripName(String scripName) {
-		this.scripName = scripName;
-	}
-
 	public TimeFormat getTimeFormat() {
 		return timeFormat;
-	}
-
-	public void setTimeFormat(TimeFormat timeFormat) {
-		this.timeFormat = timeFormat;
 	}
 
 	public TradeAction getAction() {
 		return action;
 	}
 
-	public void setAction(TradeAction action) {
-		this.action = action;
-	}
-
 	public LocalDateTime getEntryDateTime() {
 		return entryDateTime;
-	}
-
-	public void setEntryDateTime(LocalDateTime entryDateTime) {
-		this.entryDateTime = entryDateTime;
 	}
 
 	public float getEntryPrice() {
 		return entryPrice;
 	}
 
-	public void setEntryPrice(float entryPrice) {
-		this.entryPrice = entryPrice;
+	private void setEntryPrice(float entryPrice) {
+		if (entryPrice <= 0.0f) {
+			throw new RuntimeException("Entry Price " + entryPrice + " is not valid.");
+		}
+
+		// The code below is to round off to the nearest 0.05, as trades are executed at that price.
+		if (TradeAction.LONG.equals(action)) {
+			this.entryPrice = (float) (Math.ceil(entryPrice * 20) / 20.0);
+		} else if (TradeAction.SHORT.equals(action)) {
+			this.entryPrice = (float) (Math.floor(entryPrice * 20) / 20.0);
+		} else {
+			throw new RuntimeException("Unable to recognise trade action from " + action);
+		}
 	}
 
 	public float getEntryStopLoss() {
 		return entryStopLoss;
 	}
 
-	public void setEntryStopLoss(float entryStopLoss) {
-		this.entryStopLoss = entryStopLoss;
+	private void setEntryStopLoss(float entryStopLoss) {
+		if (entryStopLoss <= 0.0f) {
+			throw new RuntimeException("Entry StopLoss " + entryStopLoss + " is not valid.");
+		}
+
+		// The code below is to round off to the nearest 0.05, as trades are executed at that price.
+		if (TradeAction.LONG.equals(action)) {
+			this.entryStopLoss = (float) (Math.ceil(entryStopLoss * 20) / 20.0);
+		} else if (TradeAction.SHORT.equals(action)) {
+			this.entryStopLoss = (float) (Math.floor(entryStopLoss * 20) / 20.0);
+		} else {
+			throw new RuntimeException("Unable to recognise trade action from " + action);
+		}
 	}
 
 	public LocalDateTime getExitDateTime() {
 		return exitDateTime;
 	}
 
-	public void setExitDateTime(LocalDateTime exitDateTime) {
-		this.exitDateTime = exitDateTime;
-	}
-
 	public float getExitPrice() {
 		return exitPrice;
 	}
 
-	public void setExitPrice(float exitPrice) {
-		this.exitPrice = exitPrice;
+	private void setExitPrice(float exitPrice) {
+		if (exitPrice <= 0.0f) {
+			throw new RuntimeException("Exit Price " + exitPrice + " is not valid.");
+		}
+
+		// The code below is to round off to the nearest 0.05, as trades are executed at that price.
+		if (TradeAction.LONG.equals(action)) {
+			this.exitPrice = (float) (Math.floor(exitPrice * 20) / 20.0);
+		} else if (TradeAction.SHORT.equals(action)) {
+			this.exitPrice = (float) (Math.ceil(exitPrice * 20) / 20.0);
+		} else {
+			throw new RuntimeException("Unable to recognise trade action from " + action);
+		}
 	}
 
 	public float getExitStopLoss() {
@@ -161,15 +161,31 @@ public class Trade {
 	}
 
 	public void setExitStopLoss(float exitStopLoss) {
-		this.exitStopLoss = exitStopLoss;
+		if (exitStopLoss <= 0.0f) {
+			throw new RuntimeException("Exit StopLoss " + exitStopLoss + " is not valid.");
+		}
+
+		// The code below is to round off to the nearest 0.05, as trades are executed at that price.
+		if (TradeAction.LONG.equals(action)) {
+			this.exitStopLoss = (float) (Math.floor(exitStopLoss * 20) / 20.0);
+		} else if (TradeAction.SHORT.equals(action)) {
+			this.exitStopLoss = (float) (Math.ceil(exitStopLoss * 20) / 20.0);
+		} else {
+			throw new RuntimeException("Unable to recognise trade action from " + action);
+		}
+	}
+
+	public void exit(UnitPriceData unitPriceData) {
+		exitDateTime = unitPriceData.getDateTime();
+		setExitPrice(unitPriceData.getTradedValue());
 	}
 
 	public boolean isExitStopLossHit(float price) {
 		if (exitStopLoss == 0.0f) {
 			return false;
-		} else if (TradeAction.SHORT.equals(action) && price > exitStopLoss) {
+		} else if (TradeAction.SHORT.equals(action) && price >= exitStopLoss) {
 			return true;
-		} else if (TradeAction.LONG.equals(action) && price < exitStopLoss) {
+		} else if (TradeAction.LONG.equals(action) && price <= exitStopLoss) {
 			return true;
 		} else {
 			return false;

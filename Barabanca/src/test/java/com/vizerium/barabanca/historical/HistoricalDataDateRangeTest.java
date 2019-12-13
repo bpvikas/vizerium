@@ -39,6 +39,7 @@ public class HistoricalDataDateRangeTest {
 		String scripName = "BANKNIFTY";
 		Assert.assertEquals(LocalDateTime.of(2010, 3, 2, 9, 1), HistoricalDataDateRange.getStartDateTime(scripName, TimeFormat._1MIN));
 		Assert.assertEquals(LocalDateTime.of(2010, 3, 2, 9, 1), HistoricalDataDateRange.getStartDateTime(scripName, TimeFormat._5MIN));
+		Assert.assertEquals(LocalDateTime.of(2010, 3, 2, 9, 1), HistoricalDataDateRange.getStartDateTime(scripName, TimeFormat._15MIN));
 		Assert.assertEquals(LocalDateTime.of(2010, 3, 2, 9, 1), HistoricalDataDateRange.getStartDateTime(scripName, TimeFormat._1HOUR));
 		Assert.assertEquals(LocalDateTime.of(2010, 3, 2, 9, 1), HistoricalDataDateRange.getStartDateTime(scripName, TimeFormat._1DAY));
 		Assert.assertEquals(LocalDateTime.of(2010, 3, 2, 9, 1), HistoricalDataDateRange.getStartDateTime(scripName, TimeFormat._1WEEK));
@@ -48,12 +49,13 @@ public class HistoricalDataDateRangeTest {
 	@Test
 	public void test01B_GetEndDateTimeForBankNifty() {
 		String scripName = "BANKNIFTY";
-		Assert.assertEquals(LocalDateTime.of(2019, 10, 31, 15, 33), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1MIN));
-		Assert.assertEquals(LocalDateTime.of(2019, 10, 31, 15, 31), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._5MIN));
-		Assert.assertEquals(LocalDateTime.of(2019, 10, 31, 15, 16), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1HOUR));
-		Assert.assertEquals(LocalDateTime.of(2019, 10, 31, 9, 16), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1DAY));
-		Assert.assertEquals(LocalDateTime.of(2019, 10, 27, 18, 16), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1WEEK));
-		Assert.assertEquals(LocalDateTime.of(2019, 10, 1, 9, 16), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1MONTH));
+		Assert.assertEquals(LocalDateTime.of(2019, 11, 29, 15, 33), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1MIN));
+		Assert.assertEquals(LocalDateTime.of(2019, 11, 29, 15, 31), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._5MIN));
+		Assert.assertEquals(LocalDateTime.of(2019, 11, 29, 15, 31), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._15MIN));
+		Assert.assertEquals(LocalDateTime.of(2019, 11, 29, 15, 16), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1HOUR));
+		Assert.assertEquals(LocalDateTime.of(2019, 11, 29, 9, 16), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1DAY));
+		Assert.assertEquals(LocalDateTime.of(2019, 11, 25, 9, 16), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1WEEK));
+		Assert.assertEquals(LocalDateTime.of(2019, 11, 1, 9, 16), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1MONTH));
 	}
 
 	@Test
@@ -61,6 +63,7 @@ public class HistoricalDataDateRangeTest {
 		String scripName = "NIFTY";
 		Assert.assertEquals(LocalDateTime.of(2008, 1, 1, 9, 55), HistoricalDataDateRange.getStartDateTime(scripName, TimeFormat._1MIN));
 		Assert.assertEquals(LocalDateTime.of(2008, 1, 1, 9, 55), HistoricalDataDateRange.getStartDateTime(scripName, TimeFormat._5MIN));
+		Assert.assertEquals(LocalDateTime.of(2008, 1, 1, 9, 55), HistoricalDataDateRange.getStartDateTime(scripName, TimeFormat._15MIN));
 		Assert.assertEquals(LocalDateTime.of(2008, 1, 1, 9, 55), HistoricalDataDateRange.getStartDateTime(scripName, TimeFormat._1HOUR));
 		Assert.assertEquals(LocalDateTime.of(2008, 1, 1, 9, 55), HistoricalDataDateRange.getStartDateTime(scripName, TimeFormat._1DAY));
 		Assert.assertEquals(LocalDateTime.of(2008, 1, 1, 9, 55), HistoricalDataDateRange.getStartDateTime(scripName, TimeFormat._1WEEK));
@@ -70,11 +73,12 @@ public class HistoricalDataDateRangeTest {
 	@Test
 	public void test02B_GetEndDateTimeForNifty() {
 		String scripName = "NIFTY";
-		Assert.assertEquals(LocalDateTime.of(2019, 10, 31, 16, 39), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1MIN));
-		Assert.assertEquals(LocalDateTime.of(2019, 10, 31, 15, 31), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._5MIN));
-		Assert.assertEquals(LocalDateTime.of(2019, 10, 31, 15, 16), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1HOUR));
-		Assert.assertEquals(LocalDateTime.of(2019, 10, 31, 9, 16), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1DAY));
-		Assert.assertEquals(LocalDateTime.of(2019, 10, 27, 18, 16), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1WEEK));
-		Assert.assertEquals(LocalDateTime.of(2019, 10, 1, 9, 16), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1MONTH));
+		Assert.assertEquals(LocalDateTime.of(2019, 11, 29, 16, 39), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1MIN));
+		Assert.assertEquals(LocalDateTime.of(2019, 11, 29, 15, 31), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._5MIN));
+		Assert.assertEquals(LocalDateTime.of(2019, 11, 29, 15, 31), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._15MIN));
+		Assert.assertEquals(LocalDateTime.of(2019, 11, 29, 15, 16), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1HOUR));
+		Assert.assertEquals(LocalDateTime.of(2019, 11, 29, 9, 16), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1DAY));
+		Assert.assertEquals(LocalDateTime.of(2019, 11, 25, 9, 16), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1WEEK));
+		Assert.assertEquals(LocalDateTime.of(2019, 11, 1, 9, 16), HistoricalDataDateRange.getEndDateTime(scripName, TimeFormat._1MONTH));
 	}
 }

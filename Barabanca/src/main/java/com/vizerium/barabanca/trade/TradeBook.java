@@ -166,8 +166,7 @@ public class TradeBook extends ArrayList<Trade> {
 			if ((currentTrade.getExitDateTime() != null) || (currentTrade.getExitPrice() != 0.0f)) {
 				throw new RuntimeException("Trying to close an already closed trade.");
 			}
-			currentTrade.setExitDateTime(unitPriceData.getDateTime());
-			currentTrade.setExitPrice(unitPriceData.getTradedValue());
+			currentTrade.exit(unitPriceData);
 			logger.debug("Exiting Trade : " + currentTrade);
 			// resetting the traded information here, so that it is available fresh for other trades.
 			unitPriceData.setTradedValue(0.0f);

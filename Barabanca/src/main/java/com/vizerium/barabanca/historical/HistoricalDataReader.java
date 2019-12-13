@@ -115,10 +115,14 @@ public class HistoricalDataReader {
 				endDateTime = endDateTime.minusMinutes(1);
 			} else if (timeFormat.equals(TimeFormat._5MIN)) {
 				endDateTime = endDateTime.minusMinutes(5);
+			} else if (timeFormat.equals(TimeFormat._15MIN)) {
+				endDateTime = endDateTime.minusMinutes(15);
 			} else if (timeFormat.equals(TimeFormat._1HOUR)) {
 				endDateTime = endDateTime.minusHours(1).withMinute(59);
 			} else if (timeFormat.equals(TimeFormat._1DAY)) {
 				endDateTime = endDateTime.minusDays(1).withHour(23).withMinute(59);
+			} else {
+				throw new RuntimeException("Unable to get PreviousN data for timeFormat" + timeFormat);
 			}
 
 		} else {
@@ -126,6 +130,8 @@ public class HistoricalDataReader {
 				endDateTime = unitPriceDateTime.minusWeeks(1).with(DayOfWeek.SATURDAY);
 			} else if (timeFormat.equals(TimeFormat._1MONTH)) {
 				endDateTime = unitPriceDateTime.minusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
+			} else {
+				throw new RuntimeException("Unable to get PreviousN data for timeFormat" + timeFormat);
 			}
 			startDateTime = HistoricalDataDateRange.getStartDateTime(scripName, timeFormat);
 		}
@@ -149,18 +155,22 @@ public class HistoricalDataReader {
 				plusMonths = (count / 20) + 1; // assuming that there are approximately 20 odd days in a month.
 			}
 			endDateTime = unitPriceDateTime.plusMonths(plusMonths).with(TemporalAdjusters.lastDayOfMonth());
-			if (timeFormat.equals(TimeFormat._1MIN) || timeFormat.equals(TimeFormat._5MIN) || timeFormat.equals(TimeFormat._1HOUR)) {
-				// The "1" below is not a typo, the calculations are such that for the next 5 minute candle to be returned,
+			if (timeFormat.equals(TimeFormat._1MIN) || timeFormat.equals(TimeFormat._5MIN) || timeFormat.equals(TimeFormat._15MIN) || timeFormat.equals(TimeFormat._1HOUR)) {
+				// The "1" below is not a typo, the calculations are such that for the next 1/5/15 minute candle to be returned,
 				// we just need to move the current time by one minute.
 				startDateTime = startDateTime.plusMinutes(1);
 			} else if (timeFormat.equals(TimeFormat._1DAY)) {
 				startDateTime = startDateTime.plusDays(1).withHour(0).withMinute(0);
+			} else {
+				throw new RuntimeException("Unable to get NextN data for timeFormat" + timeFormat);
 			}
 		} else {
 			if (timeFormat.equals(TimeFormat._1WEEK)) {
 				startDateTime = unitPriceDateTime.plusWeeks(1).with(DayOfWeek.MONDAY);
 			} else if (timeFormat.equals(TimeFormat._1MONTH)) {
 				startDateTime = unitPriceDateTime.plusMonths(1).withDayOfMonth(1);
+			} else {
+				throw new RuntimeException("Unable to get NextN data for timeFormat" + timeFormat);
 			}
 			endDateTime = HistoricalDataDateRange.getEndDateTime(scripName, timeFormat);
 		}
