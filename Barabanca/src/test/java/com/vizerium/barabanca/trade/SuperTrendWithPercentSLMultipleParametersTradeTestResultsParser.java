@@ -82,7 +82,7 @@ public class SuperTrendWithPercentSLMultipleParametersTradeTestResultsParser ext
 
 	@Override
 	protected String getTestResultsDirectoryPath() {
-		return FileUtils.directoryPath + "output-log-v2/supertrend-with-percentsl/";
+		return FileUtils.directoryPath + "output-log-v2/supertrend-with-percentsl-v2/";
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class SuperTrendWithPercentSLMultipleParametersTradeTestResultsParser ext
 
 	@Override
 	protected String getParsedResultsFile() {
-		return FileUtils.directoryPath + "output-log-v2/supertrend-with-percentsl-parsed-results/supertrendWithPercentSLParsedResults_v0.csv";
+		return FileUtils.directoryPath + "output-log-v2/supertrend-with-percentsl-parsed-results-v2/supertrendWithPercentSLParsedResults-v2_v0.csv";
 	}
 
 	public static void main(String[] args) {

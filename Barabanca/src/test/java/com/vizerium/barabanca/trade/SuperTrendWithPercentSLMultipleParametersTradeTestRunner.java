@@ -46,7 +46,7 @@ public class SuperTrendWithPercentSLMultipleParametersTradeTestRunner {
 
 	private static float percentSL = 0.5f;
 
-	private String superTrendTestResultsDirectoryPath = "src/test/resources/supertrend-parsed-results/";
+	private String superTrendTestResultsDirectoryPath = "src/test/resources/supertrend-parsed-results-v2/";
 
 	private Set<SuperTrend> superTrendSet;
 
@@ -81,7 +81,7 @@ public class SuperTrendWithPercentSLMultipleParametersTradeTestRunner {
 
 			@Override
 			public boolean accept(File dir, String name) {
-				if (name.startsWith("supertrendParsedResults") && name.endsWith(".csv")) {
+				if (name.startsWith("supertrendParsedResults-v2") && name.endsWith(".csv")) {
 					return true;
 				}
 				return false;

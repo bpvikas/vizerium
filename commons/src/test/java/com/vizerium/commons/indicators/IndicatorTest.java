@@ -21,10 +21,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -103,5 +106,26 @@ public class IndicatorTest {
 		Assert.assertEquals(11831.60f, Math.ceil(11831.60f * 20) / 20.0, 0.001);
 		Assert.assertEquals(11831.65f, Math.floor(11831.65f * 20) / 20.0, 0.001);
 		Assert.assertEquals(11831.65f, Math.ceil(11831.65f * 20) / 20.0, 0.001);
+	}
+
+	@Test
+	public void testSequentialParallelStreamExecution() {
+		String[] strings = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
+
+		System.out.println("-------\nRunning sequential\n-------");
+		run(Arrays.stream(strings).sequential());
+		System.out.println("-------\nRunning parallel\n-------");
+		run(Arrays.stream(strings).parallel());
+	}
+
+	private void run(Stream<String> stream) {
+		stream.forEach(s -> {
+			System.out.println(LocalTime.now() + " - value: " + s + " - thread: " + Thread.currentThread().getName());
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 }

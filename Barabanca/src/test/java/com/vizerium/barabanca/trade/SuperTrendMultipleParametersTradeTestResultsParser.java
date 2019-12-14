@@ -82,7 +82,7 @@ public class SuperTrendMultipleParametersTradeTestResultsParser extends Multiple
 
 	@Override
 	protected String getTestResultsDirectoryPath() {
-		return FileUtils.directoryPath + "output-log-v2/supertrend/";
+		return FileUtils.directoryPath + "output-log-v2/supertrend-v2/";
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class SuperTrendMultipleParametersTradeTestResultsParser extends Multiple
 
 	@Override
 	protected String getParsedResultsFile() {
-		return FileUtils.directoryPath + "output-log-v2/supertrend-parsed-results/supertrendParsedResults_v0.csv";
+		return FileUtils.directoryPath + "output-log-v2/supertrend-parsed-results-v2/supertrendParsedResults-v2_v0.csv";
 	}
 
 	public static void main(String[] args) {

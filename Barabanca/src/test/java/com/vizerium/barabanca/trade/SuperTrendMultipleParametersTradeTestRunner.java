@@ -58,7 +58,7 @@ public class SuperTrendMultipleParametersTradeTestRunner {
 		junit.addListener(new TextListener(System.out));
 
 		for (superTrendAtrPeriod = 4; superTrendAtrPeriod <= 50; superTrendAtrPeriod++) {
-			for (superTrendMultiplier = 1.0f; superTrendMultiplier <= 10.0f; superTrendMultiplier += 0.25) {
+			for (superTrendMultiplier = 1.0f; superTrendMultiplier <= 10.02f; superTrendMultiplier += 0.1) {
 				for (MovingAverageType maType : MovingAverageType.values()) {
 					if (maType.equals(MovingAverageType.SIMPLE)) {
 						continue;

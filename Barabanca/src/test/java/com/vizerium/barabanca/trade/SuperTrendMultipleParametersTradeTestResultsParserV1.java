@@ -22,27 +22,27 @@ public class SuperTrendMultipleParametersTradeTestResultsParserV1 extends SuperT
 
 	@Override
 	protected float getBn15MinMinimumAveragePayoff() {
-		return 35.0f;
+		return 36.0f;
 	}
 
 	@Override
 	protected float getBn15MinMinimumTotalPayoff() {
-		return 29000.0f;
+		return 31000.0f;
 	}
 
 	@Override
 	protected float getBn1HourMinimumAveragePayoff() {
-		return 70.0f;
+		return 81.0f;
 	}
 
 	@Override
 	protected float getBn1HourMinimumTotalPayoff() {
-		return 12500.0f;
+		return 18500.0f;
 	}
 
 	@Override
 	protected float getN15MinMinimumAveragePayoff() {
-		return 15.0f;
+		return 16.0f;
 	}
 
 	@Override
@@ -52,17 +52,17 @@ public class SuperTrendMultipleParametersTradeTestResultsParserV1 extends SuperT
 
 	@Override
 	protected float getN1HourMinimumAveragePayoff() {
-		return 27.0f;
+		return 28.0f;
 	}
 
 	@Override
 	protected float getN1HourMinimumTotalPayoff() {
-		return 6300.0f;
+		return 6600.0f;
 	}
 
 	@Override
 	protected String getParsedResultsFile() {
-		return FileUtils.directoryPath + "output-log-v2/supertrend-parsed-results/supertrendParsedResults_v1.csv";
+		return FileUtils.directoryPath + "output-log-v2/supertrend-parsed-results-v2/supertrendParsedResults-v2_v1.csv";
 	}
 
 	public static void main(String[] args) {

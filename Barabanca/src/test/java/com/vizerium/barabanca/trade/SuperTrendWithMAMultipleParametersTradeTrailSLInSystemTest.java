@@ -16,7 +16,7 @@
 
 package com.vizerium.barabanca.trade;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 
 import com.vizerium.commons.indicators.MovingAverage;
 import com.vizerium.commons.indicators.MovingAverageType;
@@ -25,9 +25,8 @@ public class SuperTrendWithMAMultipleParametersTradeTrailSLInSystemTest extends 
 
 	private static SuperTrendWithMAMultipleParametersTradeTestRunner runner;
 
-	@Before
-	public void setUp() {
-		super.setUp();
+	@BeforeClass
+	public static void setUpBeforeClass() {
 		runner = SuperTrendWithMAMultipleParametersTradeTestRunner.getInstance();
 	}
 

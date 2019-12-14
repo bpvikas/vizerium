@@ -50,7 +50,7 @@ public abstract class TradeStrategyTest {
 	}
 
 	@Test
-	public void test00_InitializeReport() {
+	public void test00_initialize() {
 		TradesReport.initialize(getResultFileName());
 	}
 
