@@ -18,16 +18,16 @@ package com.vizerium.barabanca.trade;
 
 import com.vizerium.commons.indicators.MovingAverageType;
 
-public class SuperTrend9Wx4TradeTest extends SuperTrendTradeTest {
+public class SuperTrend14Wx5_9TradeTest extends SuperTrendTradeTest {
 
 	@Override
 	protected int getSuperTrendAtrPeriod() {
-		return 9;
+		return 14;
 	}
 
 	@Override
 	protected float getSuperTrendMultiplier() {
-		return 4.0f;
+		return 5.9f;
 	}
 
 	@Override
