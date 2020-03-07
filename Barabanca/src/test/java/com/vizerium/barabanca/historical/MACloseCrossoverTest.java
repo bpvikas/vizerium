@@ -48,47 +48,47 @@ public class MACloseCrossoverTest {
 	// @formatter:off
 	/*
 	 * 
-	 * Checking for 200MA crossover in BANKNIFTY from 2010-04-01T06:00 to 2019-03-31T21:00 in 1min format.
-	 * Total number of days : 2230
-	 * Total number of days where close crossed over 200MA on 1min chart  : 2122
-	 * %age days where 200MA crossed over Close : 95.15695%
-	 * 
-	 * Checking for 200MA crossover in NIFTY from 2010-04-01T06:00 to 2019-03-31T21:00 in 1min format.
-	 * Total number of days : 2230
-	 * Total number of days where close crossed over 200MA on 1min chart  : 2116
-	 * %age days where 200MA crossed over Close : 94.88789%
-	 * 
-	 * Checking for 100MA crossover in BANKNIFTY from 2010-04-01T06:00 to 2019-03-31T21:00 in 1min format.
-	 * Total number of days : 2230
-	 * Total number of days where close crossed over 100MA on 1min chart  : 2222
-	 * %age days where 100MA crossed over Close : 99.64126%
-	 * 
-	 * Checking for 100MA crossover in NIFTY from 2010-04-01T06:00 to 2019-03-31T21:00 in 1min format.
-	 * Total number of days : 2230
-	 * Total number of days where close crossed over 100MA on 1min chart  : 2216
-	 * %age days where 100MA crossed over Close : 99.3722%
-	 * 
+	 * Checking for 200MA crossover in BANKNIFTY from 2010-04-01T06:00 to 2020-02-29T21:00 in 1min format.
+	 * Total number of days : 2456
+	 * Total number of days where close crossed over 200MA on 1min chart  : 2332
+	 * %age days where 200MA crossed over Close : 94.95114%
+	
+	 * Checking for 200MA crossover in NIFTY from 2010-04-01T06:00 to 2020-02-29T21:00 in 1min format.
+	 * Total number of days : 2456
+	 * Total number of days where close crossed over 200MA on 1min chart  : 2325
+	 * %age days where 200MA crossed over Close : 94.66612%
+	
+	 * Checking for 100MA crossover in BANKNIFTY from 2010-04-01T06:00 to 2020-02-29T21:00 in 1min format.
+	 * Total number of days : 2456
+	 * Total number of days where close crossed over 100MA on 1min chart  : 2446
+	 * %age days where 100MA crossed over Close : 99.592834%
+	
+	 * Checking for 100MA crossover in NIFTY from 2010-04-01T06:00 to 2020-02-29T21:00 in 1min format.
+	 * Total number of days : 2456
+	 * Total number of days where close crossed over 100MA on 1min chart  : 2441
+	 * %age days where 100MA crossed over Close : 99.38925%
+	 *
 	 */
 	// @formatter:on
 
 	@Test
 	public void test01_200MACloseCrossoverOnBankNifty1MinChart() {
-		getNumberOfCloseCrossoverDays("BANKNIFTY", LocalDateTime.of(2010, 4, 1, 6, 0), LocalDateTime.of(2019, 3, 31, 21, 0), TimeFormat._1MIN, 200);
+		getNumberOfCloseCrossoverDays("BANKNIFTY", LocalDateTime.of(2010, 4, 1, 6, 0), LocalDateTime.of(2020, 2, 29, 21, 0), TimeFormat._1MIN, 200);
 	}
 
 	@Test
 	public void test02_200MACloseCrossoverOnNifty1MinChart() {
-		getNumberOfCloseCrossoverDays("NIFTY", LocalDateTime.of(2010, 4, 1, 6, 0), LocalDateTime.of(2019, 3, 31, 21, 0), TimeFormat._1MIN, 200);
+		getNumberOfCloseCrossoverDays("NIFTY", LocalDateTime.of(2010, 4, 1, 6, 0), LocalDateTime.of(2020, 2, 29, 21, 0), TimeFormat._1MIN, 200);
 	}
 
 	@Test
 	public void test03_100MACloseCrossoverOnBankNifty1MinChart() {
-		getNumberOfCloseCrossoverDays("BANKNIFTY", LocalDateTime.of(2010, 4, 1, 6, 0), LocalDateTime.of(2019, 3, 31, 21, 0), TimeFormat._1MIN, 100);
+		getNumberOfCloseCrossoverDays("BANKNIFTY", LocalDateTime.of(2010, 4, 1, 6, 0), LocalDateTime.of(2020, 2, 29, 21, 0), TimeFormat._1MIN, 100);
 	}
 
 	@Test
 	public void test04_100MACloseCrossoverOnNifty1MinChart() {
-		getNumberOfCloseCrossoverDays("NIFTY", LocalDateTime.of(2010, 4, 1, 6, 0), LocalDateTime.of(2019, 3, 31, 21, 0), TimeFormat._1MIN, 100);
+		getNumberOfCloseCrossoverDays("NIFTY", LocalDateTime.of(2010, 4, 1, 6, 0), LocalDateTime.of(2020, 2, 29, 21, 0), TimeFormat._1MIN, 100);
 	}
 
 	private int[] getNumberOfCloseCrossoverDays(String scripName, LocalDateTime startDateTime, LocalDateTime endDateTime, TimeFormat timeFormat, int crossoverMA) {
