@@ -33,7 +33,6 @@ import com.vizerium.barabanca.historical.UnitPriceIndicatorData;
 import com.vizerium.commons.dao.TimeFormat;
 import com.vizerium.commons.dao.UnitPriceData;
 import com.vizerium.commons.indicators.Indicator;
-import com.vizerium.commons.io.FileUtils;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public abstract class TradeStrategyTest {
@@ -90,13 +89,13 @@ public abstract class TradeStrategyTest {
 			TradesReport.close();
 
 			List<String> previousTestRunResult = TradesReport.readFileAsString("src/test/resources/output/testrun_" + getResultFileName() + ".csv");
-			List<String> currentTestRunResult = TradesReport.readFileAsString(FileUtils.directoryPath + "output-log-v2/testrun_" + getResultFileName() + ".csv");
+			List<String> currentTestRunResult = TradesReport.readFileAsString(TradesReport.outputDirectoryPath + "testrun_" + getResultFileName() + ".csv");
 
 			List<String> previousTradeBook = TradesReport.readFileAsString("src/test/resources/output/tradebook_" + getResultFileName() + ".csv");
-			List<String> currentTradeBook = TradesReport.readFileAsString(FileUtils.directoryPath + "output-log-v2/tradebook_" + getResultFileName() + ".csv");
+			List<String> currentTradeBook = TradesReport.readFileAsString(TradesReport.outputDirectoryPath + "tradebook_" + getResultFileName() + ".csv");
 
 			List<String> previousTradesSummary = TradesReport.readFileAsString("src/test/resources/output/tradessummary_" + getResultFileName() + ".csv");
-			List<String> currentTradesSummary = TradesReport.readFileAsString(FileUtils.directoryPath + "output-log-v2/tradessummary_" + getResultFileName() + ".csv");
+			List<String> currentTradesSummary = TradesReport.readFileAsString(TradesReport.outputDirectoryPath + "tradessummary_" + getResultFileName() + ".csv");
 
 			Assert.assertEquals(previousTestRunResult, currentTestRunResult);
 			Assert.assertEquals(previousTradeBook, currentTradeBook);

@@ -16,53 +16,57 @@
 
 package com.vizerium.barabanca.trade;
 
-import com.vizerium.commons.io.FileUtils;
-
+/*
+ * Before running this class, ensure that it is pointed to the correct source and destination directory.
+ *
+ * The changes are to be made in the parent class only. See comments within parent class for instructions. 
+ * 
+ */
 public class SuperTrendMultipleParametersTradeTestResultsParserV1 extends SuperTrendMultipleParametersTradeTestResultsParser {
 
 	@Override
 	protected float getBn15MinMinimumAveragePayoff() {
-		return 36.0f;
+		return 42.0f;
 	}
 
 	@Override
 	protected float getBn15MinMinimumTotalPayoff() {
-		return 31000.0f;
+		return 29000.0f;
 	}
 
 	@Override
 	protected float getBn1HourMinimumAveragePayoff() {
-		return 81.0f;
+		return 55.0f;
 	}
 
 	@Override
 	protected float getBn1HourMinimumTotalPayoff() {
-		return 18500.0f;
+		return 17000.0f;
 	}
 
 	@Override
 	protected float getN15MinMinimumAveragePayoff() {
-		return 16.0f;
+		return 17.0f;
 	}
 
 	@Override
 	protected float getN15MinMinimumTotalPayoff() {
-		return 10000.0f;
+		return 12000.0f;
 	}
 
 	@Override
 	protected float getN1HourMinimumAveragePayoff() {
-		return 28.0f;
+		return 23.0f;
 	}
 
 	@Override
 	protected float getN1HourMinimumTotalPayoff() {
-		return 6600.0f;
+		return 9000.0f;
 	}
 
 	@Override
 	protected String getParsedResultsFile() {
-		return FileUtils.directoryPath + "output-log-v2/supertrend-parsed-results-v2/supertrendParsedResults-v2_v1.csv";
+		return super.getParsedResultsFile().replace("_v0.csv", "_v1.csv");
 	}
 
 	public static void main(String[] args) {

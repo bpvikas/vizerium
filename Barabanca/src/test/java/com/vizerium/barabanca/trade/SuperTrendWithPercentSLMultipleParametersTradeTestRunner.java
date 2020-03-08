@@ -38,11 +38,11 @@ public class SuperTrendWithPercentSLMultipleParametersTradeTestRunner {
 
 	private static SuperTrendWithPercentSLMultipleParametersTradeTestRunner instance = new SuperTrendWithPercentSLMultipleParametersTradeTestRunner();
 
-	private static int superTrendAtrPeriod = 4;
+	private static int superTrendAtrPeriod = SuperTrendMultipleParametersTradeTestRunner.superTrendAtrPeriod;
 
-	private static float superTrendMultiplier = 1.0f;
+	private static float superTrendMultiplier = SuperTrendMultipleParametersTradeTestRunner.superTrendMultiplier;
 
-	private static MovingAverageType superTrendAtrMAType = MovingAverageType.EXPONENTIAL;
+	private static MovingAverageType superTrendAtrMAType = SuperTrendMultipleParametersTradeTestRunner.superTrendAtrMAType;
 
 	private static float percentSL = 0.5f;
 

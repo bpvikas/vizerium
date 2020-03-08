@@ -22,15 +22,33 @@ import org.junit.runner.Result;
 
 import com.vizerium.commons.indicators.MovingAverageType;
 
+/*
+ * This program, (in its current form), takes a minimum of 3.5 hours to run.
+ * 
+ * BEFORE running this class, ensure that all the output files need to go into a separate directory. For that, 
+ *
+ * src/test/resources/log4j.properties = 
+ * 			log4j.appender.file.File=C:/Work/Vizerium/data/output-log-v2/supertrend-v3/testrun.log
+ * 
+ * src/test/java/com/vizerium/barabanca/trade/TradesReport.java
+ * 			static final String outputDirectoryPath = FileUtils.directoryPath + "output-log-v2/supertrend-v3/";
+ * 
+ * 
+ * To cross check with a small number of tests if this is working, change the for loop to 
+ * 			for (superTrendAtrPeriod = 5; superTrendAtrPeriod <= 5; superTrendAtrPeriod++) {
+ *			for (superTrendMultiplier = 2.0f; superTrendMultiplier <= 2.02f; superTrendMultiplier += 0.1) {
+ * 
+ */
+
 public class SuperTrendMultipleParametersTradeTestRunner {
 
 	private static SuperTrendMultipleParametersTradeTestRunner instance = new SuperTrendMultipleParametersTradeTestRunner();
 
-	private static int superTrendAtrPeriod = 4;
+	static int superTrendAtrPeriod = 5;
 
-	private static float superTrendMultiplier = 1.0f;
+	static float superTrendMultiplier = 2.0f;
 
-	private static MovingAverageType superTrendAtrMAType = MovingAverageType.EXPONENTIAL;
+	static MovingAverageType superTrendAtrMAType = MovingAverageType.WELLESWILDER;
 
 	private SuperTrendMultipleParametersTradeTestRunner() {
 
@@ -57,18 +75,12 @@ public class SuperTrendMultipleParametersTradeTestRunner {
 		JUnitCore junit = new JUnitCore();
 		junit.addListener(new TextListener(System.out));
 
-		for (superTrendAtrPeriod = 4; superTrendAtrPeriod <= 50; superTrendAtrPeriod++) {
-			for (superTrendMultiplier = 1.0f; superTrendMultiplier <= 10.02f; superTrendMultiplier += 0.1) {
-				for (MovingAverageType maType : MovingAverageType.values()) {
-					if (maType.equals(MovingAverageType.SIMPLE)) {
-						continue;
-					}
-					superTrendAtrMAType = maType;
-					System.out.println("Running Tests for supertrend" + superTrendAtrPeriod + superTrendAtrMAType.name().substring(0, 1).toLowerCase() + "x"
-							+ String.valueOf(superTrendMultiplier));
-					Result result = junit.run(SuperTrendMultipleParametersTradeTest.class, SuperTrendMultipleParametersTradeTrailSLInSystemTest.class);
-					resultReport(result);
-				}
+		for (superTrendAtrPeriod = 5; superTrendAtrPeriod <= 50; superTrendAtrPeriod++) {
+			for (superTrendMultiplier = 2.0f; superTrendMultiplier <= 10.02f; superTrendMultiplier += 0.1) {
+				System.out.println("Running Tests for supertrend" + superTrendAtrPeriod + superTrendAtrMAType.name().substring(0, 1).toLowerCase() + "x"
+						+ String.valueOf(superTrendMultiplier));
+				Result result = junit.run(SuperTrendMultipleParametersTradeTest.class, SuperTrendMultipleParametersTradeTrailSLInSystemTest.class);
+				resultReport(result);
 			}
 		}
 	}

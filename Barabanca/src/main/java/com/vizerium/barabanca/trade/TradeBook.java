@@ -207,15 +207,17 @@ public class TradeBook extends ArrayList<Trade> {
 	}
 
 	public void printStatus() {
-		if (!isEmpty()) {
-			logger.info(strategyName + " " + scripName + " " + timeFormat.getProperty() + " " + String.valueOf(get(0).getExitDateTime().getYear()) + " "
-					+ String.valueOf(get(0).getExitDateTime().getMonth().name().substring(0, 3)) + " " + "\t" + (isProfitable() ? "PROFIT" : "LOSS") + "\t" + getPayoff() + "\t"
-					+ size() + " trades.\n" + String.valueOf(profitTradesCount) + " profit trades fetching " + String.valueOf(profitPayoff) + " points "
-					+ profitPayoff / profitTradesCount + " per trade.\n" + String.valueOf(lossTradesCount) + " loss trades losing " + String.valueOf(lossPayoff) + " points "
-					+ lossPayoff / lossTradesCount + " per trade. \nLargest profit @ " + largestProfitTrade + "\nLargest loss @ " + largestLossTrade + ".\nMaximum drawdown "
-					+ maxDrawdown + " @ " + maxDrawdownDateTime + ", Payoff After Brokerage/Taxes " + getPayoffPerLotAfterBrokerageAndTaxes() + ".\n");
-		} else {
-			logger.info("No trades executed.");
+		if (logger.isDebugEnabled()) {
+			if (!isEmpty()) {
+				logger.debug(strategyName + " " + scripName + " " + timeFormat.getProperty() + " " + String.valueOf(get(0).getExitDateTime().getYear()) + " "
+						+ String.valueOf(get(0).getExitDateTime().getMonth().name().substring(0, 3)) + " " + "\t" + (isProfitable() ? "PROFIT" : "LOSS") + "\t" + getPayoff() + "\t"
+						+ size() + " trades.\n" + String.valueOf(profitTradesCount) + " profit trades fetching " + String.valueOf(profitPayoff) + " points "
+						+ profitPayoff / profitTradesCount + " per trade.\n" + String.valueOf(lossTradesCount) + " loss trades losing " + String.valueOf(lossPayoff) + " points "
+						+ lossPayoff / lossTradesCount + " per trade. \nLargest profit @ " + largestProfitTrade + "\nLargest loss @ " + largestLossTrade + ".\nMaximum drawdown "
+						+ maxDrawdown + " @ " + maxDrawdownDateTime + ", Payoff After Brokerage/Taxes " + getPayoffPerLotAfterBrokerageAndTaxes() + ".\n");
+			} else {
+				logger.debug("No trades executed.");
+			}
 		}
 	}
 
