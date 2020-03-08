@@ -18,6 +18,14 @@ package com.vizerium.barabanca.trade;
 
 import com.vizerium.commons.io.FileUtils;
 
+/*
+ * Before running this class, ensure that it is pointed to the correct source and destination directory.
+ *
+ * Source directory to be updated in method getTestResultsDirectoryPath() -- 1 change
+ * 
+ * Destination directory to be updated in method getParsedResultsFile() -- 2 changes
+ * 
+ */
 public class SuperTrendWithPercentSLMultipleParametersTradeTestResultsParser extends MultipleParametersTradeTestResultsParser {
 
 	@Override
@@ -82,7 +90,7 @@ public class SuperTrendWithPercentSLMultipleParametersTradeTestResultsParser ext
 
 	@Override
 	protected String getTestResultsDirectoryPath() {
-		return FileUtils.directoryPath + "output-log-v2/supertrend-with-percentsl-v2/";
+		return FileUtils.directoryPath + "output-log-v2/supertrend-with-percentsl-v3/";
 	}
 
 	@Override
@@ -92,7 +100,7 @@ public class SuperTrendWithPercentSLMultipleParametersTradeTestResultsParser ext
 
 	@Override
 	protected String getParsedResultsFile() {
-		return FileUtils.directoryPath + "output-log-v2/supertrend-with-percentsl-parsed-results-v2/supertrendWithPercentSLParsedResults-v2_v0.csv";
+		return FileUtils.directoryPath + "output-log-v2/supertrend-with-percentsl-parsed-results-v3/supertrendWithPercentSLParsedResults-v3_v0.csv";
 	}
 
 	public static void main(String[] args) {

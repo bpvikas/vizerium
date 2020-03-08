@@ -16,6 +16,7 @@
 
 package com.vizerium.barabanca.trade;
 
+import org.apache.log4j.Logger;
 import org.junit.internal.TextListener;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -41,6 +42,8 @@ import com.vizerium.commons.indicators.MovingAverageType;
  */
 
 public class SuperTrendMultipleParametersTradeTestRunner {
+
+	private static final Logger logger = Logger.getLogger(SuperTrendMultipleParametersTradeTestRunner.class);
 
 	private static SuperTrendMultipleParametersTradeTestRunner instance = new SuperTrendMultipleParametersTradeTestRunner();
 
@@ -77,7 +80,7 @@ public class SuperTrendMultipleParametersTradeTestRunner {
 
 		for (superTrendAtrPeriod = 5; superTrendAtrPeriod <= 50; superTrendAtrPeriod++) {
 			for (superTrendMultiplier = 2.0f; superTrendMultiplier <= 10.02f; superTrendMultiplier += 0.1) {
-				System.out.println("Running Tests for supertrend" + superTrendAtrPeriod + superTrendAtrMAType.name().substring(0, 1).toLowerCase() + "x"
+				logger.info("Running Tests for supertrend" + superTrendAtrPeriod + superTrendAtrMAType.name().substring(0, 1).toLowerCase() + "x"
 						+ String.valueOf(superTrendMultiplier));
 				Result result = junit.run(SuperTrendMultipleParametersTradeTest.class, SuperTrendMultipleParametersTradeTrailSLInSystemTest.class);
 				resultReport(result);
@@ -86,7 +89,7 @@ public class SuperTrendMultipleParametersTradeTestRunner {
 	}
 
 	private void resultReport(Result result) {
-		System.out.println("Finished. Result: Failures: " + result.getFailureCount() + ". Ignored: " + result.getIgnoreCount() + ". Tests run: " + result.getRunCount() + ". Time: "
+		logger.info("Finished. Result: Failures: " + result.getFailureCount() + ". Ignored: " + result.getIgnoreCount() + ". Tests run: " + result.getRunCount() + ". Time: "
 				+ result.getRunTime() + "ms.");
 	}
 

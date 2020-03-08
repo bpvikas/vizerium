@@ -137,7 +137,7 @@ public class SuperTrendWithMAMultipleParametersTradeTestRunner {
 		for (ma = 30; ma <= 200; ma += 5) {
 			for (MovingAverageType ma : MovingAverageType.values()) {
 
-				System.out.println("Running Tests for supertrendWithMA" + String.valueOf(ma) + maType.toString());
+				logger.info("Running Tests for supertrendWithMA" + String.valueOf(ma) + maType.toString());
 
 				for (SuperTrend superTrend : superTrendSet) {
 					superTrendAtrPeriod = superTrend.getPeriod();
@@ -161,7 +161,7 @@ public class SuperTrendWithMAMultipleParametersTradeTestRunner {
 	}
 
 	private void resultReport(Result result) {
-		System.out.println("Finished. Result: Failures: " + result.getFailureCount() + ". Ignored: " + result.getIgnoreCount() + ". Tests run: " + result.getRunCount() + ". Time: "
+		logger.info("Finished. Result: Failures: " + result.getFailureCount() + ". Ignored: " + result.getIgnoreCount() + ". Tests run: " + result.getRunCount() + ". Time: "
 				+ result.getRunTime() + "ms.");
 	}
 

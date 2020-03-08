@@ -16,8 +16,12 @@
 
 package com.vizerium.barabanca.trade;
 
-import com.vizerium.commons.io.FileUtils;
-
+/*
+ * Before running this class, ensure that it is pointed to the correct source and destination directory.
+ *
+ * The changes are to be made in the parent class only. See comments within parent class for instructions. 
+ * 
+ */
 public class SuperTrendWithPercentSLMultipleParametersTradeTestResultsParserV1 extends SuperTrendWithPercentSLMultipleParametersTradeTestResultsParser {
 
 	@Override
@@ -42,7 +46,7 @@ public class SuperTrendWithPercentSLMultipleParametersTradeTestResultsParserV1 e
 
 	@Override
 	protected float getN15MinMinimumAveragePayoff() {
-		return 16.0f;
+		return 16.5f;
 	}
 
 	@Override
@@ -62,7 +66,7 @@ public class SuperTrendWithPercentSLMultipleParametersTradeTestResultsParserV1 e
 
 	@Override
 	protected String getParsedResultsFile() {
-		return FileUtils.directoryPath + "output-log-v2/supertrend-with-percentsl-parsed-results-v2/supertrendWithPercentSLParsedResults-v2_v1.csv";
+		return super.getParsedResultsFile().replace("_v0.csv", "_v1.csv");
 	}
 
 	public static void main(String[] args) {

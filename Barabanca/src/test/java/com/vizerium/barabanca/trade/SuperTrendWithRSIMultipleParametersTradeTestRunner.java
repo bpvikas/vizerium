@@ -155,7 +155,7 @@ public class SuperTrendWithRSIMultipleParametersTradeTestRunner {
 			for (rsiExitForLongPosition = 60.0f; rsiExitForLongPosition <= 90.0f; rsiExitForLongPosition += 5.0f) {
 				for (rsiExitForShortPosition = 10.0f; rsiExitForShortPosition <= 40.0f; rsiExitForShortPosition += 5.0f) {
 
-					System.out.println("Running Tests for supertrendWithRSI" + String.valueOf((int) rsiLookbackPeriod) + "_" + String.valueOf((int) rsiExitForLongPosition) + "_"
+					logger.info("Running Tests for supertrendWithRSI" + String.valueOf((int) rsiLookbackPeriod) + "_" + String.valueOf((int) rsiExitForLongPosition) + "_"
 							+ String.valueOf((int) rsiExitForShortPosition));
 
 					for (SuperTrend superTrend : superTrendSet) {
@@ -181,7 +181,7 @@ public class SuperTrendWithRSIMultipleParametersTradeTestRunner {
 	}
 
 	private void resultReport(Result result) {
-		System.out.println("Finished. Result: Failures: " + result.getFailureCount() + ". Ignored: " + result.getIgnoreCount() + ". Tests run: " + result.getRunCount() + ". Time: "
+		logger.info("Finished. Result: Failures: " + result.getFailureCount() + ". Ignored: " + result.getIgnoreCount() + ". Tests run: " + result.getRunCount() + ". Time: "
 				+ result.getRunTime() + "ms.");
 	}
 

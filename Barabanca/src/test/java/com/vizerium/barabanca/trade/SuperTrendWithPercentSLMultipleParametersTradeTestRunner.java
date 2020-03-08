@@ -32,6 +32,29 @@ import org.junit.runner.Result;
 import com.vizerium.commons.indicators.MovingAverageType;
 import com.vizerium.commons.indicators.SuperTrend;
 
+/*
+ * This program, (in its current form), takes a 1:50 to 2 hours to run.
+ * 
+ * Before running this class, ensure that it is pointed to the correct source and destination directory.
+ *
+ * Source directory to be updated in 
+ * 			variable declaration	superTrendTestResultsDirectoryPath = "src/test/resources/supertrend-parsed-results-v3/"; -- 1 change
+ * 			method 					getSuperTrendTestResultsFile() -- 1 change
+ * 
+ * 
+ * Destination directory to be updated in 
+ * src/test/java/com/vizerium/barabanca/trade/TradesReport.java
+ * 			static final String outputDirectoryPath = FileUtils.directoryPath + "output-log-v2/supertrend-with-percentsl-v3/";
+ * 
+ * src/test/resources/log4j.properties = 
+ * 			log4j.appender.file.File=C:/Work/Vizerium/data/output-log-v2/supertrend-with-percentsl-v3/testrun.log
+ * 
+ * 
+ * To cross check with a small number of tests if this is working, change the for loop in method runSuperTrendWithPercentSLMultipleParameterTests() to
+ * 
+ * 			for (percentSL = 0.3f; percentSL <= 0.31f; percentSL += 0.1f) {
+ * 
+ */
 public class SuperTrendWithPercentSLMultipleParametersTradeTestRunner {
 
 	private static final Logger logger = Logger.getLogger(SuperTrendWithPercentSLMultipleParametersTradeTestRunner.class);
@@ -46,7 +69,7 @@ public class SuperTrendWithPercentSLMultipleParametersTradeTestRunner {
 
 	private static float percentSL = 0.5f;
 
-	private String superTrendTestResultsDirectoryPath = "src/test/resources/supertrend-parsed-results-v2/";
+	private String superTrendTestResultsDirectoryPath = "src/test/resources/supertrend-parsed-results-v3/";
 
 	private Set<SuperTrend> superTrendSet;
 
@@ -81,7 +104,7 @@ public class SuperTrendWithPercentSLMultipleParametersTradeTestRunner {
 
 			@Override
 			public boolean accept(File dir, String name) {
-				if (name.startsWith("supertrendParsedResults-v2") && name.endsWith(".csv")) {
+				if (name.startsWith("supertrendParsedResults-v3") && name.endsWith(".csv")) {
 					return true;
 				}
 				return false;
@@ -128,15 +151,15 @@ public class SuperTrendWithPercentSLMultipleParametersTradeTestRunner {
 		File[] superTrendTestResultsFiles = getSuperTrendTestResultsFile();
 		getSuperTrends(superTrendTestResultsFiles);
 
-		for (percentSL = 0.4f; percentSL <= 1.01f; percentSL += 0.1f) {
-			System.out.println("Running Tests for supertrendWithPercentSL" + String.valueOf(percentSL));
+		for (percentSL = 0.3f; percentSL <= 1.01f; percentSL += 0.1f) {
+			logger.info("Running Tests for supertrendWithPercentSL" + String.valueOf(percentSL));
 
 			for (SuperTrend superTrend : superTrendSet) {
 				superTrendAtrPeriod = superTrend.getPeriod();
 				superTrendMultiplier = superTrend.getMultiplier();
 				superTrendAtrMAType = superTrend.getAtrMAType();
 
-				Result result = junit.run(SuperTrendWithPercentSLMultipleParametersTradeTest.class);
+				Result result = junit.run(SuperTrendWithPercentSLMultipleParametersTradeTest.class, SuperTrendWithPercentSLAndReentryMultipleParametersTradeTest.class);
 				resultReport(result);
 			}
 
@@ -145,14 +168,15 @@ public class SuperTrendWithPercentSLMultipleParametersTradeTestRunner {
 				superTrendMultiplier = superTrend.getMultiplier();
 				superTrendAtrMAType = superTrend.getAtrMAType();
 
-				Result result = junit.run(SuperTrendWithPercentSLMultipleParametersTradeTrailSLInSystemTest.class);
+				Result result = junit.run(SuperTrendWithPercentSLMultipleParametersTradeTrailSLInSystemTest.class,
+						SuperTrendWithPercentSLAndReentryMultipleParametersTradeTrailSLInSystemTest.class);
 				resultReport(result);
 			}
 		}
 	}
 
 	private void resultReport(Result result) {
-		System.out.println("Finished. Result: Failures: " + result.getFailureCount() + ". Ignored: " + result.getIgnoreCount() + ". Tests run: " + result.getRunCount() + ". Time: "
+		logger.info("Finished. Result: Failures: " + result.getFailureCount() + ". Ignored: " + result.getIgnoreCount() + ". Tests run: " + result.getRunCount() + ". Time: "
 				+ result.getRunTime() + "ms.");
 	}
 
