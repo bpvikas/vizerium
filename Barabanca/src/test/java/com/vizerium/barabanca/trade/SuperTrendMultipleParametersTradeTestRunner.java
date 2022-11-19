@@ -29,15 +29,19 @@ import com.vizerium.commons.indicators.MovingAverageType;
  * BEFORE running this class, ensure that all the output files need to go into a separate directory. For that, 
  *
  * src/test/resources/log4j.properties = 
- * 			log4j.appender.file.File=C:/Work/Vizerium/data/output-log-v2/supertrend-v3/testrun.log
+ * 			log4j.appender.file.File=C:/Work/Vizerium/data/output-log-v2/supertrend-v4/testrun.log
  * 
  * src/test/java/com/vizerium/barabanca/trade/TradesReport.java
- * 			static final String outputDirectoryPath = FileUtils.directoryPath + "output-log-v2/supertrend-v3/";
+ * 			static final String outputDirectoryPath = FileUtils.directoryPath + "output-log-v2/supertrend-v4/";
  * 
  * 
  * To cross check with a small number of tests if this is working, change the for loop to 
  * 			for (superTrendAtrPeriod = 5; superTrendAtrPeriod <= 5; superTrendAtrPeriod++) {
  *			for (superTrendMultiplier = 2.0f; superTrendMultiplier <= 2.02f; superTrendMultiplier += 0.1) {
+ * 
+ * 
+ * If you have new historical data, then run the HistoricalRawDataParserTest prior to running this class. That will
+ * generate the historical data in C:/Work/Vizerium/data/underlying-raw-data-v2-extract folder.
  * 
  */
 

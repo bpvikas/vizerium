@@ -40,7 +40,7 @@ public class TradesReport {
 	private static BufferedWriter bwTradeBook = null;
 	private static BufferedWriter bwTradesSummary = null;
 
-	static final String outputDirectoryPath = FileUtils.directoryPath + "output-log-v2/";
+	static final String outputDirectoryPath = FileUtils.directoryPath + "output-log-v2/supertrend-v4/";
 
 	public static void initialize(String resultFileName) {
 

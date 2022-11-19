@@ -46,12 +46,12 @@ public class SuperTrendMultipleParametersTradeTestResultsParserV1 extends SuperT
 
 	@Override
 	protected float getN15MinMinimumAveragePayoff() {
-		return 17.0f;
+		return 14.7f;
 	}
 
 	@Override
 	protected float getN15MinMinimumTotalPayoff() {
-		return 12000.0f;
+		return 21300.0f;
 	}
 
 	@Override

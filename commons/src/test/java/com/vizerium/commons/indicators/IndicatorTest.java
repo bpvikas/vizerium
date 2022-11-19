@@ -117,6 +117,32 @@ public class IndicatorTest {
 		System.out.println("-------\nRunning parallel\n-------");
 		run(Arrays.stream(strings).parallel());
 	}
+	
+	@Test
+	public void testLongString() {
+		
+		Long l = new Long(34567876789L);
+		System.out.println(l);
+		System.out.println("Adding String " + l);
+		Long l2 = null;
+		System.out.println(l2);
+		System.out.println("Adding String2 " + l2);
+		Long l3 = new Long(4);
+		System.out.println(l3);
+		System.out.println("Adding String3 " + l3);
+	}
+	
+	enum Model {
+		NGH, IHBS, KHBD
+	}
+	
+	@Test
+	public void testEnumString() {
+		Model m = Model.NGH;
+		System.out.println(m);
+		System.out.println("Model: " + m);
+	}
+
 
 	private void run(Stream<String> stream) {
 		stream.forEach(s -> {
@@ -127,5 +153,46 @@ public class IndicatorTest {
 				e.printStackTrace();
 			}
 		});
+	}
+	
+	class AB {
+		int a,b;
+		
+		AB(int a, int b) {
+			this.a = a;
+			this.b = b;
+		}
+		
+		public void doStuff() {
+			System.out.println("Sleeping for " + a + " " + b);
+			try {
+				Thread.sleep(3000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			System.out.println("Completed for " + a + " " + b);
+		}
+	}
+	
+	@Test
+	public void testParallelStreams() {
+		List<AB> abList = new ArrayList<AB>();
+		for(int a=0; a <=5; a++) {
+			for(int b=10; b<=15; b++) {
+				abList.add(new AB(a,b));
+			}
+		}
+		abList.parallelStream().forEach(ab -> ab.doStuff());
+	}
+	
+	@Test
+	public void testStreams() {
+		List<AB> abList = new ArrayList<AB>();
+		for(int a=0; a <=5; a++) {
+			for(int b=10; b<=15; b++) {
+				abList.add(new AB(a,b));
+			}
+		}
+		abList.stream().forEach(ab -> ab.doStuff());
 	}
 }

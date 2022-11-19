@@ -55,32 +55,32 @@ public abstract class TradeStrategyTest {
 
 	@Test
 	public void test01_BankNifty15minChart() {
-		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._15MIN, 2011, 1, 2020, 2);
+		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._15MIN, 2011, 1, 2022, 7);
 	}
 
 	@Test
 	public void test02_BankNiftyHourlyChart() {
-		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._1HOUR, 2011, 1, 2020, 2);
+		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._1HOUR, 2011, 1, 2022, 7);
 	}
 
 	@Test
 	public void test03_BankNiftyDailyChart() {
-		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._1DAY, 2011, 1, 2020, 2);
+		testAndReportTradeStrategy("BANKNIFTY", TimeFormat._1DAY, 2011, 1, 2022, 7);
 	}
 
 	@Test
 	public void test04_Nifty15minChart() {
-		testAndReportTradeStrategy("NIFTY", TimeFormat._15MIN, 2011, 1, 2020, 2);
+		testAndReportTradeStrategy("NIFTY", TimeFormat._15MIN, 2011, 1, 2022, 7);
 	}
 
 	@Test
 	public void test05_NiftyHourlyChart() {
-		testAndReportTradeStrategy("NIFTY", TimeFormat._1HOUR, 2011, 1, 2020, 2);
+		testAndReportTradeStrategy("NIFTY", TimeFormat._1HOUR, 2011, 1, 2022, 7);
 	}
 
 	@Test
 	public void test06_NiftyDailyChart() {
-		testAndReportTradeStrategy("NIFTY", TimeFormat._1DAY, 2011, 1, 2020, 2);
+		testAndReportTradeStrategy("NIFTY", TimeFormat._1DAY, 2011, 1, 2022, 7);
 	}
 
 	@Test

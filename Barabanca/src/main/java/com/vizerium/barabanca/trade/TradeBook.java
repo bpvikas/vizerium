@@ -196,11 +196,12 @@ public class TradeBook extends ArrayList<Trade> {
 	}
 
 	public float getPayoffPerLotAfterBrokerageAndTaxes() {
-
+		
+		// Brokerage calculations as per https://zerodha.com/brokerage-calculator#tab-equities
 		if ("NIFTY".equalsIgnoreCase(scripName.trim())) {
-			return (getPayoff() * 75) - (size() * 250); // Nifty lot size 75, Approx brokerage and exchange charges per lot 250.
+			return (getPayoff() * 50) - (size() * 210); // Nifty lot size 50, Approx brokerage and exchange charges per lot 210.
 		} else if ("BANKNIFTY".equalsIgnoreCase(scripName.trim())) {
-			return (getPayoff() * 20) - (size() * 250); // BankNifty lot size 20, Approx brokerage and exchange charges per lot 250.
+			return (getPayoff() * 25) - (size() * 235); // BankNifty lot size 25, Approx brokerage and exchange charges per lot 235.
 		} else {
 			throw new RuntimeException("Unable to determine scrip from " + scripName);
 		}

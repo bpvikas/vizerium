@@ -87,17 +87,22 @@ public class HistoricalRawDataParser {
 
 			localRawDataFileStream.close();
 
-			File extractDirectory = new File(parsedExtractedDataDirectoryPath);
+			File extractDirectory = new File(extractedDataDirectoryPath);
 			if (!extractDirectory.exists()) {
 				extractDirectory.mkdir();
 			}
-			for (File extractFile : extractDirectory.listFiles()) {
-				if (extractFile.isDirectory()) {
-					for (File extractSubFile : extractFile.listFiles()) {
-						extractSubFile.delete();
+
+			File parsedExtractDirectory = new File(parsedExtractedDataDirectoryPath);
+			if (!parsedExtractDirectory.exists()) {
+				parsedExtractDirectory.mkdir();
+			}
+			for (File parsedExtractFile : parsedExtractDirectory.listFiles()) {
+				if (parsedExtractFile.isDirectory()) {
+					for (File parsedExtractSubFile : parsedExtractFile.listFiles()) {
+						parsedExtractSubFile.delete();
 					}
 				}
-				extractFile.delete();
+				parsedExtractFile.delete();
 			}
 
 			String outputFileName = "";
